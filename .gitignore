@@ -1,0 +1,33 @@
+# Go build
+/bin/
+*.exe
+*.out
+*.test
+
+# Dependency directories
+vendor/
+
+# IDE/editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.bak
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment/config
+.env
+*.local
+*.secret
+
+# Logs
+*.log
+
+# Go modules cache
+/go.sum
+
+# User config
+.opencode/
