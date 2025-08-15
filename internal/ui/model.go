@@ -6,6 +6,7 @@ import (
 
 	"Chat2/internal/config"
 	"Chat2/internal/provider"
+	"Chat2/internal/themes"
 	"Chat2/internal/types"
 
 	"github.com/charmbracelet/bubbles/textinput"
@@ -25,11 +26,34 @@ type Model struct {
 	Height             int
 	APIKeys            map[string]string
 	ShowProviders      bool
+	ShowCommands       bool
+	CurrentTheme       string
+}
+
+type Command struct {
+	Name        string
+	Description string
+	Action      func(m *Model) (tea.Model, tea.Cmd)
+}
+
+var Commands []Command
+
+func init() {
+	Commands = []Command{
+		{"/help", "show help", showHelp},
+		{"/sessions", "list sessions", listSessions},
+		{"/new", "start a new session", startNewSession},
+		{"/model", "switch model", switchModel},
+		{"/share", "shares the current session", shareSession},
+		{"/p_drive", "open drive to see folders", openDrive},
+		{"/theme", "switch theme", switchTheme},
+		{"/exit", "exit the app", exitApp},
+	}
 }
 
 func InitialModel() *Model {
 	ti := textinput.New()
-	ti.Placeholder = "Type your message here..."
+	ti.Placeholder = "Write something that i don't know..."
 	ti.Focus()
 	ti.CharLimit = 1000
 	ti.Width = 60
@@ -57,6 +81,8 @@ func InitialModel() *Model {
 		AvailableProviders: available,
 		APIKeys:            apiKeys,
 		ShowProviders:      false,
+		ShowCommands:       true,
+		CurrentTheme:       "puku",
 	}
 }
 
@@ -101,6 +127,11 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case tea.KeyEnter:
 			if !m.Loading && !m.Streaming && strings.TrimSpace(m.TextInput.Value()) != "" {
 				message := strings.TrimSpace(m.TextInput.Value())
+
+				// Check if it's a command
+				if strings.HasPrefix(message, "/") {
+					return m.executeCommand(message)
+				}
 
 				if len(m.AvailableProviders) == 0 {
 					m.Messages = append(m.Messages, "❌ No AI provider configured. Please set up API keys.")
@@ -170,4 +201,82 @@ func (m *Model) switchProvider() tea.Cmd {
 	return func() tea.Msg {
 		return types.ProviderSetMsg(nextProvider)
 	}
+}
+
+func (m *Model) executeCommand(cmd string) (tea.Model, tea.Cmd) {
+	m.TextInput.SetValue("")
+	
+	for _, command := range Commands {
+		if strings.HasPrefix(cmd, command.Name) {
+			return command.Action(m)
+		}
+	}
+	
+	m.Messages = append(m.Messages, "❌ Unknown command: "+cmd)
+	return m, nil
+}
+
+// Command action functions
+func showHelp(m *Model) (tea.Model, tea.Cmd) {
+	helpText := "Available Commands:\n"
+	for _, cmd := range Commands {
+		helpText += fmt.Sprintf("  %s - %s\n", cmd.Name, cmd.Description)
+	}
+	m.Messages = append(m.Messages, helpText)
+	return m, nil
+}
+
+func listSessions(m *Model) (tea.Model, tea.Cmd) {
+	m.Messages = append(m.Messages, "📋 No saved sessions found.")
+	return m, nil
+}
+
+func startNewSession(m *Model) (tea.Model, tea.Cmd) {
+	m.Messages = []string{}
+	m.Messages = append(m.Messages, "🎉 Started new session!")
+	return m, nil
+}
+
+func switchModel(m *Model) (tea.Model, tea.Cmd) {
+	if len(m.AvailableProviders) > 1 {
+		return m, m.switchProvider()
+	}
+	m.Messages = append(m.Messages, "Only one provider available: "+m.CurrentProvider)
+	return m, nil
+}
+
+func shareSession(m *Model) (tea.Model, tea.Cmd) {
+	m.Messages = append(m.Messages, "🔗 Session sharing not implemented yet.")
+	return m, nil
+}
+
+func openDrive(m *Model) (tea.Model, tea.Cmd) {
+	m.Messages = append(m.Messages, "📁 Drive browser not implemented yet.")
+	return m, nil
+}
+
+func switchTheme(m *Model) (tea.Model, tea.Cmd) {
+	availableThemes := themes.GetAvailableThemes()
+	currentIndex := 0
+	
+	for i, theme := range availableThemes {
+		if theme == m.CurrentTheme {
+			currentIndex = i
+			break
+		}
+	}
+	
+	nextIndex := (currentIndex + 1) % len(availableThemes)
+	nextTheme := availableThemes[nextIndex]
+	
+	if themes.SetTheme(nextTheme) {
+		m.CurrentTheme = nextTheme
+		m.Messages = append(m.Messages, fmt.Sprintf("🎨 Switched to %s theme", nextTheme))
+	}
+	
+	return m, nil
+}
+
+func exitApp(m *Model) (tea.Model, tea.Cmd) {
+	return m, tea.Quit
 }
