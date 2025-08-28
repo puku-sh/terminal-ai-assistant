@@ -14,6 +14,18 @@ type (
 	ErrorMsg        string
 	ProviderSetMsg  string
 	ConfigLoadedMsg struct{}
+	AnimationMsg    struct{}
+)
+
+type State int
+
+const (
+	StateLanding State = iota
+	StateActive
+	StateChat
+	StateHelp
+	StateFileBrowser
+	StateExitConfirm
 )
 
 type AIProvider struct {
@@ -23,6 +35,36 @@ type AIProvider struct {
 	Model   string
 }
 
+// UIModel interface defines the contract for UI models
+type UIModel interface {
+	tea.Model
+	
+	// Message management
+	AddMessage(string)
+	ClearMessages()
+	GetMessages() []string
+	
+	// Provider management
+	GetCurrentProvider() string
+	GetAvailableProviders() []string
+	SwitchProvider() tea.Cmd
+	
+	// State management
+	GetState() State
+	SetState(State)
+	GetPreviousState() State
+	SetPreviousState(State)
+	
+	// Theme management
+	GetCurrentTheme() string
+	SetCurrentTheme(string)
+	
+	// File browser
+	GetFileBrowserPath() string
+	SetFileBrowserPath(string)
+}
+
+// Legacy model struct for compatibility
 type Model struct {
 	TextInput          textinput.Model
 	Messages           []string
@@ -41,3 +83,14 @@ type Model struct {
 type TeaMsg = tea.Msg
 type TeaModel = tea.Model
 type TeaCmd = tea.Cmd
+
+// Global program state for streaming responses
+var globalProgram *tea.Program
+
+func SetGlobalProgram(program *tea.Program) {
+	globalProgram = program
+}
+
+func GetGlobalProgram() *tea.Program {
+	return globalProgram
+}

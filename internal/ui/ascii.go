@@ -3,13 +3,14 @@ package ui
 import (
 	"strings"
 
-	"Chat2/internal/themes"
-
 	"github.com/charmbracelet/lipgloss"
 )
 
 func GeneratePUKUASCII() string {
-	theme := themes.GetCurrentTheme()
+	return GeneratePUKUASCIIWithAnimation(6) // Show all lines
+}
+
+func GeneratePUKUASCIIWithAnimation(maxLines int) string {
 
 	ascii := []string{
 		"██████╗ ██╗   ██╗██╗  ██╗██╗   ██╗     ██████╗██╗     ██╗",
@@ -23,9 +24,16 @@ func GeneratePUKUASCII() string {
 	var styledLines []string
 	numLines := len(ascii)
 
-	for i, line := range ascii {
+	// Limit the number of lines shown for animation effect
+	linesToShow := maxLines
+	if linesToShow > numLines {
+		linesToShow = numLines
+	}
+
+	for i := 0; i < linesToShow; i++ {
+		line := ascii[i]
 		progress := float64(i) / float64(numLines-1)
-		color := interpolateColor(theme.Secondary, theme.Accent, progress)
+		color := interpolateColor("#f4d4ff", "#8e3fd9", progress)
 
 		style := lipgloss.NewStyle().Foreground(lipgloss.Color(color))
 		styledLines = append(styledLines, style.Render(line))

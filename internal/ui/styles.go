@@ -2,16 +2,15 @@ package ui
 
 import (
 	"Chat2/internal/themes"
+
 	"github.com/charmbracelet/lipgloss"
 )
 
 func GetStyles() Styles {
 	theme := themes.GetCurrentTheme()
-	
+
 	return Styles{
 		Container: lipgloss.NewStyle().
-			Border(lipgloss.RoundedBorder()).
-			BorderForeground(lipgloss.Color(theme.Border)).
 			Padding(1, 2).
 			Margin(1),
 
@@ -23,6 +22,7 @@ func GetStyles() Styles {
 		WelcomeBox: lipgloss.NewStyle().
 			Border(lipgloss.RoundedBorder()).
 			BorderForeground(lipgloss.Color(theme.Primary)).
+			Background(lipgloss.Color(theme.InputBackground)).
 			Foreground(lipgloss.Color(theme.Text)).
 			Padding(0, 1).
 			Margin(0, 0, 1, 0),
@@ -46,8 +46,8 @@ func GetStyles() Styles {
 			Border(lipgloss.RoundedBorder()).
 			BorderForeground(lipgloss.Color(theme.Border)).
 			Background(lipgloss.Color(theme.InputBackground)).
-			Padding(1, 2).
-			Margin(1, 0, 0, 0),
+			Padding(0, 1).
+			Margin(0, 0, 0, 0),
 
 		InputField: lipgloss.NewStyle().
 			Foreground(lipgloss.Color(theme.Text)).
@@ -95,26 +95,54 @@ func GetStyles() Styles {
 
 		Dim: lipgloss.NewStyle().
 			Foreground(lipgloss.Color(theme.DimText)),
+
+		// Sidebar styles
+		Sidebar: lipgloss.NewStyle().
+			Background(lipgloss.Color(theme.InputBackground)).
+			Foreground(lipgloss.Color(theme.DimText)).
+			Padding(1, 2),
+
+		SidebarHeader: lipgloss.NewStyle().
+			Foreground(lipgloss.Color(theme.Text)).
+			Bold(true),
+
+		SidebarSection: lipgloss.NewStyle().
+			Foreground(lipgloss.Color(theme.Secondary)).
+			Bold(true),
+
+		SidebarItem: lipgloss.NewStyle().
+			Foreground(lipgloss.Color(theme.DimText)),
+
+		SidebarItemActive: lipgloss.NewStyle().
+			Foreground(lipgloss.Color(theme.Primary)).
+			Bold(true),
 	}
 }
 
 type Styles struct {
-	Container           lipgloss.Style
-	Title               lipgloss.Style
-	WelcomeBox          lipgloss.Style
-	Version             lipgloss.Style
-	CommandMenu         lipgloss.Style
-	CommandItem         lipgloss.Style
-	CommandDescription  lipgloss.Style
-	InputContainer      lipgloss.Style
-	InputField          lipgloss.Style
-	InputPlaceholder    lipgloss.Style
-	InputIcons          lipgloss.Style
-	UserMessage         lipgloss.Style
-	AIMessage           lipgloss.Style
-	StreamingMessage    lipgloss.Style
-	Error               lipgloss.Style
-	Success             lipgloss.Style
-	Warning             lipgloss.Style
-	Dim                 lipgloss.Style
+	Container          lipgloss.Style
+	Title              lipgloss.Style
+	WelcomeBox         lipgloss.Style
+	Version            lipgloss.Style
+	CommandMenu        lipgloss.Style
+	CommandItem        lipgloss.Style
+	CommandDescription lipgloss.Style
+	InputContainer     lipgloss.Style
+	InputField         lipgloss.Style
+	InputPlaceholder   lipgloss.Style
+	InputIcons         lipgloss.Style
+	UserMessage        lipgloss.Style
+	AIMessage          lipgloss.Style
+	StreamingMessage   lipgloss.Style
+	Error              lipgloss.Style
+	Success            lipgloss.Style
+	Warning            lipgloss.Style
+	Dim                lipgloss.Style
+	
+	// Sidebar styles
+	Sidebar            lipgloss.Style
+	SidebarHeader      lipgloss.Style
+	SidebarSection     lipgloss.Style
+	SidebarItem        lipgloss.Style
+	SidebarItemActive  lipgloss.Style
 }

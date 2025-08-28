@@ -1,4 +1,4 @@
-package provider
+package api
 
 import (
 	"bufio"
@@ -22,8 +22,6 @@ var Providers = map[string]types.AIProvider{
 		Model:   "gpt-3.5-turbo",
 	},
 }
-
-var GlobalProgram *tea.Program
 
 func SendToAI(message, currentProvider string, apiKeys map[string]string) tea.Cmd {
 	provider := Providers[currentProvider]
@@ -81,6 +79,11 @@ func sendToOpenRouter(message string, provider types.AIProvider, apiKey string) 
 
 func handleOpenRouterStream(body io.ReadCloser) {
 	defer body.Close()
+	
+	program := types.GetGlobalProgram()
+	if program == nil {
+		return
+	}
 
 	scanner := bufio.NewScanner(body)
 	for scanner.Scan() {
@@ -88,7 +91,7 @@ func handleOpenRouterStream(body io.ReadCloser) {
 		if strings.HasPrefix(line, "data: ") {
 			data := strings.TrimPrefix(line, "data: ")
 			if data == "[DONE]" {
-				GlobalProgram.Send(types.StreamEndMsg{})
+				program.Send(types.StreamEndMsg{})
 				return
 			}
 
@@ -102,11 +105,11 @@ func handleOpenRouterStream(body io.ReadCloser) {
 
 			if err := json.Unmarshal([]byte(data), &chunk); err == nil {
 				if len(chunk.Choices) > 0 && chunk.Choices[0].Delta.Content != "" {
-					GlobalProgram.Send(types.StreamCharMsg(chunk.Choices[0].Delta.Content))
+					program.Send(types.StreamCharMsg(chunk.Choices[0].Delta.Content))
 				}
 			}
 		}
 	}
 
-	GlobalProgram.Send(types.StreamEndMsg{})
+	program.Send(types.StreamEndMsg{})
 }

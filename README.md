@@ -53,7 +53,7 @@ cd Chat2
 go mod tidy
 
 # Build the application
-go build -o puku-cli.exe .
+go build -o puku.exe .
 ```
 
 ## Configuration
@@ -82,7 +82,7 @@ Currently supported providers:
 ### Basic Usage
 ```bash
 # Launch PUKU CLI
-./puku-cli.exe
+./puku.exe
 
 # Start typing to chat with AI
 > Hello, how are you today?
@@ -114,23 +114,61 @@ Currently supported providers:
 
 ### Project Structure
 ```
-├── cmd/chat/           # Alternative entry point
-├── internal/
-│   ├── config/        # Configuration management
-│   ├── provider/      # AI provider integrations
-│   ├── themes/        # Theme system and color schemes
-│   ├── types/         # Type definitions and messages
-│   └── ui/            # TUI components
-│       ├── ascii.go   # ASCII art generation
-│       ├── model.go   # Business logic and state
-│       ├── styles.go  # Dynamic styling system
-│       └── view.go    # UI rendering
-├── images/            # Screenshots and assets
-├── go.mod            # Go module dependencies
-└── main.go           # Application entry point
+Chat2/
+├── main.go                    # Application entry point
+├── go.mod                     # Go module definition
+├── internal/                  # Internal application packages
+│   ├── app/                   # Application core & coordination
+│   │   └── app.go            # Main application setup and lifecycle
+│   ├── api/                   # AI provider integrations
+│   │   └── providers.go      # API provider implementations
+│   ├── chat/                  # Chat session & message management
+│   │   └── session.go        # Session logic and message handling
+│   ├── commands/              # Command system & handlers
+│   │   └── commands.go       # Command registry (/help, /theme, etc.)
+│   ├── config/                # Configuration management
+│   │   └── config.go         # API key loading and configuration
+│   ├── themes/                # Theme system
+│   │   └── themes.go         # Theme definitions and management
+│   ├── types/                 # Shared types & interfaces
+│   │   └── messages.go       # Type definitions and global state
+│   └── ui/                    # UI components & rendering
+│       ├── ascii.go          # ASCII art generation
+│       ├── styles.go         # UI styling definitions
+│       ├── components/       # Reusable UI components
+│       │   ├── input.go      # Text input component
+│       │   └── sidebar.go    # Sidebar component
+│       └── views/            # Main UI views
+│           ├── main.go       # Main view implementation
+│           ├── handlers.go   # Input/keyboard handling
+│           ├── render.go     # Main rendering logic
+│           └── render_helpers.go # Rendering helper functions
+├── ARCHITECTURE.md           # Detailed architecture documentation
+├── IMPLEMENTATION.md         # Implementation details
+└── README.md                 # This file
 ```
 
 ### Key Components
+
+#### Application Core (`internal/app/`)
+- **Application Lifecycle**: Coordinates entire application startup and shutdown
+- **Program Management**: Manages Bubble Tea program instance
+- **Dependency Injection**: Initializes and connects all components
+
+#### API Integration (`internal/api/`)
+- **Provider Abstraction**: Unified interface for different AI services
+- **Streaming Support**: Real-time response handling with Bubble Tea
+- **Error Management**: Robust API error handling and recovery
+
+#### Chat Management (`internal/chat/`)
+- **Session State**: Manages conversation history and context
+- **Message Handling**: Stores and retrieves user/AI messages
+- **Provider Integration**: Connects sessions with AI providers
+
+#### Command System (`internal/commands/`)
+- **Command Registry**: Centralized command management
+- **Slash Commands**: Implements all `/` commands (help, theme, new, etc.)
+- **Command Validation**: Input parsing and command execution
 
 #### Theme System (`internal/themes/`)
 - **Dynamic Color Management**: Runtime theme switching
@@ -138,14 +176,10 @@ Currently supported providers:
 - **Color Interpolation**: Gradient effects for ASCII art
 
 #### UI Framework (`internal/ui/`)
-- **Bubble Tea Integration**: Modern TUI framework
-- **Responsive Design**: Adapts to terminal dimensions  
-- **Component-Based**: Modular UI elements
-
-#### Provider System (`internal/provider/`)
-- **Multi-Provider Support**: OpenRouter with extensible architecture
-- **Streaming Support**: Real-time response handling
-- **Error Management**: Robust API error handling
+- **Component Architecture**: Reusable UI components (input, sidebar)
+- **View System**: Main application views with clean separation
+- **Responsive Design**: Adapts to terminal dimensions
+- **Bubble Tea Integration**: Modern TUI framework with proper state management
 
 ## Development
 
@@ -171,27 +205,35 @@ Currently supported providers:
 
 ### Adding New Commands
 ```go
-// In internal/ui/model.go init() function
-{"/mycommand", "description", myCommandFunction},
+// In internal/commands/commands.go
+func (r *Registry) registerCommands() {
+    r.commands["/mycommand"] = Command{
+        Name:        "mycommand",
+        Description: "My custom command description",
+        Handler:     r.handleMyCommand,
+    }
+}
 
-// Implement the command function
-func myCommandFunction(m *Model) (tea.Model, tea.Cmd) {
-    m.Messages = append(m.Messages, "Command executed!")
-    return m, nil
+// Implement the command handler
+func (r *Registry) handleMyCommand() tea.Cmd {
+    r.model.AddMessage("Command executed!")
+    return nil
 }
 ```
 
 ### Adding New AI Providers
-1. **Add provider configuration** in `internal/provider/providers.go`
-2. **Implement API integration** following OpenRouter pattern
+1. **Add provider configuration** in `internal/api/providers.go`
+2. **Implement API integration** following the existing provider interface
 3. **Add authentication** in `internal/config/config.go`
-4. **Update provider switching** logic in UI model
+4. **Provider auto-discovery** - providers with valid API keys are automatically available
+5. **Update provider switching** logic is handled automatically by the UI
 
 ## Screenshots
 
 ### PUKU Theme (Default)
-![PUKU Theme](resources/commit-2.gif)
 *Purple gradient with dark background - the flagship theme*
+
+> **Note**: Screenshot assets have been moved. The application features a beautiful purple gradient ASCII art title with the exact color palette specified in the design.
 
 ### Features Demo
 - **Welcome Screen**: Branded welcome message
