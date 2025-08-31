@@ -1,0 +1,14 @@
+- Fetches content from a specified URL in the requested format
+- Takes a URL and format parameter as input
+- Supports text, markdown, and HTML output formats
+- Use this tool when you need to retrieve web content
+- Converts HTML to markdown or extracts plain text automatically
+
+Usage notes:
+  - The URL must be a fully-formed valid URL (http:// or https://)
+  - The format parameter is required: "text", "markdown", or "html" 
+  - For HTML pages, "text" extracts clean text content
+  - For HTML pages, "markdown" converts to markdown format
+  - "html" returns raw HTML content
+  - This tool is read-only and does not modify any files
+  - Has a 5MB response size limit and 30-120 second timeout

@@ -1,5 +1,5 @@
 {
-  "name": "opencode",
+  "name": "pukucode",
   "module": "index.ts",
   "type": "module",
   "private": true,
@@ -11,9 +11,23 @@
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^2.0.9",
+    "@types/diff": "^8.0.0",
     "@types/node": "^24.3.0",
     "ai": "^5.0.27",
+    "decimal.js": "^10.6.0",
+    "diff": "^8.0.2",
+    "gray-matter": "^4.0.3",
+    "groq-sdk": "^0.30.0",
+    "isomorphic-git": "^1.33.1",
+    "jsonc-parser": "^3.3.1",
+    "remeda": "^2.30.0",
+    "turndown": "^7.2.1",
+    "ulid": "^3.0.1",
+    "vscode-jsonrpc": "^8.2.1",
+    "vscode-languageserver-protocol": "^3.17.5",
+    "xdg-basedir": "^5.1.0",
     "yargs": "^18.0.0",
-    "zod": "^4.1.4"
+    "zod": "^4.1.4",
+    "zod-openapi": "^4.1.0"
   }
 }

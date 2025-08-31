@@ -1,21 +1,25 @@
-export namespace Context {
-    export function create<T>(name: string) {
-      let current: T | undefined
+import { AsyncLocalStorage } from "async_hooks"
 
-      return {
-        provide: async <R>(value: T, cb: () => Promise<R>) => {
-          const prev = current
-          current = value
-          try {
-            return await cb()
-          } finally {
-            current = prev
-          }
-        },
-        use: (): T => {
-          if (!current) throw new Error(`${name} context not available`)
-          return current
-        }
-      }
+export namespace Context {
+  export class NotFound extends Error {
+    constructor(public readonly name: string) {
+      super(`No context found for ${name}`)
     }
   }
+
+  export function create<T>(name: string) {
+    const storage = new AsyncLocalStorage<T>()
+    return {
+      use() {
+        const result = storage.getStore()
+        if (!result) {
+          throw new NotFound(name)
+        }
+        return result
+      },
+      provide<R>(value: T, fn: () => R) {
+        return storage.run<R>(value, fn)
+      },
+    }
+  }
+}

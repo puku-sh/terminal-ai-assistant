@@ -1,39 +1,108 @@
+import "zod-openapi/extend"
 import yargs from "yargs"
 import { hideBin } from "yargs/helpers"
-import { App } from "./app/app"
-import { Bus } from "./bus"
-import { z} from "zod"
+import { RunCommand } from "./cli/cmd/run"
+
+import { Log } from "./util/log"
+
+import { UI } from "./cli/ui"
+
+import { NamedError } from "./util/error"
+
+const cancel = new AbortController()
+
+try {
+} catch (e) {}
+
+process.on("unhandledRejection", (e) => {
+  Log.Default.error("rejection", {
+    e: e instanceof Error ? e.message : e,
+  })
+})
+
+process.on("uncaughtException", (e) => {
+  Log.Default.error("exception", {
+    e: e instanceof Error ? e.message : e,
+  })
+})
 
 const cli = yargs(hideBin(process.argv))
-  .scriptName("my-agent")
-  .command({
-    command: "test",
-    describe: "test the app context",
-    handler: async () => {
-      await App.provide({ cwd: process.cwd() }, async (app) => {
-        console.log("App initialized:", app)
-      })
-    }
+  .scriptName("pukucode")
+  .help("help", "show help")
+  .version("version", "show version number", "1.0.0")
+  .alias("version", "v")
+  .option("print-logs", {
+    describe: "print logs to stderr",
+    type: "boolean",
   })
-
-  const TestEvent = Bus.event("test.message", z.object({
-    message: z.string()
-  }))
-
-  cli.command({
-    command: "event-test",
-    describe: "test event bus",
-    handler: async () => {
-      await App.provide({ cwd: process.cwd() }, async () => {
-        // Subscribe
-        Bus.subscribe(TestEvent, (event) => {
-          console.log("Received:", event.properties.message)
-        })
-
-        // Publish  
-        await Bus.publish(TestEvent, { message: "Hello Events!" })
-      })
-    }
+  .option("log-level", {
+    describe: "log level",
+    type: "string",
+    choices: ["DEBUG", "INFO", "WARN", "ERROR"],
   })
+  .middleware(async (opts) => {
+    await Log.init({
+      print: process.argv.includes("--print-logs"),
+      level: (() => {
+        if (opts.logLevel) return opts.logLevel as Log.Level
+        
+        return "INFO"
+      })(),
+    })
 
-await cli.parse()
+    process.env["PUKUCODE"] = "1"
+
+    Log.Default.info("pukucode", {
+      
+      args: process.argv.slice(2),
+    })
+  })
+  .usage("\n" + UI.logo())
+
+  .command(RunCommand)
+  
+ 
+  .fail((msg) => {
+    if (msg.startsWith("Unknown argument") || msg.startsWith("Not enough non-option arguments")) {
+      cli.showHelp("log")
+    }
+    process.exit(1)
+  })
+  .strict()
+
+try {
+  await cli.parse()
+} catch (e) {
+  let data: Record<string, any> = {}
+  if (e instanceof NamedError) {
+    const obj = e.toObject()
+    Object.assign(data, {
+      ...obj.data,
+    })
+  }
+
+  if (e instanceof Error) {
+    Object.assign(data, {
+      name: e.name,
+      message: e.message,
+      cause: e.cause?.toString(),
+    })
+  }
+
+  if (e instanceof ResolveMessage) {
+    Object.assign(data, {
+      name: e.name,
+      message: e.message,
+      code: e.code,
+      specifier: e.specifier,
+      referrer: e.referrer,
+      position: e.position,
+      importKind: e.importKind,
+    })
+  }
+  Log.Default.error("fatal", data)
+ 
+  process.exitCode = 1
+}
+
+cancel.abort()
