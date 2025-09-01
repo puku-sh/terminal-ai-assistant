@@ -5,7 +5,7 @@ import { Bus } from "./bus"
 import { z} from "zod"
 
 const cli = yargs(hideBin(process.argv))
-  .scriptName("my-agent")
+  .scriptName("pukucode")
   .command({
     command: "test",
     describe: "test the app context",

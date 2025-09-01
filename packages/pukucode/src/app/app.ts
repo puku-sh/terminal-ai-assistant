@@ -24,8 +24,8 @@ export namespace App {
       hostname: os.hostname(),
       git: false, // TODO: detect git
       path: {
-        config: path.join(os.homedir(), '.opencode'),
-        data: path.join(os.homedir(), '.opencode/data'),
+        config: path.join(os.homedir(), '.pukucode'),
+        data: path.join(os.homedir(), '.pukucode/data'),
         root: input.cwd,
         cwd: input.cwd
       }
