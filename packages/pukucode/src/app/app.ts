@@ -1,6 +1,7 @@
 import { Context } from "../util/context"
 import path from "path"
 import os from "os"
+import { Filesystem } from "../util/filesystem"
 
 export namespace App {
   export type Info = {

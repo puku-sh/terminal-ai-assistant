@@ -1,9 +1,12 @@
 import yargs from "yargs"
 import { hideBin } from "yargs/helpers"
-import { App } from "./app/app"
+import { App} from "./app/app"
 import { Bus } from "./bus"
 import { Log } from "./util/log"
 import { z} from "zod"
+import { Filesystem } from "./util/filesystem"
+import os from "os"
+import path from "path"
 
 const logger = Log.create({ service: "cli" })
 
@@ -46,6 +49,40 @@ const cli = yargs(hideBin(process.argv))
         logger.debug("Publishing test event")
         await Bus.publish(TestEvent, { message: "Hello Events!" })
         logger.info("Event bus test completed")
+      })
+    }
+  })
+
+  cli.command({
+    command: "fs-test",
+    describe: "test filesystem helpers",
+    handler: async () => {
+      logger.info("Starting filesystem test")
+      await App.provide({ cwd: process.cwd() }, async (app) => {
+        logger.info("App initialized for filesystem test", { cwd: app.path.cwd })
+  
+        // Example 1: contains
+        const insideHome = Filesystem.contains(
+          os.homedir(),
+          app.path.cwd
+        )
+        console.log("Is cwd inside home?", insideHome)
+  
+        // Example 2: findUp
+        const pkgJsons = await Filesystem.findUp("package.json", app.path.cwd)
+        console.log("Found package.json files:", pkgJsons)
+  
+        // Example 3: overlaps
+        const overlaps = Filesystem.overlaps(
+          app.path.cwd,
+          path.join(app.path.cwd, "subdir")
+        )
+        console.log("Does cwd overlap with cwd/subdir?", overlaps)
+  
+        // Example 4: up async generator
+        for await (const match of Filesystem.up({ targets: [".gitignore"], start: app.path.cwd })) {
+          console.log("Found .gitignore walking up:", match)
+        }
       })
     }
   })
