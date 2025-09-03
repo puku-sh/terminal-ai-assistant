@@ -1,6 +1,7 @@
+#!/usr/bin/env bun
 import yargs from "yargs"
 import { hideBin } from "yargs/helpers"
-import { App} from "./app/app"
+import { App } from "./app/app"
 import { Bus } from "./bus"
 import { Log } from "./util/log"
 import { z} from "zod"

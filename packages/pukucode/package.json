@@ -1,8 +1,16 @@
 {
-  "name": "opencode",
+  "name": "pukucode",
   "module": "index.ts",
   "type": "module",
   "private": true,
+  "bin": {
+    "pukucode": "./src/index.ts"
+  },
+  "scripts": {
+    "dev": "bun run src/index.ts",
+    "test": "bun run src/index.ts test",
+    "event-test": "bun run src/index.ts event-test"
+  },
   "devDependencies": {
     "@types/bun": "latest"
   },
@@ -18,3 +26,4 @@
     "zod": "^4.1.4"
   }
 }
+

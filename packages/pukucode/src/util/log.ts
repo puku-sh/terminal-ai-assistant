@@ -1,9 +1,11 @@
 import path from "path"
 import fs from "fs/promises"
 import z from "zod"
+import { Global } from "../global"
+
 
 export namespace Log {
-//   export const Level = z.enum(["DEBUG", "INFO", "WARN", "ERROR"]).openapi({ ref: "LogLevel", description: "Log level" })
+  // export const Level = z.enum(["DEBUG", "INFO", "WARN", "ERROR"]).openapi({ ref: "LogLevel", description: "Log level" })
   export type Level = z.infer<typeof Level>
 
   const levelPriority: Record<Level, number> = {
@@ -52,6 +54,12 @@ export namespace Log {
 
   export async function init(options: Options) {
     if (options.level) level = options.level
+    cleanup(Global.Path.log)
+    if (options.print) return
+    logpath = path.join(
+      Global.Path.log,
+      options.dev ? "dev.log" : new Date().toISOString().split(".")[0].replace(/:/g, "") + ".log",
+    )
     
     const logfile = Bun.file(logpath)
     await fs.truncate(logpath).catch(() => {})

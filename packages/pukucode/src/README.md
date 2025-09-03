@@ -7,6 +7,20 @@ It uses **Application Contexts**, an **Event Bus system**, and **Filesystem util
 
 ## 🚀 Quick Start
 
+### Option 1: Using Global Command (Recommended)
+
+```bash
+# Install globally first
+npm install -g .
+
+# Then use the pukucode command directly
+pukucode test
+pukucode event-test
+pukucode fs-test
+```
+
+### Option 2: Direct Execution
+
 ### Run tests
 ```bash
 # Run application context test
@@ -18,6 +32,35 @@ bun src/index.ts event-test
 # Run filesystem test
 bun src/index.ts fs-test
 ```
+
+
+### Option 3: Using npm scripts
+
+```bash
+# Run tests using package.json scripts
+bun run test
+bun run event-test
+bun run fs-test
+```
+
+### Troubleshooting `pukucode: command not found`
+
+If the `pukucode` command is not found:
+
+1. **Make the file executable:**
+   ```bash
+   chmod +x src/index.ts
+   ```
+
+2. **Install globally:**
+   ```bash
+   npm install -g .
+   ```
+
+3. **Verify installation:**
+   ```bash
+   pukucode --help
+   ```
 
 ## 📁 Directory Structure
 
@@ -31,10 +74,15 @@ src/
 ├── bus/
 │   └── index.ts        # Event bus system
 │
+├── global/
+│   └── index.ts      # Global paths and configuration (@global/ import)
 └── util/
     ├── context.ts      # Context provider utility
     └── filesystem.ts   # Filesystem helpers (findUp, globUp, contains, overlaps, etc.)
 ```
+## Uptaded architecture 
+![](../../../images/mermaid-diagram-2025-09-02-081837.png)
+
 
 ## 🏗️ System Architecture
 
