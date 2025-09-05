@@ -8,6 +8,7 @@ import { z} from "zod"
 import { Filesystem } from "./util/filesystem"
 import os from "os"
 import path from "path"
+import { useAppInfoService } from "./services/appInfoService"
 
 const logger = Log.create({ service: "cli" })
 
@@ -85,6 +86,32 @@ const cli = yargs(hideBin(process.argv))
           console.log("Found .gitignore walking up:", match)
         }
       })
+    }
+  })
+
+
+  // Add this to CLI setup
+  cli.command({
+    command: "app-info",
+    describe: "Show application context and test App.state service",
+    handler: async () => {
+      await App.provide({ cwd: process.cwd() }, async (app) => {
+        // --- App.info usage ---
+        console.log("=== From App.info() ===")
+        console.log("Hostname:", app.hostname)
+        console.log("Root directory:", app.path.root)
+        console.log("Git repo?:", app.git)
+
+        // --- Service usage ---
+        console.log("\n=== From App.state (App Info Service) ===")
+        const infoService = useAppInfoService()
+        console.log(infoService.summary())
+
+        // 🛑 Trigger service shutdown at the end of the run
+        await App.shutdown()
+      })
+
+      // optionally: await App.shutdown()
     }
   })
 

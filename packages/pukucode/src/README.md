@@ -1,27 +1,111 @@
 # 🐉 PukuCode - Terminal AI Assistant
 
-A **TypeScript-based terminal AI assistant** with a **modular architecture** built on [Bun](https://bun.sh/) runtime.  
-It uses **Application Contexts**, an **Event Bus system**, and **Filesystem utilities** to organize features in a scalable way.
+A TypeScript-based terminal AI assistant built on the Bun runtime.
 
----
+It uses a clean and modular architecture featuring:
+
+- **Application Contexts** → Provides global app info & service lifecycle
+- **Event Bus** → Decoupled publish–subscribe messaging
+- **Filesystem Utilities** → Powerful helpers for working with the system paths
+- **Services** → Lazy-loaded, reusable runtime dependencies with lifecycle hooks
+
+## Architecture
+```mermaid
+flowchart TD
+  %% ─────────────────────────── CLI & Commands ───────────────────────────
+  subgraph CLI
+    A[CLI Entry Point<br/>src/index.ts]
+    B[Yargs Command Parser]
+    A --> B
+
+    B --> C[test command]
+    B --> D[event-test command]
+    B --> E[fs-test command]
+    B --> F[app-info command]
+  end
+
+  %% ─────────────────────────── App Context  ────────────────────────────
+  subgraph AppContext["App Context (app/app.ts)"]
+    G[App.provide]
+    G --> G1[Git Detection<br/>findUp .git]
+    G --> G2[Info Generation<br/>hostname, paths, time]
+    G2 --> G3[Uses Global Paths<br/>global/index.ts]
+    G --> G4[Context System<br/>util/context.ts]
+    G4 --> G5[AsyncLocalStorage]
+    G4 --> G6[Services Map]
+    G6 --> G7[App.state<br/>lazy init + shutdown]
+    G --> G8[App.initialize]
+    G --> G9[App.shutdown]
+  end
+
+  %% ─────────────────────────── Global Paths ────────────────────────────
+  subgraph Global["global/index.ts"]
+    H1[XDG Path Resolve<br/>config/data/cache/state]
+    H2[mkdir dirs if missing]
+    H3[Cache Versioning]
+  end
+  G3 --> Global
+
+  %% ─────────────────────────── Services Layer ──────────────────────────
+  subgraph Services
+    S1[AppInfoService<br/>services/appInfoService.ts]
+    S1 -->|defined with| G7
+  end
+
+  %% app-info command uses the service
+  F --> S1
+  %% service reads static Info
+  S1 --> G2
+
+  %% ─────────────────────────── Event Bus ───────────────────────────────
+  subgraph EventBus["bus/index.ts"]
+    EB1[Bus.event&lt;T&gt;<br/>Zod schema]
+    EB2[Publish/Subscribe]
+  end
+  D --> EventBus
+  EventBus --> EB1
+  EventBus --> EB2
+  %% callbacks run inside App Context
+  EB2 --> G4
+
+  %% ─────────────────────────── Filesystem Utils ────────────────────────
+  subgraph FS["util/filesystem.ts"]
+    FS1[contains]
+    FS2[overlaps]
+    FS3[findUp]
+    FS4[up async iterator]
+    FS5[globUp]
+  end
+  E --> FS
+
+  %% ─────────────────────────── Command → App Context Links ─────────────
+  %% test command
+  C --> G
+  %% event-test command
+  D --> G
+  %% fs-test command
+  E --> G
+  %% app-info command 
+  F --> G
+```
 
 ## 🚀 Quick Start
 
-### Option 1: Using Global Command (Recommended)
+### Option 1: Global Installation (Recommended)
 
 ```bash
-# Install globally first
+# Install globally
 npm install -g .
 
-# Then use the pukucode command directly
+# Run directly
 pukucode test
 pukucode event-test
 pukucode fs-test
+pukucode app-info
 ```
 
-### Option 2: Direct Execution
+### Option 2: Direct Execution with Bun
 
-### Run tests
 ```bash
 # Run application context test
 bun src/index.ts test
@@ -31,126 +115,130 @@ bun src/index.ts event-test
 
 # Run filesystem test
 bun src/index.ts fs-test
+
+# Run app services test
+bun src/index.ts app-info
 ```
 
-
-### Option 3: Using npm scripts
+### Option 3: Using npm Scripts
 
 ```bash
-# Run tests using package.json scripts
 bun run test
 bun run event-test
 bun run fs-test
+bun run app-info
 ```
 
-### Troubleshooting `pukucode: command not found`
+## ❗ Troubleshooting `pukucode: command not found`
 
-If the `pukucode` command is not found:
+**Make file executable:**
 
-1. **Make the file executable:**
-   ```bash
-   chmod +x src/index.ts
-   ```
+```bash
+chmod +x src/index.ts
+```
 
-2. **Install globally:**
-   ```bash
-   npm install -g .
-   ```
+**Install globally:**
 
-3. **Verify installation:**
-   ```bash
-   pukucode --help
-   ```
+```bash
+npm install -g .
+```
+
+**Verify installation:**
+
+```bash
+pukucode --help
+```
 
 ## 📁 Directory Structure
 
 ```
 src/
-├── index.ts            # CLI entry point with commands (test, event-test, fs-test)
+├── index.ts              # CLI entry point with commands
 │
 ├── app/
-│   └── app.ts          # Application context and state management
+│   └── app.ts            # App context, lifecycle mgmt, and service registry
 │
 ├── bus/
-│   └── index.ts        # Event bus system
+│   └── index.ts          # Event bus (pub/sub system)
 │
 ├── global/
-│   └── index.ts      # Global paths and configuration (@global/ import)
+│   └── index.ts          # XDG paths, cache/version mgmt
+│
+├── services/
+│   └── appInfoService.ts # Example service (with init/shutdown)
+│
 └── util/
-    ├── context.ts      # Context provider utility
-    └── filesystem.ts   # Filesystem helpers (findUp, globUp, contains, overlaps, etc.)
+    ├── context.ts        # Context utility (AsyncLocalStorage wrapper)
+    └── filesystem.ts     # Filesystem helpers (findUp, contains, overlaps, etc.)
 ```
-## Uptaded architecture 
-![](../../../images/mermaid-diagram-2025-09-02-081837.png)
 
+## 🔄 High-level Architecture
 
-## 🏗️ System Architecture
+### CLI (`index.ts`)
+- Registers commands (`test`, `event-test`, `fs-test`, `app-info`)
+- Wraps all commands inside an App context using `App.provide`
 
-![](../../../images/image.png)
+### App (`app/app.ts`)
+- **Core:** Context + Info + Service Registry
+- `App.provide` → sets up per-run context (hostname, Git root, config paths)
+- `App.state` → define services (lazy initialized, optional shutdown)
+- `App.initialize` / `App.shutdown` → lifecycle hooks
 
-### High-level Flow
+### Event Bus (`bus/index.ts`)
+- Simple pub/sub messaging
+- Events validated with Zod
+- Used in `event-test` demo
 
-#### CLI (index.ts)
-- Registers commands using Yargs (test, event-test, fs-test)
-- Provides entrypoints into different subsystems
+### Filesystem Utils (`util/filesystem.ts`)
+- `contains(parent, child)`
+- `overlaps(a, b)`
+- `findUp(target, start [, stop])`
+- `up({ targets, start, stop })` (async generator)
+- `globUp(pattern, start [, stop])`
 
-#### App Context (app/app.ts)
-- Provides global application state (hostname, paths, services)
-- Manages dependency injection using a Context utility
-
-#### Event Bus (bus/index.ts)
-- Implements event publication and subscription
-- Useful for decoupled communication across modules
-
-#### Filesystem Utils (util/filesystem.ts)
-- Provides helpful filesystem operations:
-  - `contains(parent, child)`
-  - `overlaps(a, b)`
-  - `findUp(target, start [, stop])`
-  - `up({ targets, start, stop })` (async generator)
-  - `globUp(pattern, start [, stop])`
+### Global Paths (`global/index.ts`)
+- Respects XDG Base Directories (`~/.config`, `~/.cache`, etc.)
+- Auto-creates folder structure
+- Handles cache versioning
 
 ## 📖 Example Usage
 
-### Application Context
+### 🔹 Application Context
+
 ```bash
 bun src/index.ts test
 ```
 
-Logs initialization details:
+**Example Output:**
 
 ```
 App initialized: {
   hostname: "my-machine",
   git: false,
-  path: { config, data, root, cwd }
+  path: { config, data, root, cwd, state },
+  time: { initialized: 1700000000 }
 }
 ```
 
-### Event Bus
+### 🔹 Event Bus
+
 ```bash
 bun src/index.ts event-test
 ```
 
-Publishes an event and logs subscription result:
+**Example Output:**
 
 ```
 Received: Hello Events!
 ```
 
-### Filesystem Utilities
+### 🔹 Filesystem Utilities
+
 ```bash
 bun src/index.ts fs-test
 ```
 
-Runs a demo of filesystem helpers:
-
-- ✅ Checks if working dir is inside $HOME
-- ✅ Finds nearest package.json
-- ✅ Checks path overlaps
-- ✅ Walks up searching for .gitignore
-
-Example output:
+**Example Output:**
 
 ```
 Is cwd inside home? true
@@ -159,6 +247,40 @@ Does cwd overlap with cwd/subdir? true
 Found .gitignore walking up: /project/.gitignore
 ```
 
----
+### 🔹 Services + Lifecycle
 
-*Built with TypeScript, Bun, Yargs, and Zod*
+Test the App Info Service (with init + shutdown hooks):
+
+```bash
+bun src/index.ts app-info
+```
+
+**Example Output:**
+
+```
+=== From App.info() ===
+Hostname: my-laptop
+Root directory: /home/user/my-project
+Git repo?: true
+
+=== From App.state (App Info Service) ===
+🚀 Initializing AppInfoService
+{
+  hostname: 'my-laptop',
+  cwd: '/home/user/my-project',
+  root: '/home/user/my-project',
+  configDir: '/home/user/.config/pukucode',
+  gitRepo: true
+}
+🛑 Shutting down AppInfoService
+```
+
+## 🧠 Key Concepts
+
+- **Application Lifecycle:** Each run = context created → work → services cleaned up.
+- **Info:** Static metadata (hostname, paths, git detection).
+- **Services:** Live, reusable singletons that are initialized once and optionally have shutdown hooks.
+- **Context:** AsyncLocalStorage-based "backpack" for sharing state across commands without passing manually.
+
+
+
