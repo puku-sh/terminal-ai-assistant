@@ -22,6 +22,7 @@ flowchart TD
     B --> D[event-test command]
     B --> E[fs-test command]
     B --> F[app-info command]
+    B --> G[models-test command]
   end
 
   %% ─────────────────────────── App Context  ────────────────────────────
@@ -78,6 +79,16 @@ flowchart TD
   end
   E --> FS
 
+  %% ─────────────────────────── Provider System ─────────────────────────
+  subgraph Provider["provider/model.ts"]
+    P1[ModelsDev.get<br/>Load providers/models]
+    P2[Model Schema<br/>Zod validation]
+    P3[Provider Schema<br/>Zod validation]
+    P1 --> P2
+    P1 --> P3
+  end
+  G --> Provider
+
   %% ─────────────────────────── Command → App Context Links ─────────────
   %% test command
   C --> G
@@ -87,6 +98,8 @@ flowchart TD
   E --> G
   %% app-info command 
   F --> G
+  %% models-test command
+  G --> AppContext
 ```
 
 ## 🚀 Quick Start
@@ -102,6 +115,7 @@ pukucode test
 pukucode event-test
 pukucode fs-test
 pukucode app-info
+pukucode models-test
 ```
 
 ### Option 2: Direct Execution with Bun
@@ -118,6 +132,9 @@ bun src/index.ts fs-test
 
 # Run app services test
 bun src/index.ts app-info
+
+# Run models provider test
+bun src/index.ts models-test
 ```
 
 ### Option 3: Using npm Scripts
@@ -127,6 +144,7 @@ bun run test
 bun run event-test
 bun run fs-test
 bun run app-info
+bun run models-test
 ```
 
 ## ❗ Troubleshooting `pukucode: command not found`
@@ -164,6 +182,10 @@ src/
 ├── global/
 │   └── index.ts          # XDG paths, cache/version mgmt
 │
+├── provider/
+│   ├── model.ts          # AI models and providers schema/loader
+│   └── model-macro       # Model data macro (build-time)
+│
 ├── services/
 │   └── appInfoService.ts # Example service (with init/shutdown)
 │
@@ -175,7 +197,7 @@ src/
 ## 🔄 High-level Architecture
 
 ### CLI (`index.ts`)
-- Registers commands (`test`, `event-test`, `fs-test`, `app-info`)
+- Registers commands (`test`, `event-test`, `fs-test`, `app-info`, `models-test`)
 - Wraps all commands inside an App context using `App.provide`
 
 ### App (`app/app.ts`)
@@ -200,6 +222,12 @@ src/
 - Respects XDG Base Directories (`~/.config`, `~/.cache`, etc.)
 - Auto-creates folder structure
 - Handles cache versioning
+
+### Provider System (`provider/model.ts`)
+- **ModelsDev namespace:** AI model and provider management
+- **Schema validation:** Zod-based validation for models and providers
+- **Data loading:** Loads provider/model data from cache or macro
+- **Type safety:** Full TypeScript support with inferred types
 
 ## 📖 Example Usage
 
@@ -273,6 +301,29 @@ Git repo?: true
   gitRepo: true
 }
 🛑 Shutting down AppInfoService
+```
+
+### 🔹 AI Models & Providers
+
+```bash
+bun src/index.ts models-test
+```
+
+**Example Output:**
+
+```
+=== Testing ModelsDev.get() ===
+Loaded providers: [ 'anthropic', 'openai', 'groq' ]
+
+=== Provider: anthropic ===
+Name: Anthropic
+Environment vars needed: [ 'ANTHROPIC_API_KEY' ]
+Models count: 4
+Schema validation: ✓ PASS
+Example model (claude-3-5-sonnet-20241022):
+  Name: Claude 3.5 Sonnet
+  Context limit: 200000
+  Input cost: 0.003
 ```
 
 ## 🧠 Key Concepts
