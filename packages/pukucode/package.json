@@ -9,7 +9,8 @@
   "scripts": {
     "dev": "bun run src/index.ts",
     "test": "bun run src/index.ts test",
-    "event-test": "bun run src/index.ts event-test"
+    "event-test": "bun run src/index.ts event-test",
+    "models-test":"bun run src/index.ts models-test"
   },
   "devDependencies": {
     "@types/bun": "latest"
