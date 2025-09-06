@@ -9,7 +9,7 @@ import { Filesystem } from "./util/filesystem"
 import os from "os"
 import path from "path"
 import { useAppInfoService } from "./services/appInfoService"
-import { ModelsDev } from "./provider/model"
+import { ModelsDev } from "./provider/model" // import for models-test command
 
 const logger = Log.create({ service: "cli" })
 
