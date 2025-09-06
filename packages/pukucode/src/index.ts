@@ -9,6 +9,7 @@ import { Filesystem } from "./util/filesystem"
 import os from "os"
 import path from "path"
 import { useAppInfoService } from "./services/appInfoService"
+import { ModelsDev } from "./provider/model"
 
 const logger = Log.create({ service: "cli" })
 
@@ -112,6 +113,51 @@ const cli = yargs(hideBin(process.argv))
       })
 
       // optionally: await App.shutdown()
+    }
+  })
+
+  cli.command({
+    command: "models-test",
+    describe: "Test the ModelsDev provider",
+    handler: async () => {
+      logger.info("Starting ModelsDev provider test")
+      await App.provide({ cwd: process.cwd() }, async () => {
+        try {
+          console.log("=== Testing ModelsDev.get() ===")
+          const providers = await ModelsDev.get()
+          console.log("Loaded providers:", Object.keys(providers))
+          
+          for (const [providerId, provider] of Object.entries(providers)) {
+            console.log(`\n=== Provider: ${providerId} ===`)
+            console.log("Name:", provider.name)
+            console.log("Environment vars needed:", provider.env)
+            console.log("Models count:", Object.keys(provider.models).length)
+            
+            // Test schema validation
+            const validationResult = ModelsDev.Provider.safeParse(provider)
+            console.log("Schema validation:", validationResult.success ? "✓ PASS" : "✗ FAIL")
+            
+            if (!validationResult.success) {
+              console.log("Validation errors:", validationResult.error.issues)
+            }
+            
+            // Show first model as example
+            const firstModelId = Object.keys(provider.models)[0]
+            if (firstModelId) {
+              const firstModel = provider.models[firstModelId]
+              console.log(`Example model (${firstModelId}):`)
+              console.log("  Name:", firstModel.name)
+              console.log("  Context limit:", firstModel.limit.context)
+              console.log("  Input cost:", firstModel.cost.input)
+            }
+          }
+          
+          logger.info("ModelsDev provider test completed successfully")
+        } catch (error) {
+          logger.error("ModelsDev provider test failed", { error })
+          console.error("Test failed:", error)
+        }
+      })
     }
   })
 
