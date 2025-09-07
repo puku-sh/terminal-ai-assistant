@@ -10,6 +10,7 @@ import os from "os"
 import path from "path"
 import { useAppInfoService } from "./services/appInfoService"
 import { ModelsDev } from "./provider/model" // import for models-test command
+import { Auth } from "./auth" // import for auth-test command
 
 const logger = Log.create({ service: "cli" })
 
@@ -155,6 +156,83 @@ const cli = yargs(hideBin(process.argv))
           logger.info("ModelsDev provider test completed successfully")
         } catch (error) {
           logger.error("ModelsDev provider test failed", { error })
+          console.error("Test failed:", error)
+        }
+      })
+    }
+  })
+
+  cli.command({
+    command: "auth-test",
+    describe: "Test the Auth system",
+    handler: async () => {
+      logger.info("Starting Auth system test")
+      await App.provide({ cwd: process.cwd() }, async () => {
+        try {
+          console.log("=== Testing Auth System ===")
+          
+          // Test schema validation
+          console.log("\n=== Testing Auth Schemas ===")
+          
+          // Test OAuth schema
+          const oauthExample = {
+            type: "oauth" as const,
+            refresh: "refresh_token_123",
+            access: "access_token_456", 
+            expires: Date.now() + 3600000
+          }
+          const oauthResult = Auth.Oauth.safeParse(oauthExample)
+          console.log("OAuth schema validation:", oauthResult.success ? "✓ PASS" : "✗ FAIL")
+          
+          // Test API schema
+          const apiExample = {
+            type: "api" as const,
+            key: "api_key_123"
+          }
+          const apiResult = Auth.Api.safeParse(apiExample)
+          console.log("API schema validation:", apiResult.success ? "✓ PASS" : "✗ FAIL")
+          
+          // Test WellKnown schema  
+          const wellKnownExample = {
+            type: "wellknown" as const,
+            key: "well_known_key",
+            token: "well_known_token"
+          }
+          const wellKnownResult = Auth.WellKnown.safeParse(wellKnownExample)
+          console.log("WellKnown schema validation:", wellKnownResult.success ? "✓ PASS" : "✗ FAIL")
+          
+          // Test discriminated union
+          const infoResult = Auth.Info.safeParse(apiExample)
+          console.log("Info union schema validation:", infoResult.success ? "✓ PASS" : "✗ FAIL")
+          
+          console.log("\n=== Testing Auth Storage ===")
+          
+          // Test storage operations
+          const testProvider = "test-provider"
+          
+          // Set auth info
+          await Auth.set(testProvider, apiExample)
+          console.log("✓ Auth info saved")
+          
+          // Get auth info
+          const retrieved = await Auth.get(testProvider)
+          console.log("Retrieved auth info:", retrieved ? "✓ FOUND" : "✗ NOT FOUND")
+          if (retrieved) {
+            console.log("  Type:", retrieved.type)
+            console.log("  Data:", retrieved)
+          }
+          
+          // Get all auths
+          const allAuths = await Auth.all()
+          console.log("All stored auths:", Object.keys(allAuths))
+          
+          // Clean up - remove test auth
+          await Auth.remove(testProvider)
+          console.log("✓ Test auth cleaned up")
+          
+          logger.info("Auth system test completed successfully")
+        } catch (error) {
+          logger.error("Auth system test failed", { error })
           console.error("Test failed:", error)
         }
       })
