@@ -10,6 +10,7 @@ import os from "os"
 import path from "path"
 import { useAppInfoService } from "./services/appInfoService"
 import { File } from "./file"
+import { Ripgrep } from "./file/ripgrep"
 
 const logger = Log.create({ service: "cli" })
 
@@ -145,6 +146,26 @@ const cli = yargs(hideBin(process.argv))
         console.log(result.content.substring(0, 400)) // show first 400 chars
       })
     }
+  })
+  cli.command({
+    command: "file-tree",
+    describe: "List project files using Ripgrep stub implementation",
+    builder: (yargs) =>
+      yargs.option("limit", {
+        alias: "l",
+        type: "number",
+        describe: "Limit number of files shown",
+      }),
+    handler: async (args) => {
+      await App.provide({ cwd: process.cwd() }, async (app) => {
+        console.log("=== File Tree ===")
+        const tree = await Ripgrep.tree({
+          cwd: app.path.cwd,
+          limit: args.limit,
+        })
+        console.log(tree)
+      })
+    },
   })
 
 try {
