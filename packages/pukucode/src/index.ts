@@ -117,26 +117,32 @@ const cli = yargs(hideBin(process.argv))
   })
   cli.command({
     command: "file-status",
-    describe: "Check git status of files",
+    describe: "Check git tracked files (added, deleted, modified)",
     handler: async () => {
-      logger.info("Starting file status test")
-      
-      await App.provide({ cwd: process.cwd() }, async (app) => {
-        logger.info("App context ready", {
-          git: app.git,
-          root: app.path.root
-        })
-        
+      await App.provide({ cwd: process.cwd() }, async () => {
         const files = await File.status()
-        
+        console.log("=== Git File Status ===")
         if (files.length === 0) {
-          console.log("No modified files found")
+          console.log("No changes found")
         } else {
-          console.log("\nModified files:")
-          files.forEach(f => {
-            console.log(`  ${f.status}: ${f.path}`)
-          })
+          for (const f of files) {
+            console.log(`${f.status.toUpperCase()} → ${f.path}  (+${f.added} -${f.removed})`)
+          }
         }
+      })
+    }
+  })
+  cli.command({
+    command: "file-read <file>",
+    describe: "Read file content or show diff if modified",
+    builder: (yargs) => yargs.positional("file", { type: "string", demandOption: true }),
+    handler: async (args) => {
+      const file = args.file as string
+      await App.provide({ cwd: process.cwd() }, async () => {
+        const result = await File.read(file)
+        console.log("=== File Read Result ===")
+        console.log(`Type: ${result.type}`)
+        console.log(result.content.substring(0, 400)) // show first 400 chars
       })
     }
   })

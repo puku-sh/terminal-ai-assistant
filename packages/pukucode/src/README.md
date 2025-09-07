@@ -284,3 +284,12 @@ Git repo?: true
 
 
 
+## Testing for understanding:
+### File.status()
+```bash
+bun src/index.ts file-status
+```
+###File.read()
+```bash
+bun src/index.ts file-read src/README.md
+```
