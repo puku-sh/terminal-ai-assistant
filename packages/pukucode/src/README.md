@@ -284,7 +284,7 @@ Git repo?: true
 
 
 
-## Testing for understanding:
+# Testing for understanding:
 ### File.status()
 ```bash
 bun src/index.ts file-status
@@ -302,4 +302,55 @@ bun src/index.ts file-tree
 ### ripgrep Limit to 5
 ```bash
 bun src/index.ts file-tree -l 5
+```
+
+## time.ts testing
+
+🧪Testing Instructions
+Now, you can properly test the intended behavior:
+
+### Scenario 1: Don't modify the file
+
+Run the command:
+```bash
+bun src/index.ts file-time-test src/index.ts
+```
+Do nothing for 10 seconds.
+
+Expected Output:
+```text
+[1] Reading file 'src/index.ts' and recording timestamp...
+   -> Timestamp recorded: 2023-10-27T10:30:00.123Z
+   -> ✔ Immediately after reading, the file is fresh. Correct.
+
+[2] You now have 10 seconds to manually edit and save the file: src/index.ts
+
+[3] Checking file freshness again after 10 seconds...
+   -> ✔ OK: The file was NOT modified in the last 10 seconds.
+```
+
+### Scenario 2: Modify the file
+Run the command:
+```bash
+bun src/index.ts file-time-test src/index.ts
+```
+You will see the message: [2] You now have 10 seconds...
+Quickly open src/index.ts in your editor, add a space or a comment, and save it.
+Wait for the 10 seconds to finish.
+
+Expected Output:
+```text
+[1] Reading file 'src/index.ts' and recording timestamp...
+   -> Timestamp recorded: 2023-10-27T10:35:00.456Z
+   -> ✔ Immediately after reading, the file is fresh. Correct.
+
+[2] You now have 10 seconds to manually edit and save the file: src/index.ts
+
+[3] Checking file freshness again after 10 seconds...
+   -> ❌ FAILED: The file was modified since it was last read. Correct!
+      Reason: File src/index.ts has been modified since it was last read.
+      Last modification: 2023-10-27T10:35:05.789Z
+      Last read: 2023-10-27T10:35:00.456Z
+
+      Please read the file again before modifying it.
 ```

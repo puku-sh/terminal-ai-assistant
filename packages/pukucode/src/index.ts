@@ -11,6 +11,7 @@ import path from "path"
 import { useAppInfoService } from "./services/appInfoService"
 import { File } from "./file"
 import { Ripgrep } from "./file/ripgrep"
+import { FileTime } from "./file/time"
 
 const logger = Log.create({ service: "cli" })
 
@@ -167,7 +168,48 @@ const cli = yargs(hideBin(process.argv))
       })
     },
   })
-
+  cli.command({
+    command: "file-time-test <file>",
+    describe: "Interactively test file freshness tracking",
+    builder: (yargs) => yargs.positional("file", {
+      type: "string", demandOption: true
+    }),
+    handler: async (args) => {
+      const file = args.file as string;
+  
+      await App.provide({ cwd: process.cwd() }, async () => {
+        const sessionID = "interactive-session";
+  
+        // --- Step 1: Initial Read ---
+        console.log(`[1] Reading file '${file}' and recording timestamp...`);
+        FileTime.read(sessionID, file);
+        console.log(`   -> Timestamp recorded: ${FileTime.get(sessionID, file)?.toISOString()}`);
+  
+        try {
+          await FileTime.assert(sessionID, file);
+          console.log("   -> ✔ Immediately after reading, the file is fresh. Correct.");
+        } catch (e) {
+          // This part should not fail
+          console.error("   -> ❌ This should not have failed!", e);
+        }
+  
+        // --- Step 2: Wait for manual modification ---
+        console.log(`\n[2] You now have 10 seconds to manually edit and save the file: ${file}`);
+        await new Promise(resolve => setTimeout(resolve, 10000)); // Wait for 10 seconds
+  
+        // --- Step 3: Assert Freshness Again ---
+        console.log("\n[3] Checking file freshness again after 10 seconds...");
+        try {
+          await FileTime.assert(sessionID, file);
+          console.log("   -> ✔ OK: The file was NOT modified in the last 10 seconds.");
+        } catch (e) {
+          console.error("   -> ❌ FAILED: The file was modified since it was last read. Correct!");
+          console.error(`      Reason: ${(e as Error).message}`);
+        }
+      });
+    }
+  });
+//hello
 try {
   await cli.parse()
 } catch (error) {
