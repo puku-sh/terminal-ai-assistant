@@ -9,6 +9,7 @@ import { Filesystem } from "./util/filesystem"
 import os from "os"
 import path from "path"
 import { useAppInfoService } from "./services/appInfoService"
+import { File } from "./file"
 
 const logger = Log.create({ service: "cli" })
 
@@ -112,6 +113,31 @@ const cli = yargs(hideBin(process.argv))
       })
 
       // optionally: await App.shutdown()
+    }
+  })
+  cli.command({
+    command: "file-status",
+    describe: "Check git status of files",
+    handler: async () => {
+      logger.info("Starting file status test")
+      
+      await App.provide({ cwd: process.cwd() }, async (app) => {
+        logger.info("App context ready", {
+          git: app.git,
+          root: app.path.root
+        })
+        
+        const files = await File.status()
+        
+        if (files.length === 0) {
+          console.log("No modified files found")
+        } else {
+          console.log("\nModified files:")
+          files.forEach(f => {
+            console.log(`  ${f.status}: ${f.path}`)
+          })
+        }
+      })
     }
   })
 
