@@ -2,7 +2,12 @@ import { Global } from "../global"
 import { Log } from "../util/log"
 import path from "path"
 import { z } from "zod"
+import { extendZodWithOpenApi } from "@asteasolutions/zod-to-openapi"
 import { data } from "./model-macro" with { type: "macro" }
+
+extendZodWithOpenApi(z)
+
+
 
 
 export namespace ModelsDev {
@@ -29,6 +34,7 @@ export namespace ModelsDev {
     }),
     options: z.record(z.any()),
   })
+  .openapi("Model")
   export type Model = z.infer<typeof Model>
 
   export const Provider = z.object({
@@ -39,6 +45,7 @@ export namespace ModelsDev {
     npm: z.string().optional(),
     models: z.record(z.string(), Model),
   })
+  .openapi("Provider")
 
   export type Provider = z.infer<typeof Provider>
 
