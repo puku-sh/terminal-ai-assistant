@@ -293,3 +293,13 @@ bun src/index.ts file-status
 ```bash
 bun src/index.ts file-read src/README.md
 ```
+
+### ripgrep Show all
+```bash
+bun src/index.ts file-tree
+```
+
+### ripgrep Limit to 5
+```bash
+bun src/index.ts file-tree -l 5
+```
