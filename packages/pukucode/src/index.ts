@@ -9,6 +9,10 @@ import { Filesystem } from "./util/filesystem"
 import os from "os"
 import path from "path"
 import { useAppInfoService } from "./services/appInfoService"
+import { File } from "./file"
+import { Ripgrep } from "./file/ripgrep"
+import { FileTime } from "./file/time"
+import { FileWatcher } from "./file/watch"
 import { ModelsDev } from "./provider/model" // import for models-test command
 import { Auth } from "./auth" // import for auth-test command
 import { Config } from "./config/config" // import for config-test command
@@ -115,6 +119,116 @@ const cli = yargs(hideBin(process.argv))
       })
 
       // optionally: await App.shutdown()
+    }
+  })
+  cli.command({
+    command: "file-status",
+    describe: "Check git tracked files (added, deleted, modified)",
+    handler: async () => {
+      await App.provide({ cwd: process.cwd() }, async () => {
+        const files = await File.status()
+        console.log("=== Git File Status ===")
+        if (files.length === 0) {
+          console.log("No changes found")
+        } else {
+          for (const f of files) {
+            console.log(`${f.status.toUpperCase()} → ${f.path}  (+${f.added} -${f.removed})`)
+          }
+        }
+      })
+    }
+  })
+  cli.command({
+    command: "file-read <file>",
+    describe: "Read file content or show diff if modified",
+    builder: (yargs) => yargs.positional("file", { type: "string", demandOption: true }),
+    handler: async (args) => {
+      const file = args.file as string
+      await App.provide({ cwd: process.cwd() }, async () => {
+        const result = await File.read(file)
+        console.log("=== File Read Result ===")
+        console.log(`Type: ${result.type}`)
+        console.log(result.content.substring(0, 400)) // show first 400 chars
+      })
+    }
+  })
+  cli.command({
+    command: "file-tree",
+    describe: "List project files using Ripgrep stub implementation",
+    builder: (yargs) =>
+      yargs.option("limit", {
+        alias: "l",
+        type: "number",
+        describe: "Limit number of files shown",
+      }),
+    handler: async (args) => {
+      await App.provide({ cwd: process.cwd() }, async (app) => {
+        console.log("=== File Tree ===")
+        const tree = await Ripgrep.tree({
+          cwd: app.path.cwd,
+          limit: args.limit,
+        })
+        console.log(tree)
+      })
+    },
+  })
+  cli.command({
+    command: "file-time-test <file>",
+    describe: "Interactively test file freshness tracking",
+    builder: (yargs) => yargs.positional("file", {
+      type: "string", demandOption: true
+    }),
+    handler: async (args) => {
+      const file = args.file as string;
+  
+      await App.provide({ cwd: process.cwd() }, async () => {
+        const sessionID = "interactive-session";
+  
+        // --- Step 1: Initial Read ---
+        console.log(`[1] Reading file '${file}' and recording timestamp...`);
+        FileTime.read(sessionID, file);
+        console.log(`   -> Timestamp recorded: ${FileTime.get(sessionID, file)?.toISOString()}`);
+  
+        try {
+          await FileTime.assert(sessionID, file);
+          console.log("   -> ✔ Immediately after reading, the file is fresh. Correct.");
+        } catch (e) {
+          // This part should not fail
+          console.error("   -> ❌ This should not have failed!", e);
+        }
+  
+        // --- Step 2: Wait for manual modification ---
+        console.log(`\n[2] You now have 10 seconds to manually edit and save the file: ${file}`);
+        await new Promise(resolve => setTimeout(resolve, 10000)); // Wait for 10 seconds
+  
+        // --- Step 3: Assert Freshness Again ---
+        console.log("\n[3] Checking file freshness again after 10 seconds...");
+        try {
+          await FileTime.assert(sessionID, file);
+          console.log("   -> ✔ OK: The file was NOT modified in the last 10 seconds.");
+        } catch (e) {
+          console.error("   -> ❌ FAILED: The file was modified since it was last read. Correct!");
+          console.error(`      Reason: ${(e as Error).message}`);
+        }
+      });
+    }
+  });
+//hello
+  cli.command({
+    command: "watch-test",
+    describe: "Test file watcher",
+    handler: async () => {
+      await App.provide({ cwd: process.cwd() }, async () => {
+        Bus.subscribe(FileWatcher.Event.Updated, (event) => {
+          console.log("📂 File changed:", event.properties.file, "event:", event.properties.event)
+        })
+
+        FileWatcher.init()
+        console.log("👀 Watching for file changes... edit something in your project!")
+
+        // Keep process alive
+        await new Promise(() => {})
+      })
     }
   })
 

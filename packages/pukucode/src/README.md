@@ -22,7 +22,6 @@ flowchart TD
     B --> D[event-test command]
     B --> E[fs-test command]
     B --> F[app-info command]
-    B --> G[models-test command]
   end
 
   %% ─────────────────────────── App Context  ────────────────────────────
@@ -79,16 +78,6 @@ flowchart TD
   end
   E --> FS
 
-  %% ─────────────────────────── Provider System ─────────────────────────
-  subgraph Provider["provider/model.ts"]
-    P1[ModelsDev.get<br/>Load providers/models]
-    P2[Model Schema<br/>Zod validation]
-    P3[Provider Schema<br/>Zod validation]
-    P1 --> P2
-    P1 --> P3
-  end
-  G --> Provider
-
   %% ─────────────────────────── Command → App Context Links ─────────────
   %% test command
   C --> G
@@ -98,8 +87,6 @@ flowchart TD
   E --> G
   %% app-info command 
   F --> G
-  %% models-test command
-  G --> AppContext
 ```
 
 ## 🚀 Quick Start
@@ -115,7 +102,6 @@ pukucode test
 pukucode event-test
 pukucode fs-test
 pukucode app-info
-pukucode models-test
 ```
 
 ### Option 2: Direct Execution with Bun
@@ -132,9 +118,6 @@ bun src/index.ts fs-test
 
 # Run app services test
 bun src/index.ts app-info
-
-# Run models provider test
-bun src/index.ts models-test
 ```
 
 ### Option 3: Using npm Scripts
@@ -144,7 +127,6 @@ bun run test
 bun run event-test
 bun run fs-test
 bun run app-info
-bun run models-test
 ```
 
 ## ❗ Troubleshooting `pukucode: command not found`
@@ -182,10 +164,6 @@ src/
 ├── global/
 │   └── index.ts          # XDG paths, cache/version mgmt
 │
-├── provider/
-│   ├── model.ts          # AI models and providers schema/loader
-│   └── model-macro       # Model data macro (build-time)
-│
 ├── services/
 │   └── appInfoService.ts # Example service (with init/shutdown)
 │
@@ -197,7 +175,7 @@ src/
 ## 🔄 High-level Architecture
 
 ### CLI (`index.ts`)
-- Registers commands (`test`, `event-test`, `fs-test`, `app-info`, `models-test`)
+- Registers commands (`test`, `event-test`, `fs-test`, `app-info`)
 - Wraps all commands inside an App context using `App.provide`
 
 ### App (`app/app.ts`)
@@ -222,12 +200,6 @@ src/
 - Respects XDG Base Directories (`~/.config`, `~/.cache`, etc.)
 - Auto-creates folder structure
 - Handles cache versioning
-
-### Provider System (`provider/model.ts`)
-- **ModelsDev namespace:** AI model and provider management
-- **Schema validation:** Zod-based validation for models and providers
-- **Data loading:** Loads provider/model data from cache or macro
-- **Type safety:** Full TypeScript support with inferred types
 
 ## 📖 Example Usage
 
@@ -303,29 +275,6 @@ Git repo?: true
 🛑 Shutting down AppInfoService
 ```
 
-### 🔹 AI Models & Providers
-
-```bash
-bun src/index.ts models-test
-```
-
-**Example Output:**
-
-```
-=== Testing ModelsDev.get() ===
-Loaded providers: [ 'anthropic', 'openai', 'groq' ]
-
-=== Provider: anthropic ===
-Name: Anthropic
-Environment vars needed: [ 'ANTHROPIC_API_KEY' ]
-Models count: 4
-Schema validation: ✓ PASS
-Example model (claude-3-5-sonnet-20241022):
-  Name: Claude 3.5 Sonnet
-  Context limit: 200000
-  Input cost: 0.003
-```
-
 ## 🧠 Key Concepts
 
 - **Application Lifecycle:** Each run = context created → work → services cleaned up.
@@ -335,3 +284,84 @@ Example model (claude-3-5-sonnet-20241022):
 
 
 
+# Testing for understanding:
+### File.status()
+```bash
+bun src/index.ts file-status
+```
+###File.read()
+```bash
+bun src/index.ts file-read src/README.md
+```
+
+### ripgrep Show all
+```bash
+bun src/index.ts file-tree
+```
+
+### ripgrep Limit to 5
+```bash
+bun src/index.ts file-tree -l 5
+```
+
+## time.ts testing
+
+🧪Testing Instructions
+Now, you can properly test the intended behavior:
+
+### Scenario 1: Don't modify the file
+
+Run the command:
+```bash
+bun src/index.ts file-time-test src/index.ts
+```
+Do nothing for 10 seconds.
+
+Expected Output:
+```text
+[1] Reading file 'src/index.ts' and recording timestamp...
+   -> Timestamp recorded: 2023-10-27T10:30:00.123Z
+   -> ✔ Immediately after reading, the file is fresh. Correct.
+
+[2] You now have 10 seconds to manually edit and save the file: src/index.ts
+
+[3] Checking file freshness again after 10 seconds...
+   -> ✔ OK: The file was NOT modified in the last 10 seconds.
+```
+
+### Scenario 2: Modify the file
+Run the command:
+```bash
+bun src/index.ts file-time-test src/index.ts
+```
+You will see the message: [2] You now have 10 seconds...
+Quickly open src/index.ts in your editor, add a space or a comment, and save it.
+Wait for the 10 seconds to finish.
+
+Expected Output:
+```text
+[1] Reading file 'src/index.ts' and recording timestamp...
+   -> Timestamp recorded: 2023-10-27T10:35:00.456Z
+   -> ✔ Immediately after reading, the file is fresh. Correct.
+
+[2] You now have 10 seconds to manually edit and save the file: src/index.ts
+
+[3] Checking file freshness again after 10 seconds...
+   -> ❌ FAILED: The file was modified since it was last read. Correct!
+      Reason: File src/index.ts has been modified since it was last read.
+      Last modification: 2023-10-27T10:35:05.789Z
+      Last read: 2023-10-27T10:35:00.456Z
+
+      Please read the file again before modifying it.
+```
+
+
+## watcher testing
+```bash
+bun src/index.ts watch-test
+```
+
+Open another terminal on pukucode directory, and then do this:
+```bash
+echo "// test" >> src/test.ts
+```
