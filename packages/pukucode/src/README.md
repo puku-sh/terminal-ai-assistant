@@ -354,3 +354,14 @@ Expected Output:
 
       Please read the file again before modifying it.
 ```
+
+
+## watcher testing
+```bash
+bun src/index.ts watch-test
+```
+
+Open another terminal on pukucode directory, and then do this:
+```bash
+echo "// test" >> src/test.ts
+```
