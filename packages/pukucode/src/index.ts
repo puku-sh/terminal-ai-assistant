@@ -12,6 +12,7 @@ import { useAppInfoService } from "./services/appInfoService"
 import { File } from "./file"
 import { Ripgrep } from "./file/ripgrep"
 import { FileTime } from "./file/time"
+import { FileWatcher } from "./file/watch"
 
 const logger = Log.create({ service: "cli" })
 
@@ -210,6 +211,24 @@ const cli = yargs(hideBin(process.argv))
     }
   });
 //hello
+cli.command({
+  command: "watch-test",
+  describe: "Test file watcher",
+  handler: async () => {
+    await App.provide({ cwd: process.cwd() }, async () => {
+      Bus.subscribe(FileWatcher.Event.Updated, (event) => {
+        console.log("📂 File changed:", event.properties.file, "event:", event.properties.event)
+      })
+
+      FileWatcher.init()
+      console.log("👀 Watching for file changes... edit something in your project!")
+
+      // Keep process alive
+      await new Promise(() => {})
+    })
+  }
+})
+
 try {
   await cli.parse()
 } catch (error) {

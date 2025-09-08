@@ -27,7 +27,7 @@ export namespace App {
   }
 
   const ctx = Context.create<ContextValue>("app")
-
+  export const provideExisting = ctx.provide
   export async function provide<T>(
     input: { cwd: string }, 
     cb: (app: Info) => Promise<T>
