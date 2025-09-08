@@ -11,6 +11,7 @@ import path from "path"
 import { useAppInfoService } from "./services/appInfoService"
 import { ModelsDev } from "./provider/model" // import for models-test command
 import { Auth } from "./auth" // import for auth-test command
+import { Config } from "./config/config" // import for config-test command
 
 const logger = Log.create({ service: "cli" })
 
@@ -233,6 +234,64 @@ const cli = yargs(hideBin(process.argv))
           logger.info("Auth system test completed successfully")
         } catch (error) {
           logger.error("Auth system test failed", { error })
+          console.error("Test failed:", error)
+        }
+      })
+    }
+  })
+
+  cli.command({
+    command: "config-test",
+    describe: "Test the Config system",
+    handler: async () => {
+      logger.info("Starting Config system test")
+      await App.provide({ cwd: process.cwd() }, async () => {
+        try {
+          console.log("=== Testing Config System ===")
+          
+          console.log("\n=== Testing Config Loading ===")
+          const config = await Config.get()
+          console.log("✓ Config loaded successfully")
+          console.log("Username:", config.username)
+          console.log("Theme:", config.theme || "default")
+          console.log("Model:", config.model || "not set")
+          
+          console.log("\n=== Testing Schema Validation ===")
+          
+          // Test Agent schema
+          const agentExample = {
+            model: "test/model",
+            temperature: 0.7,
+            prompt: "Test prompt",
+            description: "Test agent"
+          }
+          const agentResult = Config.Agent.safeParse(agentExample)
+          console.log("Agent schema validation:", agentResult.success ? "✓ PASS" : "✗ FAIL")
+          
+          // Test Command schema
+          const commandExample = {
+            template: "Test command: {input}",
+            description: "Test command"
+          }
+          const commandResult = Config.Command.safeParse(commandExample)
+          console.log("Command schema validation:", commandResult.success ? "✓ PASS" : "✗ FAIL")
+          
+          // Test Keybinds schema
+          const keybindsExample = {
+            leader: "ctrl+x",
+            app_help: "<leader>h"
+          }
+          const keybindsResult = Config.Keybinds.safeParse(keybindsExample)
+          console.log("Keybinds schema validation:", keybindsResult.success ? "✓ PASS" : "✗ FAIL")
+          
+          console.log("\n=== Config Structure ===")
+          console.log("Available agents:", Object.keys(config.agent || {}))
+          console.log("Available commands:", Object.keys(config.command || {}))
+          console.log("Plugins loaded:", (config.plugin || []).length)
+          
+          logger.info("Config system test completed successfully")
+        } catch (error) {
+          logger.error("Config system test failed", { error })
           console.error("Test failed:", error)
         }
       })

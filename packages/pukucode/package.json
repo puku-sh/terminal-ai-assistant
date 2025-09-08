@@ -11,7 +11,8 @@
     "test": "bun run src/index.ts test",
     "event-test": "bun run src/index.ts event-test",
     "models-test": "bun run src/index.ts models-test",
-    "auth-test": "bun run src/index.ts auth-test"
+    "auth-test": "bun run src/index.ts auth-test",
+    "config-test": "bun run src/index.ts config-test"
   },
   "devDependencies": {
     "@types/bun": "latest"
