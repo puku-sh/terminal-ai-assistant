@@ -18,6 +18,7 @@ import { type ParseError as JsoncParseError, parse as parseJsonc, printParseErro
 export namespace Config {
   const log = Log.create({ service: "config" })
 
+  // Main configuration state - loads and merges config from multiple sources
   export const state = App.state("config", async (app) => {
     const auth = await Auth.all()
     let result = await global()
@@ -185,6 +186,7 @@ export namespace Config {
     return result
   })
 
+  // MCP (Model Context Protocol) Local Server Configuration Schema
   export const McpLocal = z
     .object({
       type: z.literal("local").describe("Type of MCP server connection"),
@@ -200,6 +202,7 @@ export namespace Config {
       ref: "McpLocalConfig",
     })
 
+  // MCP (Model Context Protocol) Remote Server Configuration Schema
   export const McpRemote = z
     .object({
       type: z.literal("remote").describe("Type of MCP server connection"),
@@ -215,9 +218,11 @@ export namespace Config {
   export const Mcp = z.discriminatedUnion("type", [McpLocal, McpRemote])
   export type Mcp = z.infer<typeof Mcp>
 
+  // Permission Schema - defines access control levels
   export const Permission = z.union([z.literal("ask"), z.literal("allow"), z.literal("deny")])
   export type Permission = z.infer<typeof Permission>
 
+  // Command Configuration Schema - for custom command templates
   export const Command = z.object({
     template: z.string(),
     description: z.string().optional(),
@@ -226,6 +231,7 @@ export namespace Config {
   })
   export type Command = z.infer<typeof Command>
 
+  // Agent Configuration Schema - defines AI agent behavior and capabilities
   export const Agent = z
     .object({
       model: z.string().optional(),
@@ -250,6 +256,7 @@ export namespace Config {
     })
   export type Agent = z.infer<typeof Agent>
 
+  // Keybinds Configuration Schema - defines keyboard shortcuts for the application
   export const Keybinds = z
     .object({
       leader: z.string().optional().default("ctrl+x").describe("Leader key for keybind combinations"),
@@ -333,6 +340,7 @@ export namespace Config {
   })
   export type Layout = z.infer<typeof Layout>
 
+  // Main Configuration Schema - comprehensive application configuration structure
   export const Info = z
     .object({
       $schema: z.string().optional().describe("JSON schema reference for configuration validation"),
@@ -468,6 +476,7 @@ export namespace Config {
 
   export type Info = z.output<typeof Info>
 
+  // Global configuration loader - loads from default config directory
   export const global = lazy(async () => {
     let result: Info = pipe(
       {},
@@ -494,6 +503,7 @@ export namespace Config {
     return result
   })
 
+  // File loader helper - loads and validates individual config files
   async function loadFile(filepath: string): Promise<Info> {
     log.info("loading", { path: filepath })
     let text = await Bun.file(filepath)
@@ -506,6 +516,7 @@ export namespace Config {
     return load(text, filepath)
   }
 
+  // Configuration parser - processes JSONC with environment variables and file references
   async function load(text: string, configFilepath: string) {
     text = text.replace(/\{env:([^}]+)\}/g, (_, varName) => {
       return process.env[varName] || ""
@@ -589,6 +600,7 @@ export namespace Config {
 
     throw new InvalidError({ path: configFilepath, issues: parsed.error.issues })
   }
+  // Configuration error types
   export const JsonError = NamedError.create(
     "ConfigJsonError",
     z.object({
@@ -606,6 +618,7 @@ export namespace Config {
     }),
   )
 
+  // Configuration getter - retrieves current configuration state
   export function get() {
     return state()
   }
