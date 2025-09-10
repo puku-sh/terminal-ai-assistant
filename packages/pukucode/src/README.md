@@ -473,3 +473,8 @@ Open another terminal on pukucode directory, and then do this:
 ```bash
 echo "// test" >> src/test.ts
 ```
+
+## Bun module test
+```bash
+bun src/index.ts bun-test --package chalk
+```

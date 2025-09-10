@@ -4,7 +4,7 @@ import { hideBin } from "yargs/helpers"
 import { App } from "./app/app"
 import { Bus } from "./bus"
 import { Log } from "./util/log"
-import { z} from "zod"
+import { string, z} from "zod"
 import { Filesystem } from "./util/filesystem"
 import os from "os"
 import path from "path"
@@ -16,6 +16,7 @@ import { FileWatcher } from "./file/watch"
 import { ModelsDev } from "./provider/model" // import for models-test command
 import { Auth } from "./auth" // import for auth-test command
 import { Config } from "./config/config" // import for config-test command
+import { BunProc } from "./bun"
 
 const logger = Log.create({ service: "cli" })
 
@@ -410,6 +411,48 @@ const cli = yargs(hideBin(process.argv))
         }
       })
     }
+  })
+
+  cli.command({
+    command: "bun-test",
+    describe: "Test BunProc functionalities",
+    builder: (yargs) =>
+      yargs.option("package", {
+        type: "string",
+        describe: "Package to install",
+        demandOption: false,
+      }),
+    handler: async (args) => {
+      // Example 1: Run `bun --version`
+      console.log("🔹 Running `bun --version`...")
+      await BunProc.run(["--version"])
+      console.log("✔ Bun version run successful")
+  
+      // Example 2: Install a package (chalk by default)
+      const pkg = (args.package as string) || "chalk"
+      console.log(`\n🔹 Installing ${pkg}@latest into cache...`)
+      let modPath: string = ""
+      try {
+        modPath = await BunProc.install(pkg)
+        console.log(`✔ Installed at path: ${modPath}`)
+      } catch (err) {
+        console.error("❌ Failed installing package", err)
+        return
+      }
+  
+      // Example 3: Run a quick inline script with bun --print
+      console.log(`\n🔹 Using installed package (${pkg}) to run a script...`)
+      // await BunProc.run([
+      //   "--print",
+      //   `import ${pkg} from '${pkg}'; console.log(${pkg}.green("Hello from ${pkg}!"))`,
+      // ])
+      // After install, modPath === ".../node_modules/chalk"
+      await BunProc.run([
+        "--print",
+        `import chalk from '${modPath}'; console.log(chalk.green("Hello via full path!"))`,
+      ])
+      console.log("✔ Script executed with package")
+    },
   })
 
 try {
