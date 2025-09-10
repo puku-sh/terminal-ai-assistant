@@ -5,6 +5,8 @@ A TypeScript-based terminal AI assistant built on the Bun runtime.
 It uses a clean and modular architecture featuring:
 
 - **Application Contexts** → Provides global app info & service lifecycle
+- **Configuration System** → Multi-source config loading with validation and schema support
+- **Authentication** → Secure credential management for AI providers and services
 - **Event Bus** → Decoupled publish–subscribe messaging
 - **Filesystem Utilities** → Powerful helpers for working with the system paths
 - **Services** → Lazy-loaded, reusable runtime dependencies with lifecycle hooks
@@ -22,40 +24,61 @@ flowchart TD
     B --> D[event-test command]
     B --> E[fs-test command]
     B --> F[app-info command]
+    B --> G[config-test command]
+    B --> H[auth-test command]
   end
 
   %% ─────────────────────────── App Context  ────────────────────────────
   subgraph AppContext["App Context (app/app.ts)"]
-    G[App.provide]
-    G --> G1[Git Detection<br/>findUp .git]
-    G --> G2[Info Generation<br/>hostname, paths, time]
-    G2 --> G3[Uses Global Paths<br/>global/index.ts]
-    G --> G4[Context System<br/>util/context.ts]
-    G4 --> G5[AsyncLocalStorage]
-    G4 --> G6[Services Map]
-    G6 --> G7[App.state<br/>lazy init + shutdown]
-    G --> G8[App.initialize]
-    G --> G9[App.shutdown]
+    I[App.provide]
+    I --> I1[Git Detection<br/>findUp .git]
+    I --> I2[Info Generation<br/>hostname, paths, time]
+    I2 --> I3[Uses Global Paths<br/>global/index.ts]
+    I --> I4[Context System<br/>util/context.ts]
+    I4 --> I5[AsyncLocalStorage]
+    I4 --> I6[Services Map]
+    I6 --> I7[App.state<br/>lazy init + shutdown]
+    I --> I8[App.initialize]
+    I --> I9[App.shutdown]
   end
 
   %% ─────────────────────────── Global Paths ────────────────────────────
   subgraph Global["global/index.ts"]
-    H1[XDG Path Resolve<br/>config/data/cache/state]
-    H2[mkdir dirs if missing]
-    H3[Cache Versioning]
+    J1[XDG Path Resolve<br/>config/data/cache/state]
+    J2[mkdir dirs if missing]
+    J3[Cache Versioning]
   end
-  G3 --> Global
+  I3 --> Global
 
+  %% ─────────────────────────── Configuration System ────────────────────
+  subgraph ConfigSystem["config/config.ts"]
+    K1[Config.state<br/>Multi-source loader]
+    K2[Schema Validation<br/>Zod schemas]
+    K3[Agent/Mode/Command<br/>Markdown loading]
+    K4[File References<br/>Environment vars]
+    K5[Plugin Discovery<br/>TypeScript/JavaScript]
+  end
+  G --> ConfigSystem
+  
+  %% ─────────────────────────── Authentication System ────────────────────
+  subgraph AuthSystem["auth/index.ts"]
+    L1[Credential Management]
+    L2[Provider Authentication]
+    L3[Well-known Config<br/>Remote endpoints]
+    L4[Token Storage<br/>Secure handling]
+  end
+  H --> AuthSystem
+  
   %% ─────────────────────────── Services Layer ──────────────────────────
   subgraph Services
     S1[AppInfoService<br/>services/appInfoService.ts]
-    S1 -->|defined with| G7
+    S1 -->|defined with| I7
   end
 
   %% app-info command uses the service
   F --> S1
   %% service reads static Info
-  S1 --> G2
+  S1 --> I2
 
   %% ─────────────────────────── Event Bus ───────────────────────────────
   subgraph EventBus["bus/index.ts"]
@@ -66,7 +89,7 @@ flowchart TD
   EventBus --> EB1
   EventBus --> EB2
   %% callbacks run inside App Context
-  EB2 --> G4
+  EB2 --> I4
 
   %% ─────────────────────────── Filesystem Utils ────────────────────────
   subgraph FS["util/filesystem.ts"]
@@ -80,13 +103,17 @@ flowchart TD
 
   %% ─────────────────────────── Command → App Context Links ─────────────
   %% test command
-  C --> G
+  C --> I
   %% event-test command
-  D --> G
+  D --> I
   %% fs-test command
-  E --> G
+  E --> I
   %% app-info command 
-  F --> G
+  F --> I
+  %% config-test command
+  G --> I
+  %% auth-test command
+  H --> I
 ```
 
 ## 🚀 Quick Start
@@ -102,6 +129,8 @@ pukucode test
 pukucode event-test
 pukucode fs-test
 pukucode app-info
+pukucode config-test
+pukucode auth-test
 ```
 
 ### Option 2: Direct Execution with Bun
@@ -118,6 +147,12 @@ bun src/index.ts fs-test
 
 # Run app services test
 bun src/index.ts app-info
+
+# Run configuration system test
+bun src/index.ts config-test
+
+# Run authentication system test
+bun src/index.ts auth-test
 ```
 
 ### Option 3: Using npm Scripts
@@ -127,6 +162,8 @@ bun run test
 bun run event-test
 bun run fs-test
 bun run app-info
+bun run config-test
+bun run auth-test
 ```
 
 ## ❗ Troubleshooting `pukucode: command not found`
@@ -158,8 +195,14 @@ src/
 ├── app/
 │   └── app.ts            # App context, lifecycle mgmt, and service registry
 │
+├── auth/
+│   └── index.ts          # Authentication system with credential management
+│
 ├── bus/
 │   └── index.ts          # Event bus (pub/sub system)
+│
+├── config/
+│   └── config.ts         # Configuration system with multi-source loading
 │
 ├── global/
 │   └── index.ts          # XDG paths, cache/version mgmt
@@ -175,7 +218,7 @@ src/
 ## 🔄 High-level Architecture
 
 ### CLI (`index.ts`)
-- Registers commands (`test`, `event-test`, `fs-test`, `app-info`)
+- Registers commands (`test`, `event-test`, `fs-test`, `app-info`, `config-test`, `auth-test`)
 - Wraps all commands inside an App context using `App.provide`
 
 ### App (`app/app.ts`)
@@ -183,6 +226,19 @@ src/
 - `App.provide` → sets up per-run context (hostname, Git root, config paths)
 - `App.state` → define services (lazy initialized, optional shutdown)
 - `App.initialize` / `App.shutdown` → lifecycle hooks
+
+### Configuration System (`config/config.ts`)
+- **Multi-source loading:** Global, project, and user configurations
+- **Schema validation:** Comprehensive Zod-based validation
+- **Markdown integration:** Agent, mode, and command definitions from `.md` files
+- **Advanced features:** Environment variable substitution, file references
+- **Plugin system:** Auto-discovery of TypeScript/JavaScript plugins
+
+### Authentication System (`auth/index.ts`)
+- **Credential management:** Secure storage and retrieval of API keys
+- **Provider integration:** Support for multiple AI providers
+- **Well-known endpoints:** Remote configuration loading
+- **Token handling:** Environment variable injection and management
 
 ### Event Bus (`bus/index.ts`)
 - Simple pub/sub messaging
@@ -275,12 +331,64 @@ Git repo?: true
 🛑 Shutting down AppInfoService
 ```
 
+### 🔹 Configuration System
+
+```bash
+bun src/index.ts config-test
+```
+
+**Example Output:**
+
+```
+=== Configuration System Test ===
+✅ Global config loaded from: /home/user/.config/pukucode
+✅ Project configs found: pukucode.jsonc, pukucode.json
+✅ Agent definitions loaded: 3 agents from markdown files
+✅ Command templates loaded: 5 custom commands
+✅ Plugin discovery: 2 TypeScript plugins found
+✅ Schema validation: All configurations valid
+
+Final merged configuration:
+{
+  "theme": "dark",
+  "model": "anthropic/claude-3-sonnet",
+  "agents": { "plan": {...}, "build": {...} },
+  "keybinds": { "leader": "ctrl+x" },
+  ...
+}
+```
+
+### 🔹 Authentication System
+
+```bash
+bun src/index.ts auth-test
+```
+
+**Example Output:**
+
+```
+=== Authentication System Test ===
+✅ Credential storage initialized
+✅ Provider authentication configured
+✅ Well-known endpoints discovered: 2 remote configs
+✅ Environment variables injected: ANTHROPIC_API_KEY, OPENAI_API_KEY
+✅ Token validation successful
+
+Authentication providers:
+- anthropic: ✅ Valid API key
+- openai: ✅ Valid API key  
+- custom-provider: ⚠️  Well-known config loaded
+```
+
 ## 🧠 Key Concepts
 
 - **Application Lifecycle:** Each run = context created → work → services cleaned up.
 - **Info:** Static metadata (hostname, paths, git detection).
 - **Services:** Live, reusable singletons that are initialized once and optionally have shutdown hooks.
 - **Context:** AsyncLocalStorage-based "backpack" for sharing state across commands without passing manually.
+- **Configuration:** Multi-layered system supporting global, project, and user configurations with validation.
+- **Authentication:** Secure credential management with support for multiple AI providers and remote configs.
+- **Modularity:** Clean separation between core systems, services, and utilities for maintainability.
 
 
 
