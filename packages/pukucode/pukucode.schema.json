@@ -1,0 +1,470 @@
+{
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "JSON schema reference for configuration validation"
+    },
+    "theme": {
+      "type": "string",
+      "description": "Theme name to use for the interface"
+    },
+    "keybinds": {
+      "type": "object",
+      "properties": {
+        "leader": {
+          "type": "string",
+          "default": "ctrl+x",
+          "description": "Leader key for keybind combinations"
+        },
+        "app_help": {
+          "type": "string",
+          "default": "<leader>h",
+          "description": "Show help dialog"
+        },
+        "app_exit": {
+          "type": "string",
+          "default": "ctrl+c,<leader>q",
+          "description": "Exit the application"
+        },
+        "editor_open": {
+          "type": "string",
+          "default": "<leader>e",
+          "description": "Open external editor"
+        },
+        "theme_list": {
+          "type": "string",
+          "default": "<leader>t",
+          "description": "List available themes"
+        },
+        "project_init": {
+          "type": "string",
+          "default": "<leader>i",
+          "description": "Create/update AGENTS.md"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Custom keybind configurations"
+    },
+    "tui": {
+      "type": "object",
+      "properties": {
+        "scroll_speed": {
+          "type": "number",
+          "minimum": 1,
+          "default": 2,
+          "description": "TUI scroll speed"
+        }
+      }
+    },
+    "command": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "template": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "agent": {
+            "type": "string"
+          },
+          "model": {
+            "type": "string"
+          }
+        },
+        "required": ["template"]
+      }
+    },
+    "plugin": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "snapshot": {
+      "type": "boolean"
+    },
+    "share": {
+      "type": "string",
+      "enum": ["manual", "auto", "disabled"],
+      "description": "Control sharing behavior:'manual' allows manual sharing via commands, 'auto' enables automatic sharing, 'disabled' disables all sharing"
+    },
+    "autoshare": {
+      "type": "boolean",
+      "description": "@deprecated Use 'share' field instead. Share newly created sessions automatically"
+    },
+    "autoupdate": {
+      "type": "boolean",
+      "description": "Automatically update to the latest version"
+    },
+    "disabled_providers": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Disable providers that are loaded automatically"
+    },
+    "model": {
+      "type": "string",
+      "description": "Model to use in the format of provider/model, eg anthropic/claude-2"
+    },
+    "small_model": {
+      "type": "string",
+      "description": "Small model to use for tasks like title generation in the format of provider/model"
+    },
+    "username": {
+      "type": "string",
+      "description": "Custom username to display in conversations instead of system username"
+    },
+    "mode": {
+      "type": "object",
+      "description": "@deprecated Use `agent` field instead.",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string"
+          },
+          "temperature": {
+            "type": "number"
+          },
+          "top_p": {
+            "type": "number"
+          },
+          "prompt": {
+            "type": "string"
+          },
+          "tools": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "boolean"
+            }
+          },
+          "disable": {
+            "type": "boolean"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of when to use the agent"
+          },
+          "mode": {
+            "type": "string",
+            "enum": ["subagent", "primary", "all"]
+          }
+        }
+      }
+    },
+    "agent": {
+      "type": "object",
+      "description": "Agent configuration, see https://pukucode.ai/docs/agent",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string"
+          },
+          "temperature": {
+            "type": "number"
+          },
+          "top_p": {
+            "type": "number"
+          },
+          "prompt": {
+            "type": "string"
+          },
+          "tools": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "boolean"
+            }
+          },
+          "disable": {
+            "type": "boolean"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of when to use the agent"
+          },
+          "mode": {
+            "type": "string",
+            "enum": ["subagent", "primary", "all"]
+          }
+        }
+      }
+    },
+    "provider": {
+      "type": "object",
+      "description": "Custom provider configurations and model overrides",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "models": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object"
+            }
+          },
+          "options": {
+            "type": "object",
+            "properties": {
+              "apiKey": {
+                "type": "string"
+              },
+              "baseURL": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "mcp": {
+      "type": "object",
+      "description": "MCP (Model Context Protocol) server configurations",
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "local",
+                "description": "Type of MCP server connection"
+              },
+              "command": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Command and arguments to run the MCP server"
+              },
+              "environment": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "description": "Environment variables to set when running the MCP server"
+              },
+              "enabled": {
+                "type": "boolean",
+                "description": "Enable or disable the MCP server on startup"
+              }
+            },
+            "required": ["type", "command"],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "remote",
+                "description": "Type of MCP server connection"
+              },
+              "url": {
+                "type": "string",
+                "description": "URL of the remote MCP server"
+              },
+              "enabled": {
+                "type": "boolean",
+                "description": "Enable or disable the MCP server on startup"
+              },
+              "headers": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "description": "Headers to send with the request"
+              }
+            },
+            "required": ["type", "url"],
+            "additionalProperties": false
+          }
+        ]
+      }
+    },
+    "formatter": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "disabled": {
+            "type": "boolean"
+          },
+          "command": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "environment": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "extensions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "lsp": {
+      "type": "object",
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "disabled": {
+                "type": "boolean",
+                "const": true
+              }
+            },
+            "required": ["disabled"]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "command": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "extensions": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "disabled": {
+                "type": "boolean"
+              },
+              "env": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "initialization": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            },
+            "required": ["command"]
+          }
+        ]
+      }
+    },
+    "instructions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Additional instruction files or patterns to include"
+    },
+    "layout": {
+      "type": "string",
+      "enum": ["auto", "stretch"],
+      "description": "@deprecated Always uses stretch layout."
+    },
+    "permission": {
+      "type": "object",
+      "properties": {
+        "edit": {
+          "type": "string",
+          "enum": ["ask", "allow", "deny"]
+        },
+        "bash": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": ["ask", "allow", "deny"]
+            },
+            {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string",
+                "enum": ["ask", "allow", "deny"]
+              }
+            }
+          ]
+        },
+        "webfetch": {
+          "type": "string",
+          "enum": ["ask", "allow", "deny"]
+        }
+      }
+    },
+    "tools": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "boolean"
+      }
+    },
+    "experimental": {
+      "type": "object",
+      "properties": {
+        "hook": {
+          "type": "object",
+          "properties": {
+            "file_edited": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "command": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "environment": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": ["command"]
+                }
+              }
+            },
+            "session_completed": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "command": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "environment": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": ["command"]
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
