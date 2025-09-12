@@ -13,10 +13,13 @@ import { File } from "./file"
 import { Ripgrep } from "./file/ripgrep"
 import { FileTime } from "./file/time"
 import { FileWatcher } from "./file/watch"
-import { ModelsDev } from "./provider/model" // import for models-test command
+import { ModelsDev } from "./provider/models" // import for models-test command
 import { Auth } from "./auth" // import for auth-test command
 import { Config } from "./config/config" // import for config-test command
 import { BunProc } from "./bun"
+import { Plugin } from "./plugin"
+import { Provider } from "./provider/provider"
+
 
 const logger = Log.create({ service: "cli" })
 
@@ -455,6 +458,88 @@ const cli = yargs(hideBin(process.argv))
     },
   })
 
+  cli.command({
+    command: "provider-test [provider] [model]",
+    describe: "Test Provider service (list, load provider, get model)",
+    builder: (yargs) =>
+      yargs
+        .positional("provider", {
+          type: "string",
+          describe: "Provider ID (e.g. openai, anthropic, groq)",
+        })
+        .positional("model", {
+          type: "string",
+          describe: "Model ID (e.g. gpt-5, claude-sonnet-4)",
+        }),
+    handler: async (args) => {
+      await App.provide({ cwd: process.cwd() }, async () => {
+        console.log("🚀 Provider Test CLI")
+        
+        // 1. List available providers
+        const providers = await Provider.list()
+        console.log("\n📋 Providers found:")
+        Object.keys(providers).forEach((id) => {
+          console.log(` - ${id} (${Object.keys(providers[id].info.models).length} models)`)
+        })
+        //if no providers found in provider list, show message and exit
+        if (Object.keys(providers).length === 0) {
+          console.error("❌ No providers found")
+          return
+        }
+  
+        // If no provider supplied, stop here
+        if (!args.provider) return
+  
+        const providerID = args.provider as string
+        const provider = await Provider.getProvider(providerID)
+        if (!provider) {
+          console.error(`❌ Provider '${providerID}' not found`)
+          return
+        }
+  
+        console.log(`\n✅ Provider '${providerID}' loaded.`)
+        console.log("Available models:", Object.keys(provider.info.models))
+  
+        // resolve default/small if requested
+        if (!args.model) {
+          const small = await Provider.getSmallModel(providerID)
+          console.log("⭐ Small model:", small?.info.id)
+          return
+        }
+  
+        // 2. Get a specific model
+        const modelID = args.model as string
+        try {
+          const { info, language } = await Provider.getModel(providerID, modelID)
+          console.log(`\n🎯 Model loaded: ${info.id}`)
+          console.log("Info:", info)
+          console.log("SDK Object:", language)
+        } catch (e) {
+          console.error("❌ Error loading model:", e)
+        }
+      })
+    },
+  })
+
+  cli.command({
+    command: "plugin-test",
+    describe: "Test the (stub) plugin system",
+    handler: async () => {
+      // Provide an app context first
+      await App.provide({ cwd: process.cwd() }, async () => {
+        // Init the plugin system
+        await Plugin.init()
+  
+        // List plugins (empty in stub)
+        const plugins = await Plugin.list()
+        console.log("Loaded plugins:", plugins)
+  
+        // Trigger a fake hook
+        const result = await Plugin.trigger("fakeHook", { foo: "bar" }, { output: 123 })
+        console.log("Trigger result:", result)
+      })
+    },
+  })
 try {
   await cli.parse()
 } catch (error) {
