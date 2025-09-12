@@ -40,7 +40,7 @@ export namespace Provider {
   const CUSTOM_LOADERS: Record<string, CustomLoader> = {
     async anthropic() {
       return {
-        autoload: false,
+        autoload: true,
         options: {
           headers: {
             // Special Anthropic beta flags
@@ -59,7 +59,7 @@ export namespace Provider {
     // },
     openai: async () => {
       return {
-        autoload: false,
+        autoload: true,
         async getModel(sdk: any, modelID: string) {
           // OpenAI SDK exposes `responses(modelID)`
           return sdk.responses(modelID)
@@ -69,7 +69,7 @@ export namespace Provider {
     },
     azure: async () => {
       return {
-        autoload: false,
+        autoload: true,
         async getModel(sdk: any, modelID: string) {
           return sdk.responses(modelID)
         },
@@ -79,7 +79,7 @@ export namespace Provider {
     "amazon-bedrock": async () => {
       // Require AWS creds or skip autoload
       if (!process.env["AWS_PROFILE"] && !process.env["AWS_ACCESS_KEY_ID"] && !process.env["AWS_BEARER_TOKEN_BEDROCK"])
-        return { autoload: false }
+        return { autoload: true }
 
       const region = process.env["AWS_REGION"] ?? "us-east-1"
 
@@ -138,7 +138,7 @@ export namespace Provider {
     },
     // Other providers with just headers for identification
     openrouter: async () => ({
-      autoload: false,
+      autoload: true,
       options: {
         headers: {
           "HTTP-Referer": "https://opencode.ai/",
@@ -147,7 +147,7 @@ export namespace Provider {
       },
     }),
     vercel: async () => ({
-      autoload: false,
+      autoload: true,
       options: {
         headers: {
           "http-referer": "https://github.com/pukucode/pukucode",
@@ -156,7 +156,7 @@ export namespace Provider {
       },
     }),
     groq: async () => ({
-      autoload: false,
+      autoload: true,
       options: {
         headers: {
           "http-referer": "https://github.com/pukucode/pukucode",

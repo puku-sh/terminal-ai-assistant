@@ -481,6 +481,11 @@ const cli = yargs(hideBin(process.argv))
         Object.keys(providers).forEach((id) => {
           console.log(` - ${id} (${Object.keys(providers[id].info.models).length} models)`)
         })
+        //if no providers found in provider list, show message and exit
+        if (Object.keys(providers).length === 0) {
+          console.error("❌ No providers found")
+          return
+        }
   
         // If no provider supplied, stop here
         if (!args.provider) return
