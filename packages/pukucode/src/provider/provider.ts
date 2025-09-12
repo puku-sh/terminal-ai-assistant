@@ -50,13 +50,13 @@ export namespace Provider {
         },
       }
     },
-    async opencode(input) {
-      return {
-        // Autoload if the provider already has models in database
-        autoload: Object.keys(input.models).length > 0,
-        options: {},
-      }
-    },
+    // async opencode(input) {
+    //   return {
+    //     // Autoload if the provider already has models in database
+    //     autoload: Object.keys(input.models).length > 0,
+    //     options: {},
+    //   }
+    // },
     openai: async () => {
       return {
         autoload: false,
