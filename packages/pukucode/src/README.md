@@ -478,3 +478,8 @@ echo "// test" >> src/test.ts
 ```bash
 bun src/index.ts bun-test --package chalk
 ```
+
+## provider.ts test
+```bash
+bun src/index.ts provider-test
+```
