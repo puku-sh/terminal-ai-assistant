@@ -10,7 +10,7 @@
     "dev": "bun run src/index.ts",
     "test": "bun run src/index.ts test",
     "event-test": "bun run src/index.ts event-test",
-    "models-test": "bun run src/index.ts models-test",
+    "models": "bun run src/index.ts models",
     "auth-test": "bun run src/index.ts auth-test",
     "config-test": "bun run src/index.ts config-test"
   },
