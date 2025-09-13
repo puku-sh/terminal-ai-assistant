@@ -9,7 +9,7 @@ import { Plugin } from "../plugin"
 import { ModelsDev } from "./models"
 import { NamedError } from "../util/error"
 import { Auth } from "../auth"
-
+import { Instance } from "../project/instance"
 export namespace Provider {
   const log = Log.create({ service: "provider" })
 
@@ -174,7 +174,7 @@ export namespace Provider {
    *  - models: cached models loaded from sdk
    *  - sdk: cached provider SDK clients
    */
-  const state = App.state("provider", async () => {
+  const state = Instance.state(async () => {
     const config = await Config.get()
     const database = await ModelsDev.get()
 
