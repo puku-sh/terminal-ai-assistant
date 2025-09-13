@@ -26,6 +26,8 @@ flowchart TD
     B --> F[app-info command]
     B --> G[config-test command]
     B --> H[auth-test command]
+    B --> M[models command]
+    B --> P[project-test command]
   end
 
   %% ─────────────────────────── App Context  ────────────────────────────
@@ -101,7 +103,25 @@ flowchart TD
   end
   E --> FS
 
-  %% ─────────────────────────── Command → App Context Links ─────────────
+  %% ─────────────────────────── Project System ──────────────────────────
+  subgraph ProjectSystem["Project System"]
+    PS1[Project.fromDirectory<br/>project/project.ts]
+    PS2[Instance.provide<br/>project/instance.ts]
+    PS3[State Management<br/>project/state.ts]
+    PS4[Storage Interface<br/>storage/storage.ts]
+    PS1 --> PS4
+    PS2 --> PS1
+    PS3 --> PS4
+  end
+  
+  %% ─────────────────────────── Provider System ─────────────────────────
+  subgraph ProviderSystem["AI Provider System"]
+    PV1[Provider.list<br/>provider/provider.ts]
+    PV2[Model Discovery<br/>provider/models.ts]
+    PV3[Multi-provider Support<br/>Anthropic/OpenAI/Groq]
+  end
+
+  %% ─────────────────────────── Command → Context Links ─────────────────
   %% test command
   C --> I
   %% event-test command
@@ -114,6 +134,13 @@ flowchart TD
   G --> I
   %% auth-test command
   H --> I
+  %% models command (needs both contexts)
+  M --> I
+  M --> PS2
+  PS2 --> ProviderSystem
+  %% project-test command
+  P --> I
+  P --> PS1
 ```
 
 ## 🚀 Quick Start
@@ -131,6 +158,8 @@ pukucode fs-test
 pukucode app-info
 pukucode config-test
 pukucode auth-test
+pukucode models
+pukucode project-test
 ```
 
 ### Option 2: Direct Execution with Bun
@@ -153,6 +182,12 @@ bun src/index.ts config-test
 
 # Run authentication system test
 bun src/index.ts auth-test
+
+# List available AI models
+bun src/index.ts models
+
+# Test project system
+bun src/index.ts project-test
 ```
 
 ### Option 3: Using npm Scripts
@@ -164,6 +199,8 @@ bun run fs-test
 bun run app-info
 bun run config-test
 bun run auth-test
+bun run models
+bun run project-test
 ```
 
 ## ❗ Troubleshooting `pukucode: command not found`
@@ -201,14 +238,30 @@ src/
 ├── bus/
 │   └── index.ts          # Event bus (pub/sub system)
 │
+├── cli/
+│   └── cmd/
+│       └── models.ts     # Models command implementation
+│
 ├── config/
 │   └── config.ts         # Configuration system with multi-source loading
 │
 ├── global/
 │   └── index.ts          # XDG paths, cache/version mgmt
 │
+├── project/
+│   ├── project.ts        # Git repository detection and project metadata
+│   ├── instance.ts       # Project context provider
+│   └── state.ts          # State management for project-scoped data
+│
+├── provider/
+│   ├── provider.ts       # AI model provider management
+│   └── models.ts         # Model discovery and initialization
+│
 ├── services/
 │   └── appInfoService.ts # Example service (with init/shutdown)
+│
+├── storage/
+│   └── storage.ts        # Persistent data storage interface
 │
 └── util/
     ├── context.ts        # Context utility (AsyncLocalStorage wrapper)
@@ -218,8 +271,9 @@ src/
 ## 🔄 High-level Architecture
 
 ### CLI (`index.ts`)
-- Registers commands (`test`, `event-test`, `fs-test`, `app-info`, `config-test`, `auth-test`)
+- Registers commands (`test`, `event-test`, `fs-test`, `app-info`, `config-test`, `auth-test`, `models`, `project-test`)
 - Wraps all commands inside an App context using `App.provide`
+- Models command uses both App and Instance contexts for full functionality
 
 ### App (`app/app.ts`)
 - **Core:** Context + Info + Service Registry
@@ -233,6 +287,22 @@ src/
 - **Markdown integration:** Agent, mode, and command definitions from `.md` files
 - **Advanced features:** Environment variable substitution, file references
 - **Plugin system:** Auto-discovery of TypeScript/JavaScript plugins
+
+### Project System (`project/`)
+- **Project detection:** Git repository discovery and metadata extraction
+- **Instance context:** Project-specific context provider with directory and worktree info
+- **State management:** Project-scoped data storage and lifecycle management
+- **Storage integration:** Persistent storage for project information
+
+### Provider System (`provider/`)
+- **Multi-provider support:** Anthropic, OpenAI, and Groq integrations
+- **Model discovery:** Dynamic model enumeration and loading
+- **Provider management:** Configuration and authentication handling
+
+### Storage System (`storage/`)
+- **Key-value storage:** Hierarchical key-based data persistence
+- **CRUD operations:** Create, read, update, and delete with type safety
+- **Project integration:** Used by project system for metadata storage
 
 ### Authentication System (`auth/index.ts`)
 - **Credential management:** Secure storage and retrieval of API keys
