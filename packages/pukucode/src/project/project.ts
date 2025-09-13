@@ -2,7 +2,7 @@ import z from "zod"
 import { Filesystem } from "../util/filesystem"
 import path from "path"
 import { $ } from "bun"
-//import { Storage } from "../storage/storage"
+import { Storage } from "../storage/storage"
 import { Log } from "../util/log"
 import { extendZodWithOpenApi } from "@asteasolutions/zod-to-openapi"
 
@@ -38,7 +38,7 @@ export namespace Project {
             created: Date.now(),
           },
         }
-        console.log("Storage.write:", ["project", "global"], project)
+        await Storage.write<Info>(["project", "global"], project)
         return project
       }
       let worktree = path.dirname(git)
@@ -62,7 +62,7 @@ export namespace Project {
             created: Date.now(),
           },
         }
-        console.log("Storage.write:", ["project", "global"], project)
+        await Storage.write<Info>(["project", "global"], project)
         return project
       }
       worktree = path.dirname(
@@ -81,7 +81,7 @@ export namespace Project {
           created: Date.now(),
         },
       }
-      console.log("Storage.write:", ["project", id], project)
+      await Storage.write<Info>(["project", id], project)
       return project
     }
     if (cache.has(directory)) {
@@ -93,12 +93,13 @@ export namespace Project {
   }
 
   export async function setInitialized(projectID: string) {
-    console.log("Storage.update:", ["project", projectID], { time: { initialized: Date.now() } })
+    await Storage.update<Info>(["project", projectID], (draft) => {
+      draft.time.initialized = Date.now()
+    })
   }
 
   export async function list() {
-    console.log("Storage.list:", ["project"])
-    console.log("Storage.read: (would read all project keys)")
-    return []
+    const keys = await Storage.list(["project"])
+    return await Promise.all(keys.map((x) => Storage.read<Info>(x)))
   }
 }
