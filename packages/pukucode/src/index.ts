@@ -21,6 +21,8 @@ import { Plugin } from "./plugin"
 import { Provider } from "./provider/provider"
 import { Project } from "./project/project" // import for project-test command
 import { Instance } from "./project/instance"
+import { ModelsCommand } from "cli/cmd/models"
+
 
 
 const logger = Log.create({ service: "cli" })
@@ -238,23 +240,7 @@ const cli = yargs(hideBin(process.argv))
     }
   })
 
-  cli.command({
-    command: "models",
-    describe: "list all available models",
-    handler: async () => {
-      await App.provide({ cwd: process.cwd() }, async () => {
-        await Instance.provide(process.cwd(), async () => {
-          const providers = await Provider.list()
-    
-          for (const [providerID, provider] of Object.entries(providers)) {
-            for (const modelID of Object.keys(provider.info.models)) {
-              console.log(`${providerID}/${modelID}`)
-            }
-          }
-        })
-      })
-    }
-  })
+  cli.command(ModelsCommand)
 
   cli.command({
     command: "auth-test",
