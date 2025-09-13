@@ -19,6 +19,8 @@ import { Config } from "./config/config" // import for config-test command
 import { BunProc } from "./bun"
 import { Plugin } from "./plugin"
 import { Provider } from "./provider/provider"
+import { Project } from "./project/project" // import for project-test command
+//import { Instance } from "./project/instance"
 
 
 const logger = Log.create({ service: "cli" })
@@ -236,50 +238,23 @@ const cli = yargs(hideBin(process.argv))
     }
   })
 
-  cli.command({
-    command: "models-test",
-    describe: "Test the ModelsDev provider",
-    handler: async () => {
-      logger.info("Starting ModelsDev provider test")
-      await App.provide({ cwd: process.cwd() }, async () => {
-        try {
-          console.log("=== Testing ModelsDev.get() ===")
-          const providers = await ModelsDev.get()
-          console.log("Loaded providers:", Object.keys(providers))
-          
-          for (const [providerId, provider] of Object.entries(providers)) {
-            console.log(`\n=== Provider: ${providerId} ===`)
-            console.log("Name:", provider.name)
-            console.log("Environment vars needed:", provider.env)
-            console.log("Models count:", Object.keys(provider.models).length)
-            
-            // Test schema validation
-            const validationResult = ModelsDev.Provider.safeParse(provider)
-            console.log("Schema validation:", validationResult.success ? "✓ PASS" : "✗ FAIL")
-            
-            if (!validationResult.success) {
-              console.log("Validation errors:", validationResult.error.issues)
-            }
-            
-            // Show first model as example
-            const firstModelId = Object.keys(provider.models)[0]
-            if (firstModelId) {
-              const firstModel = provider.models[firstModelId]
-              console.log(`Example model (${firstModelId}):`)
-              console.log("  Name:", firstModel.name)
-              console.log("  Context limit:", firstModel.limit.context)
-              console.log("  Input cost:", firstModel.cost.input)
-            }
-          }
-          
-          logger.info("ModelsDev provider test completed successfully")
-        } catch (error) {
-          logger.error("ModelsDev provider test failed", { error })
-          console.error("Test failed:", error)
-        }
-      })
-    }
-  })
+  // cli.command({
+  //   command: "models",
+  //   describe: "list all available models",
+  //   handler: async () => {
+  //     await App.provide({ cwd: process.cwd() }, async () => {
+  //       await Instance.provide(process.cwd(), async () => {
+  //         const providers = await Provider.list()
+    
+  //         for (const [providerID, provider] of Object.entries(providers)) {
+  //           for (const modelID of Object.keys(provider.info.models)) {
+  //             console.log(`${providerID}/${modelID}`)
+  //           }
+  //         }
+  //       })
+  //     })
+  //   }
+  // })
 
   cli.command({
     command: "auth-test",
@@ -540,6 +515,41 @@ const cli = yargs(hideBin(process.argv))
       })
     },
   })
+
+  cli.command({
+    command: "project-test",
+    describe: "Test the Project system",
+    handler: async () => {
+      logger.info("Starting Project system test")
+      await App.provide({ cwd: process.cwd() }, async () => {
+        try {
+          console.log("=== Testing Project System ===")
+          
+          console.log("\n=== Testing Project.fromDirectory ===")
+          const project = await Project.fromDirectory(process.cwd())
+          console.log("✓ Project detected successfully")
+          console.log("Project ID:", project.id)
+          console.log("Worktree:", project.worktree)
+          console.log("VCS:", project.vcs || "none")
+          console.log("Created:", new Date(project.time.created).toISOString())
+          
+          console.log("\n=== Testing Project.setInitialized ===")
+          await Project.setInitialized(project.id)
+          console.log("✓ setInitialized called")
+          
+          console.log("\n=== Testing Project.list ===")
+          const projects = await Project.list()
+          console.log("✓ Project list:", projects)
+          
+          logger.info("Project system test completed successfully")
+        } catch (error) {
+          logger.error("Project system test failed", { error })
+          console.error("Test failed:", error)
+        }
+      })
+    }
+  })
+
 try {
   await cli.parse()
 } catch (error) {
