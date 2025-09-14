@@ -85,6 +85,20 @@ export namespace MessageV2{
         messageID: z.string(),
         })
     // Essential parts for LLM responses
+
+    export const SnapshotPart = PartBase.extend({
+        type: z.literal("snapshot"),
+        snapshot: z.string(),
+      }).openapi("SnapshotPart")
+    export type SnapshotPart = z.infer<typeof SnapshotPart>
+    
+      export const PatchPart = PartBase.extend({
+        type: z.literal("patch"),
+        hash: z.string(),
+        files: z.string().array(),
+      }).openapi("PatchPart")
+    export type PatchPart = z.infer<typeof PatchPart>
+
     export const TextPart = PartBase.extend({
         type: z.literal("text"),
         text: z.string(),
@@ -98,6 +112,18 @@ export namespace MessageV2{
         }).openapi("TextPart")
 
     export type TextPart = z.infer<typeof TextPart>
+
+    export const ReasoningPart = PartBase.extend({
+        type: z.literal("reasoning"),
+        text: z.string(),
+        metadata: z.record(z.any()).optional(),
+        time: z.object({
+          start: z.number(),
+          end: z.number().optional(),
+        }),
+      }).openapi("ReasoningPart")
+    export type ReasoningPart = z.infer<typeof ReasoningPart>
+
     export const ToolPart = PartBase.extend({
         type: z.literal("tool"),
         callID: z.string(),
@@ -106,6 +132,33 @@ export namespace MessageV2{
       }).openapi("ToolPart")
 
     export type ToolPart = z.infer<typeof ToolPart>
+
+    const FilePartSourceBase = z.object({
+        text: z
+          .object({
+            value: z.string(),
+            start: z.number().int(),
+            end: z.number().int(),
+          })
+          .openapi("FilePartSourceText"),
+      })
+    
+    export const FileSource = FilePartSourceBase.extend({
+        type: z.literal("file"),
+        path: z.string(),
+      }).openapi("FileSource")
+    
+    export const FilePartSource = z.discriminatedUnion("type", [FileSource]).openapi("FilePartSource")
+
+    export const FilePart = PartBase.extend({
+        type: z.literal("file"),
+        mime: z.string(),
+        filename: z.string().optional(),
+        url: z.string(),
+        source: FilePartSource.optional(),
+      }).openapi("FilePart")
+
+    export type FilePart = z.infer<typeof FilePart>
 
     export const StepStartPart = PartBase.extend({
         type: z.literal("step-start"),
