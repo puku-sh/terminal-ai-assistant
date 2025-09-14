@@ -190,7 +190,35 @@ export namespace MessageV2{
     
     export const Info = z.discriminatedUnion("role", [User, Assistant]).openapi("Message")
     export type Info = z.infer<typeof Info>
-    
+    export const Event = {
+        Updated: Bus.event(
+          "message.updated",
+          z.object({
+            info: Info,
+          }),
+        ),
+        Removed: Bus.event(
+          "message.removed",
+          z.object({
+            sessionID: z.string(),
+            messageID: z.string(),
+          }),
+        ),
+        PartUpdated: Bus.event(
+          "message.part.updated",
+          z.object({
+            part: Part,
+          }),
+        ),
+        PartRemoved: Bus.event(
+          "message.part.removed",
+          z.object({
+            sessionID: z.string(),
+            messageID: z.string(),
+            partID: z.string(),
+          }),
+        ),
+    }
         
 
 }
