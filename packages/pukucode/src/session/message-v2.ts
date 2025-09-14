@@ -77,7 +77,7 @@ export namespace MessageV2{
     export const ToolState = z
         .discriminatedUnion("status", [ToolStatePending, ToolStateRunning, ToolStateCompleted, ToolStateError])
         .openapi("ToolState")
-        
+
 //Define Core Part Types
     const PartBase = z.object({
         id: z.string(),
@@ -109,10 +109,8 @@ export namespace MessageV2{
 
     export const StepStartPart = PartBase.extend({
         type: z.literal("step-start"),
-      }).openapi({
-        ref: "StepStartPart",
-      })
-      export type StepStartPart = z.infer<typeof StepStartPart>
+      }).openapi("StepStartPart")
+    export type StepStartPart = z.infer<typeof StepStartPart>
     
     export const StepFinishPart = PartBase.extend({
         type: z.literal("step-finish"),
@@ -127,7 +125,72 @@ export namespace MessageV2{
           }),
         }),
       }).openapi("StepFinishPart")
-      export type StepFinishPart = z.infer<typeof StepFinishPart>
+     
+    export type StepFinishPart = z.infer<typeof StepFinishPart>
+
+    const Base = z.object({
+        id: z.string(),
+        sessionID: z.string(),
+      })
+    
+      export const User = Base.extend({
+        role: z.literal("user"),
+        time: z.object({
+          created: z.number(),
+        }),
+      }).openapi("UserMessage")
+      export type User = z.infer<typeof User>
+    
+      export const Part = z
+        .discriminatedUnion("type", [
+          TextPart,
+          ToolPart,
+          StepStartPart,
+          StepFinishPart
+        ])
+        .openapi("Part")
+    
+    export type Part = z.infer<typeof Part>
+    
+    export const Assistant = Base.extend({
+        role: z.literal("assistant"),
+        time: z.object({
+          created: z.number(),
+          completed: z.number().optional(),
+        }),
+        error: z
+          .discriminatedUnion("name", [
+            AuthError.Schema,
+            NamedError.Unknown.Schema,
+            OutputLengthError.Schema,
+            AbortedError.Schema,
+          ])
+          .optional(),
+        system: z.string().array(),
+        modelID: z.string(),
+        providerID: z.string(),
+        mode: z.string(),
+        path: z.object({
+          cwd: z.string(),
+          root: z.string(),
+        }),
+        summary: z.boolean().optional(),
+        cost: z.number(),
+        tokens: z.object({
+          input: z.number(),
+          output: z.number(),
+          reasoning: z.number(),
+          cache: z.object({
+            read: z.number(),
+            write: z.number(),
+          }),
+        }),
+      }).openapi("AssistantMessage")
+    export type Assistant = z.infer<typeof Assistant>
+    
+    export const Info = z.discriminatedUnion("role", [User, Assistant]).openapi("Message")
+    export type Info = z.infer<typeof Info>
+    
         
 
 }
