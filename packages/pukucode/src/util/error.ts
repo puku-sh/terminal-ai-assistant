@@ -1,6 +1,10 @@
 import { z, type ZodSchema } from "zod"
-// import { Log } from "./log"
+import { extendZodWithOpenApi } from "@asteasolutions/zod-to-openapi"
 
+// Extend Zod with OpenAPI functionality
+extendZodWithOpenApi(z)
+
+// import { Log } from "./log"
 // const log = Log.create()
 
 export abstract class NamedError extends Error {
@@ -13,9 +17,7 @@ export abstract class NamedError extends Error {
         name: z.literal(name),
         data,
       })
-      .openapi({
-        ref: name,
-      })
+.openapi(name)
     const result = class extends NamedError {
       public static readonly Schema = schema
 
