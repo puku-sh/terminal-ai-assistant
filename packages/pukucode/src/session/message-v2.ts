@@ -186,6 +186,7 @@ export namespace MessageV2{
           }),
         }),
       }).openapi("AssistantMessage")
+    
     export type Assistant = z.infer<typeof Assistant>
     
     export const Info = z.discriminatedUnion("role", [User, Assistant]).openapi("Message")
@@ -219,6 +220,94 @@ export namespace MessageV2{
           }),
         ),
     }
+    //LLM integration
+    export function toModelMessage(
+        input: {
+          info: Info
+          parts: Part[]
+        }[],
+      ): ModelMessage[] {
+        const result: UIMessage[] = []
+    
+        for (const msg of input) {
+          if (msg.parts.length === 0) continue
+    
+          if (msg.info.role === "user") {
+            result.push({
+              id: msg.info.id,
+              role: "user",
+              parts: msg.parts.flatMap((part): UIMessage["parts"] => {
+                if (part.type === "text")
+                  return [
+                    {
+                      type: "text",
+                      text: part.text,
+                    },
+                  ]
+                // text/plain files are converted into text parts, ignore them
+                if (part.type === "file" && part.mime !== "text/plain")
+                  return [
+                    {
+                      type: "file",
+                      url: part.url,
+                      mediaType: part.mime,
+                      filename: part.filename,
+                    },
+                  ]
+                return []
+              }),
+            })
+          }
+    
+          if (msg.info.role === "assistant") {
+            result.push({
+              id: msg.info.id,
+              role: "assistant",
+              parts: msg.parts.flatMap((part): UIMessage["parts"] => {
+                if (part.type === "text")
+                  return [
+                    {
+                      type: "text",
+                      text: part.text,
+                    },
+                  ]
+                if (part.type === "step-start")
+                  return [
+                    {
+                      type: "step-start",
+                    },
+                  ]
+                if (part.type === "tool") {
+                  if (part.state.status === "completed")
+                    return [
+                      {
+                        type: ("tool-" + part.tool) as `tool-${string}`,
+                        state: "output-available",
+                        toolCallId: part.callID,
+                        input: part.state.input,
+                        output: part.state.output,
+                      },
+                    ]
+                  if (part.state.status === "error")
+                    return [
+                      {
+                        type: ("tool-" + part.tool) as `tool-${string}`,
+                        state: "output-error",
+                        toolCallId: part.callID,
+                        input: part.state.input,
+                        errorText: part.state.error,
+                      },
+                    ]
+                }
+    
+                return []
+              }),
+            })
+          }
+        }
+    
+        return convertToModelMessages(result)
+      }
         
 
 }
