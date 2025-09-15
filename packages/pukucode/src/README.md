@@ -26,6 +26,7 @@ flowchart TD
     B --> F[app-info command]
     B --> G[config-test command]
     B --> H[auth-test command]
+    B --> AUTH[auth command]
     B --> M[models command]
     B --> P[project-test command]
   end
@@ -70,6 +71,7 @@ flowchart TD
     L4[Token Storage<br/>Secure handling]
   end
   H --> AuthSystem
+  AUTH --> AuthSystem
   
   %% ─────────────────────────── Services Layer ──────────────────────────
   subgraph Services
@@ -158,6 +160,9 @@ pukucode fs-test
 pukucode app-info
 pukucode config-test
 pukucode auth-test
+pukucode auth login --provider groq --key your-api-key
+pukucode auth logout --provider groq
+pukucode auth list
 pukucode models
 pukucode project-test
 ```
@@ -182,6 +187,11 @@ bun src/index.ts config-test
 
 # Run authentication system test
 bun src/index.ts auth-test
+
+# Authentication commands
+bun src/index.ts auth login --provider groq --key your-api-key
+bun src/index.ts auth logout --provider groq
+bun src/index.ts auth list
 
 # List available AI models
 bun src/index.ts models
@@ -239,8 +249,10 @@ src/
 │   └── index.ts          # Event bus (pub/sub system)
 │
 ├── cli/
+│   ├── ui.ts            # UI utilities for terminal interactions
 │   └── cmd/
-│       └── models.ts     # Models command implementation
+│       ├── auth.ts      # Authentication commands (login/logout/list)
+│       └── models.ts    # Models command implementation
 │
 ├── config/
 │   └── config.ts         # Configuration system with multi-source loading
@@ -271,9 +283,10 @@ src/
 ## 🔄 High-level Architecture
 
 ### CLI (`index.ts`)
-- Registers commands (`test`, `event-test`, `fs-test`, `app-info`, `config-test`, `auth-test`, `models`, `project-test`)
+- Registers commands (`test`, `event-test`, `fs-test`, `app-info`, `config-test`, `auth-test`, `auth`, `models`, `project-test`)
 - Wraps all commands inside an App context using `App.provide`
 - Models command uses both App and Instance contexts for full functionality
+- Auth command provides credential management with command-line interface
 
 ### App (`app/app.ts`)
 - **Core:** Context + Info + Service Registry
@@ -446,8 +459,51 @@ bun src/index.ts auth-test
 
 Authentication providers:
 - anthropic: ✅ Valid API key
-- openai: ✅ Valid API key  
+- openai: ✅ Valid API key
 - custom-provider: ⚠️  Well-known config loaded
+```
+
+### 🔹 Authentication Commands
+
+**Login to a provider:**
+```bash
+# Login with Groq
+bun src/index.ts auth login --provider groq --key gsk_xyz123...
+
+# Login with Anthropic
+bun src/index.ts auth login --provider anthropic --key sk-ant-xyz123...
+
+# Login with OpenAI
+bun src/index.ts auth login --provider openai --key sk-xyz123...
+
+# Login with custom provider
+bun src/index.ts auth login --provider other --key your-api-key
+```
+
+**Logout from a provider:**
+```bash
+# Remove Groq credentials
+bun src/index.ts auth logout --provider groq
+
+# Remove Anthropic credentials
+bun src/index.ts auth logout --provider anthropic
+```
+
+**List stored credentials:**
+```bash
+bun src/index.ts auth list
+```
+
+**Example Output:**
+```
+┌  Credentials ~/.config/pukucode/auth.json
+│  Anthropic (api)
+│  Groq (api)
+└  2 credentials
+
+┌  Environment
+│  OpenAI OPENAI_API_KEY
+└  1 environment variable
 ```
 
 ## 🧠 Key Concepts
