@@ -23,6 +23,7 @@
   "dependencies": {
     "@ai-sdk/anthropic": "^2.0.9",
     "@asteasolutions/zod-to-openapi": "^8.1.0",
+    "@clack/prompts": "^0.11.0",
     "@hono/zod-validator": "^0.7.2",
     "@types/node": "^24.3.0",
     "ai": "^5.0.27",
