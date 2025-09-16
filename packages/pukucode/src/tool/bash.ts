@@ -9,10 +9,10 @@ import { Filesystem } from "../util/filesystem"
 import { lazy } from "../util/lazy"
 import { Log } from "../util/log"
 // TODO: Implement Wildcard later
-// import { Wildcard } from "../util/wildcard"
+import { Wildcard } from "../util/wildcard"
 import { $ } from "bun"
 // TODO: Implement Agent later
-// import { Agent } from "../agent/agent"
+import { Agent } from "../agent/agent"
 
 
 const MAX_OUTPUT_LENGTH = 30_000
@@ -102,10 +102,9 @@ export const BashTool = Tool.define("bash", {
       // always allow cd if it passes above check
       if (!needsAsk && command[0] !== "cd") {
         // TODO: Implement Wildcard later
-        // const action = Wildcard.all(node.text, permissions)
+        const action = Wildcard.all(node.text, permissions)
         
-        //until then, we will always ask
-        const action = "ask"
+       
         if (action === "deny") {
           throw new Error(
             `The user has specifically restricted access to this command, you are not allowed to execute it. Here is the configuration: ${JSON.stringify(permissions)}`,

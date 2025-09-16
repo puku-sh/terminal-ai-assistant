@@ -11,19 +11,18 @@ import { ReadTool } from "./read"
 // import { WebFetchTool } from "./webfetch"
 import { WriteTool } from "./write"
 // import { InvalidTool } from "./invalid"
-// import type { Agent } from "../agent/agent"
-import { Config } from "../config/config"
+import type { Agent } from "../agent/agent"
 
 export namespace ToolRegistry {
   const ALL = [
-    // InvalidTool,
+   // InvalidTool,
     BashTool,
     EditTool,
-    // WebFetchTool,
-    // GlobTool,
+   // WebFetchTool,
+    //GlobTool,
     GrepTool,
-    // ListTool,
-    // PatchTool,
+   // ListTool,
+   // PatchTool,
     ReadTool,
     WriteTool,
     // TodoWriteTool,
@@ -66,65 +65,31 @@ export namespace ToolRegistry {
 
     return result
   }
-  // TODO:  Remove this later. This is just temporary
-  export type Info = z.infer<typeof Info>
-  export const Info = z
-    .object({
-      name: z.string(),
-      description: z.string().optional(),
-      mode: z.union([z.literal("subagent"), z.literal("primary"), z.literal("all")]),
-      builtIn: z.boolean(),
-      topP: z.number().optional(),
-      temperature: z.number().optional(),
-      permission: z.object({
-        edit: Config.Permission,
-        bash: z.record(z.string(), Config.Permission),
-        webfetch: Config.Permission.optional(),
-      }),
-      model: z
-        .object({
-          modelID: z.string(),
-          providerID: z.string(),
-        })
-        .optional(),
-      prompt: z.string().optional(),
-      tools: z.record(z.boolean()),
-      options: z.record(z.string(), z.any()),
-    })
-    .openapi({
-      ref: "Agent",
-    })
 
   export async function enabled(
     _providerID: string,
     modelID: string,
-    // agent: Agent.Info,
-    // TODO: Remove this later. This is just temporary
-    // Later replace with Agent.Info
-    agent: Info,
+    agent: Agent.Info,
   ): Promise<Record<string, boolean>> {
     const result: Record<string, boolean> = {}
     result["patch"] = false
 
-    // TODO: Implement Agent later
-    // TODO: Do these in supervision of EMON BHAI
+    if (agent.permission.edit === "deny") {
+      result["edit"] = false
+      result["patch"] = false
+      result["write"] = false
+    }
+    if (agent.permission.bash["*"] === "deny" && Object.keys(agent.permission.bash).length === 1) {
+      result["bash"] = false
+    }
+    if (agent.permission.webfetch === "deny") {
+      result["webfetch"] = false
+    }
 
-    // if (agent.permission.edit === "deny") {
-    //   result["edit"] = false
-    //   result["patch"] = false
-    //   result["write"] = false
-    // }
-    // if (agent.permission.bash["*"] === "deny" && Object.keys(agent.permission.bash).length === 1) {
-    //   result["bash"] = false
-    // }
-    // if (agent.permission.webfetch === "deny") {
-    //   result["webfetch"] = false
-    // }
-
-    // if (modelID.toLowerCase().includes("qwen")) {
-    //   result["todowrite"] = false
-    //   result["todoread"] = false
-    // }
+    if (modelID.toLowerCase().includes("qwen")) {
+      result["todowrite"] = false
+      result["todoread"] = false
+    }
 
     return result
   }

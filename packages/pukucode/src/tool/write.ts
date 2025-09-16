@@ -11,7 +11,7 @@ import { File } from "../file"
 import { FileTime } from "../file/time"
 import { Filesystem } from "../util/filesystem"
 // TODO: Implement Agent later
-// import { Agent } from "../agent/agent"
+import { Agent } from "../agent/agent"
 
 export const WriteTool = Tool.define("write", {
   description: DESCRIPTION,
@@ -30,10 +30,8 @@ export const WriteTool = Tool.define("write", {
     const exists = await file.exists()
     if (exists) await FileTime.assert(ctx.sessionID, filepath)
 
-    // const agent = await Agent.get(ctx.agent)
-    // if (agent.permission.edit === "ask")
-    //Let default permission is to always ask
-    //Agent will be implemented later
+    const agent = await Agent.get(ctx.agent)
+    if (agent.permission.edit === "ask")
       await Permission.ask({
         type: "write",
         sessionID: ctx.sessionID,

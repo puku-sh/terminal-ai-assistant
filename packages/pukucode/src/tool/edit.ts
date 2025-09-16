@@ -17,7 +17,7 @@ import { Bus } from "../bus"
 import { FileTime } from "../file/time"
 import { Filesystem } from "../util/filesystem"
 // TODO: Implement Agent later
-// import { Agent } from "../agent/agent"
+import { Agent } from "../agent/agent"
 
 export const EditTool = Tool.define("edit", {
   description: DESCRIPTION,
@@ -41,8 +41,7 @@ export const EditTool = Tool.define("edit", {
     if (!Filesystem.contains(app.path.cwd, filePath)) {
       throw new Error(`File ${filePath} is not in the current working directory`)
     }
-
-    // const agent = await Agent.get(ctx.agent)
+    const agent = await Agent.get(ctx.agent)
     let diff = ""
     let contentOld = ""
     let contentNew = ""
@@ -50,9 +49,7 @@ export const EditTool = Tool.define("edit", {
       if (params.oldString === "") {
         contentNew = params.newString
         diff = trimDiff(createTwoFilesPatch(filePath, filePath, contentOld, contentNew))
-        // if (agent.permission.edit === "ask") {
-        //Let default permission is to always ask
-        //Agent will be implemented later
+        if (agent.permission.edit === "ask") {
           await Permission.ask({
             type: "edit",
             sessionID: ctx.sessionID,
@@ -64,7 +61,7 @@ export const EditTool = Tool.define("edit", {
               diff,
             },
           })
-        // }
+        }
         await Bun.write(filePath, params.newString)
         await Bus.publish(File.Event.Edited, {
           file: filePath,
@@ -81,9 +78,7 @@ export const EditTool = Tool.define("edit", {
       contentNew = replace(contentOld, params.oldString, params.newString, params.replaceAll)
 
       diff = trimDiff(createTwoFilesPatch(filePath, filePath, contentOld, contentNew))
-    //   if (agent.permission.edit === "ask") {
-    //Let default permission is to always ask
-    //Agent will be implemented later
+      if (agent.permission.edit === "ask") {
         await Permission.ask({
           type: "edit",
           sessionID: ctx.sessionID,
@@ -96,7 +91,7 @@ export const EditTool = Tool.define("edit", {
             diff,
           },
         })
-    //   }
+      }
 
       await file.write(contentNew)
       await Bus.publish(File.Event.Edited, {
