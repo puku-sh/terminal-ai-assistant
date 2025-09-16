@@ -6,6 +6,7 @@
 import { z } from "zod"
 import * as path from "path"
 import { Tool } from "./tool"
+// TODO: Implement LSP later
 // import { LSP } from "../lsp"
 import { createTwoFilesPatch } from "diff"
 import { Permission } from "../permission"
@@ -15,6 +16,7 @@ import { File } from "../file"
 import { Bus } from "../bus"
 import { FileTime } from "../file/time"
 import { Filesystem } from "../util/filesystem"
+// TODO: Implement Agent later
 // import { Agent } from "../agent/agent"
 
 export const EditTool = Tool.define("edit", {
@@ -123,10 +125,11 @@ export const EditTool = Tool.define("edit", {
     //     .join("\n")}\n</project_diagnostics>\n`
     // }
 
-    //LSP will be implemented later
-    //Diagnostics will be implemented later
+    //TODO: LSP will be implemented later
+    //TODO: Diagnostics will be implemented later
     return {
       metadata: {
+        // TODO: include diagnostics here
         // diagnostics,
         diff,
       },

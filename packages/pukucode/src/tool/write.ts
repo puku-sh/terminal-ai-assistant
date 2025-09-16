@@ -1,6 +1,7 @@
 import { z } from "zod"
 import * as path from "path"
 import { Tool } from "./tool"
+// TODO: Implement LSP later
 // import { LSP } from "../lsp"
 import { Permission } from "../permission"
 import DESCRIPTION from "./write.txt"
@@ -9,6 +10,7 @@ import { Bus } from "../bus"
 import { File } from "../file"
 import { FileTime } from "../file/time"
 import { Filesystem } from "../util/filesystem"
+// TODO: Implement Agent later
 // import { Agent } from "../agent/agent"
 
 export const WriteTool = Tool.define("write", {
@@ -63,11 +65,12 @@ export const WriteTool = Tool.define("write", {
     //   output += `\n<project_diagnostics>\n${file}\n${issues.map(LSP.Diagnostic.pretty).join("\n")}\n</project_diagnostics>\n`
     // }
 
-    //LSP will be implemented later
+    //TODO: LSP will be implemented later
     //Diagnostics will be implemented later
     return {
       title: path.relative(app.path.root, filepath),
       metadata: {
+        // TODO: include diagnostics here
         // diagnostics,
         filepath,
         exists: exists,

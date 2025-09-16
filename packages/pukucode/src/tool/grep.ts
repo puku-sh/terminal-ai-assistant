@@ -3,7 +3,7 @@ import { Tool } from "./tool"
 import { App } from "../app/app"
 import { Ripgrep } from "../file/ripgrep"
 // Ripgrep is not fully functional yet
-
+// TODO: Fix Ripgrep (urgent)
 import DESCRIPTION from "./grep.txt"
 
 export const GrepTool = Tool.define("grep", {

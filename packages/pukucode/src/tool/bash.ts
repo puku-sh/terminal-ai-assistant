@@ -8,9 +8,12 @@ import { Permission } from "../permission"
 import { Filesystem } from "../util/filesystem"
 import { lazy } from "../util/lazy"
 import { Log } from "../util/log"
+// TODO: Implement Wildcard later
 // import { Wildcard } from "../util/wildcard"
 import { $ } from "bun"
+// TODO: Implement Agent later
 // import { Agent } from "../agent/agent"
+
 
 const MAX_OUTPUT_LENGTH = 30_000
 const DEFAULT_TIMEOUT = 1 * 60 * 1000
@@ -98,7 +101,7 @@ export const BashTool = Tool.define("bash", {
 
       // always allow cd if it passes above check
       if (!needsAsk && command[0] !== "cd") {
-        //Implement Wildcard later
+        // TODO: Implement Wildcard later
         // const action = Wildcard.all(node.text, permissions)
         
         //until then, we will always ask
