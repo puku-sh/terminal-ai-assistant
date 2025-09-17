@@ -11,7 +11,7 @@ import type { LanguageModelUsage, ProviderMetadata } from "ai"
 import type { ModelsDev } from "../provider/models"
 import { Log } from "../util/log"
 
-import type { SessionState} from "./type"
+import type { SessionState} from "./types"
 
 
 const log = Log.create({ service: "session" })
@@ -79,7 +79,7 @@ export function lock(sessionID: string): {
   const state = getState()
 
   if (state.pending.has(sessionID)) {
-    const { BusyError } = await import("./type")
+    const { BusyError } = await import("./types")
     throw new BusyError(sessionID)
   }
 
