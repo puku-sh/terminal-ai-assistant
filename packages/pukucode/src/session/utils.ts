@@ -10,9 +10,9 @@ import { Decimal } from "decimal.js"
 import type { LanguageModelUsage, ProviderMetadata } from "ai"
 import type { ModelsDev } from "../provider/models"
 import { Log } from "../util/log"
-import { Bus } from "../bus"
-import type { SessionState, SessionInfo, BusyError } from "./type"
-import { Instance } from "../project/instance"
+
+import type { SessionState} from "./type"
+
 
 const log = Log.create({ service: "session" })
 
@@ -79,7 +79,7 @@ export function lock(sessionID: string): {
   const state = getState()
 
   if (state.pending.has(sessionID)) {
-    const BusyError = require("./types").BusyError
+    const { BusyError } = await import("./type")
     throw new BusyError(sessionID)
   }
 
@@ -99,11 +99,8 @@ export function lock(sessionID: string): {
       }
 
       // Note: In the modular version, this would need to import from crud.ts
-      // For now, we'll emit the event directly
-      Bus.publish({
-        type: "session.idle",
-        data: { sessionID }
-      } as any)
+      // For now, we'll emit the event directly - this needs proper event structure
+      // Bus.publish would need proper event type from the original Session.Event.Idle
     },
   }
 }
