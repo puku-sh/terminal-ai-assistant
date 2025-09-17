@@ -1,6 +1,6 @@
 // ===================================================================
 // STEP 1: CORE TYPES & SCHEMAS
-// Extracted from src/session/index.ts lines 98-174, 414-462, 1289-1302, 1694-1699, 1883-1888
+
 //
 // This module contains all type definitions and schemas for the session system.
 // No dependencies except for external libraries (zod, identifier).

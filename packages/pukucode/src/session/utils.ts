@@ -1,6 +1,6 @@
 // ===================================================================
 // STEP 2: UTILITIES
-// Extracted from src/session/index.ts lines 79-96, 173-200, 1298-1305, 1823-1881
+
 //
 // This module contains utility functions and helper methods.
 // Dependencies: types.ts, external libraries only

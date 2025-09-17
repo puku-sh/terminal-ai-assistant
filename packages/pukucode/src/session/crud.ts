@@ -1,6 +1,6 @@
 // ===================================================================
 // STEP 3: CRUD OPERATIONS
-// Extracted from src/session/index.ts lines 202-301, 341-396
+
 //
 // This module contains session CRUD operations.
 // Dependencies: types.ts, utils.ts, and external modules
