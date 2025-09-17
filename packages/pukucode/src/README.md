@@ -29,6 +29,7 @@ flowchart TD
     B --> AUTH[auth command]
     B --> M[models command]
     B --> P[project-test command]
+    B --> RUN[run command]
   end
 
   %% ─────────────────────────── App Context  ────────────────────────────
@@ -120,7 +121,33 @@ flowchart TD
   subgraph ProviderSystem["AI Provider System"]
     PV1[Provider.list<br/>provider/provider.ts]
     PV2[Model Discovery<br/>provider/models.ts]
-    PV3[Multi-provider Support<br/>Anthropic/OpenAI/Groq]
+    PV3[Multi-provider Support<br/>Anthropic/OpenAI/Groq/Google]
+  end
+
+  %% ─────────────────────────── Session System ─────────────────────────
+  subgraph SessionSystem["Session System (Modular)"]
+    SS1[Session Namespace<br/>session/index.ts]
+    SS2[Types & Schemas<br/>session/types.ts]
+    SS3[CRUD Operations<br/>session/crud.ts]
+    SS4[Message Handling<br/>session/messages.ts]
+    SS5[Prompt Processing<br/>session/processor.ts]
+    SS6[Stream Processing<br/>session/stream-processor.ts]
+    SS7[Shell Execution<br/>session/shell.ts]
+    SS8[Command Execution<br/>session/command.ts]
+    SS9[Operations<br/>session/operations.ts]
+    SS10[Utilities<br/>session/utils.ts]
+
+    SS1 --> SS2
+    SS1 --> SS3
+    SS1 --> SS4
+    SS1 --> SS5
+    SS1 --> SS6
+    SS1 --> SS7
+    SS1 --> SS8
+    SS1 --> SS9
+    SS1 --> SS10
+    SS5 --> SS6
+    SS5 --> ProviderSystem
   end
 
   %% ─────────────────────────── Command → Context Links ─────────────────
@@ -130,7 +157,7 @@ flowchart TD
   D --> I
   %% fs-test command
   E --> I
-  %% app-info command 
+  %% app-info command
   F --> I
   %% config-test command
   G --> I
@@ -143,6 +170,10 @@ flowchart TD
   %% project-test command
   P --> I
   P --> PS1
+  %% run command (AI interaction)
+  RUN --> I
+  RUN --> PS2
+  RUN --> SessionSystem
 ```
 
 ## 🚀 Quick Start
@@ -252,7 +283,8 @@ src/
 │   ├── ui.ts            # UI utilities for terminal interactions
 │   └── cmd/
 │       ├── auth.ts      # Authentication commands (login/logout/list)
-│       └── models.ts    # Models command implementation
+│       ├── models.ts    # Models command implementation
+│       └── run.ts       # AI interaction run command implementation
 │
 ├── config/
 │   └── config.ts         # Configuration system with multi-source loading
@@ -272,6 +304,18 @@ src/
 ├── services/
 │   └── appInfoService.ts # Example service (with init/shutdown)
 │
+├── session/             # Modular AI interaction system
+│   ├── index.ts         # Main session namespace and re-exports
+│   ├── types.ts         # Core types, schemas, and interfaces
+│   ├── utils.ts         # Utility functions and constants
+│   ├── crud.ts          # Session CRUD operations
+│   ├── messages.ts      # Message and parts handling
+│   ├── processor.ts     # Main prompt processing pipeline
+│   ├── stream-processor.ts # Stream processing logic
+│   ├── shell.ts         # Shell execution functionality
+│   ├── command.ts       # Command execution logic
+│   └── operations.ts    # Session operations (revert, summarize, etc.)
+│
 ├── storage/
 │   └── storage.ts        # Persistent data storage interface
 │
@@ -283,10 +327,11 @@ src/
 ## 🔄 High-level Architecture
 
 ### CLI (`index.ts`)
-- Registers commands (`test`, `event-test`, `fs-test`, `app-info`, `config-test`, `auth-test`, `auth`, `models`, `project-test`)
+- Registers commands (`test`, `event-test`, `fs-test`, `app-info`, `config-test`, `auth-test`, `auth`, `models`, `project-test`, `run`)
 - Wraps all commands inside an App context using `App.provide`
 - Models command uses both App and Instance contexts for full functionality
 - Auth command provides credential management with command-line interface
+- Run command orchestrates AI interactions through the Session System
 
 ### App (`app/app.ts`)
 - **Core:** Context + Info + Service Registry
@@ -308,9 +353,22 @@ src/
 - **Storage integration:** Persistent storage for project information
 
 ### Provider System (`provider/`)
-- **Multi-provider support:** Anthropic, OpenAI, and Groq integrations
+- **Multi-provider support:** Anthropic, OpenAI, Groq, and Google Gemini integrations
 - **Model discovery:** Dynamic model enumeration and loading
 - **Provider management:** Configuration and authentication handling
+
+### Session System (`session/`) - Modular AI Interaction Engine
+- **Modular architecture:** 10 specialized modules replacing 1,894-line monolith
+- **Core processing:** `processor.ts` handles AI prompt processing and orchestration
+- **Stream management:** `stream-processor.ts` manages real-time AI response streaming
+- **CRUD operations:** `crud.ts` manages session lifecycle and persistence
+- **Message handling:** `messages.ts` manages conversation messages and parts
+- **Shell integration:** `shell.ts` enables terminal command execution within AI sessions
+- **Command processing:** `command.ts` handles custom command templates and execution
+- **Session operations:** `operations.ts` provides revert, summarize, and initialization functions
+- **Type safety:** `types.ts` centralizes all session-related types and schemas
+- **Utilities:** `utils.ts` provides shared helpers, constants, and state management
+- **Unified interface:** `index.ts` maintains backward compatibility while exposing modular functionality
 
 ### Storage System (`storage/`)
 - **Key-value storage:** Hierarchical key-based data persistence
@@ -608,4 +666,55 @@ bun src/index.ts bun-test --package chalk
 ## provider.ts test
 ```bash
 bun src/index.ts provider-test
+```
+
+## 🤖 AI Model Usage
+
+### Google Gemini Authentication & Usage
+
+To use Google Gemini models, you need to set up authentication first:
+
+```bash
+# Set your Google Generative AI API key
+export GOOGLE_GENERATIVE_AI_API_KEY="your-google-api-key-here"
+
+# Test with Gemini 1.5 Flash model
+pukucode run "hello" --model google/gemini-1.5-flash
+```
+
+**Example with story generation:**
+```bash
+# Set API key and run story generation
+export GOOGLE_GENERATIVE_AI_API_KEY="your-api-key" && pukucode run "tell me a story" --model google/gemini-1.5-flash
+```
+
+### Other AI Providers
+
+**Anthropic Claude:**
+```bash
+# Using environment variable
+export ANTHROPIC_API_KEY="your-anthropic-key"
+pukucode run "hello" --model anthropic/claude-3-sonnet
+
+# Or using auth command
+pukucode auth login --provider anthropic --key your-anthropic-key
+pukucode run "hello" --model anthropic/claude-3-sonnet
+```
+
+**OpenAI:**
+```bash
+# Using environment variable
+export OPENAI_API_KEY="your-openai-key"
+pukucode run "hello" --model openai/gpt-4
+
+# Or using auth command
+pukucode auth login --provider openai --key your-openai-key
+pukucode run "hello" --model openai/gpt-4
+```
+
+**Groq:**
+```bash
+# Using auth command
+pukucode auth login --provider groq --key your-groq-key
+pukucode run "hello" --model groq/llama-3.1-70b-versatile
 ```
