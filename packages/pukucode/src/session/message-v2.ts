@@ -160,6 +160,19 @@ export namespace MessageV2{
 
     export type FilePart = z.infer<typeof FilePart>
 
+    export const AgentPart = PartBase.extend({
+      type: z.literal("agent"),
+      name: z.string(),
+      source: z
+        .object({
+          value: z.string(),
+          start: z.number().int(),
+          end: z.number().int(),
+        })
+        .optional(),
+    }).openapi("AgentPart")
+    export type AgentPart = z.infer<typeof AgentPart>
+
     export const StepStartPart = PartBase.extend({
         type: z.literal("step-start"),
       }).openapi("StepStartPart")
@@ -199,7 +212,8 @@ export namespace MessageV2{
           TextPart,
           ToolPart,
           StepStartPart,
-          StepFinishPart
+          StepFinishPart,
+          AgentPart
         ])
         .openapi("Part")
     
