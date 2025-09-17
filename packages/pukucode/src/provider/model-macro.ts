@@ -136,9 +136,18 @@ export async function data() {
               output: 4096
             },
             options: {}
-          },
-          "moonshotai/kimi-k2-instruct": {
-            id: "moonshotai/kimi-k2-instruct",
+          }
+        }
+      },
+      moonshotai: {
+        id: "moonshotai",
+        name: "Moonshot AI",
+        npm: "@ai-sdk/openai",
+        env: ["MOONSHOT_API_KEY"],
+        api: "https://api.moonshot.cn/v1",
+        models: {
+          "kimi-k2-instruct-0905": {
+            id: "kimi-k2-instruct-0905",
             name: "Kimi K2 Instruct",
             release_date: "2024-12-01",
             attachment: false,
@@ -154,6 +163,75 @@ export async function data() {
             limit: {
               context: 200000,
               output: 4096
+            },
+            options: {}
+          }
+        }
+      },
+      google: {
+        id: "google",
+        name: "Google",
+        npm: "@ai-sdk/google",
+        env: ["GOOGLE_GENERATIVE_AI_API_KEY"],
+        api: "https://generativelanguage.googleapis.com/v1beta",
+        models: {
+          "gemini-1.5-pro": {
+            id: "gemini-1.5-pro",
+            name: "Gemini 1.5 Pro",
+            release_date: "2024-02-15",
+            attachment: true,
+            reasoning: false,
+            temperature: true,
+            tool_call: true,
+            cost: {
+              input: 1.25,
+              output: 5.0,
+              cache_read: 0.3125,
+              cache_write: 1.25
+            },
+            limit: {
+              context: 2097152,
+              output: 8192
+            },
+            options: {}
+          },
+          "gemini-1.5-flash": {
+            id: "gemini-1.5-flash",
+            name: "Gemini 1.5 Flash",
+            release_date: "2024-05-14",
+            attachment: true,
+            reasoning: false,
+            temperature: true,
+            tool_call: true,
+            cost: {
+              input: 0.075,
+              output: 0.3,
+              cache_read: 0.01875,
+              cache_write: 0.075
+            },
+            limit: {
+              context: 1048576,
+              output: 8192
+            },
+            options: {}
+          },
+          "gemini-2.0-flash-exp": {
+            id: "gemini-2.0-flash-exp",
+            name: "Gemini 2.0 Flash Experimental",
+            release_date: "2024-12-11",
+            attachment: true,
+            reasoning: false,
+            temperature: true,
+            tool_call: true,
+            cost: {
+              input: 0.075,
+              output: 0.3,
+              cache_read: 0.01875,
+              cache_write: 0.075
+            },
+            limit: {
+              context: 1048576,
+              output: 8192
             },
             options: {}
           }

@@ -140,9 +140,12 @@ export namespace ToolRegistry {
       const newSchema = z.string({ description: schema.description })
       const safeChecks = ["min", "max", "length", "regex", "startsWith", "endsWith", "includes", "trim"]
       // rome-ignore lint/suspicious/noExplicitAny: <explanation>
-      ;(newSchema._def as any).checks = (schema._def as z.ZodStringDef).checks.filter((check) =>
-        safeChecks.includes(check.kind),
-      )
+      const checks = (schema._def as z.ZodStringDef).checks
+      if (checks) {
+        ;(newSchema._def as any).checks = checks.filter((check) =>
+          safeChecks.includes(check.kind),
+        )
+      }
       return newSchema
     }
 

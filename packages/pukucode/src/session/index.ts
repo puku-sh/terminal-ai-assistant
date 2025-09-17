@@ -688,7 +688,7 @@ export namespace Session {
     }
 
     const agent = await Agent.get(inputAgent)
-    const model = await (async () => {
+    const modelConfig = await (async () => {
       if (input.model) {
         return input.model
       }
@@ -696,11 +696,13 @@ export namespace Session {
         return agent.model
       }
       return Provider.defaultModel()
-    })().then((x) => Provider.getModel(x.providerID, x.modelID))
+    })()
+    const model = await Provider.getModel(modelConfig.providerID, modelConfig.modelID)
+    const modelWithIds = { ...model, providerID: modelConfig.providerID, modelID: modelConfig.modelID }
     let msgs = await messages(input.sessionID)
 
     const previous = msgs.filter((x) => x.info.role === "assistant").at(-1)?.info as MessageV2.Assistant
-    const outputLimit = Math.min(model.info.limit.output, OUTPUT_TOKEN_MAX) || OUTPUT_TOKEN_MAX
+    const outputLimit = Math.min(modelWithIds.info.limit.output, OUTPUT_TOKEN_MAX) || OUTPUT_TOKEN_MAX
 
     // auto summarize if too long
     if (previous && previous.tokens) {
@@ -790,12 +792,12 @@ export namespace Session {
         synthetic: true,
       })
     }
-    let system = SystemPrompt.header(model.providerID)
+    let system = SystemPrompt.header(modelWithIds.providerID)
     system.push(
       ...(() => {
         if (input.system) return [input.system]
         if (agent.prompt) return [agent.prompt]
-        return SystemPrompt.provider(model.modelID)
+        return SystemPrompt.provider(modelWithIds.modelID)
       })(),
     )
     system.push(...(await SystemPrompt.environment()))
@@ -820,8 +822,8 @@ export namespace Session {
         reasoning: 0,
         cache: { read: 0, write: 0 },
       },
-      modelID: model.modelID,
-      providerID: model.providerID,
+      modelID: modelWithIds.modelID,
+      providerID: modelWithIds.providerID,
       time: {
         created: Date.now(),
       },
@@ -835,14 +837,14 @@ export namespace Session {
     })
     const tools: Record<string, AITool> = {}
 
-    const processor = createProcessor(assistantMsg, model.info)
+    const processor = createProcessor(assistantMsg, modelWithIds.info)
 
     const enabledTools = pipe(
       agent.tools,
-      mergeDeep(await ToolRegistry.enabled(model.providerID, model.modelID, agent)),
+      mergeDeep(await ToolRegistry.enabled(modelWithIds.providerID, modelWithIds.modelID, agent)),
       mergeDeep(input.tools ?? {}),
     )
-    for (const item of await ToolRegistry.tools(model.providerID, model.modelID)) {
+    for (const item of await ToolRegistry.tools(modelWithIds.providerID, modelWithIds.modelID)) {
       if (Wildcard.all(item.id, enabledTools) === false) continue
       tools[item.id] = tool({
         id: item.id as any,

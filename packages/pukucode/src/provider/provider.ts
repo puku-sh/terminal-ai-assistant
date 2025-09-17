@@ -67,6 +67,12 @@ export namespace Provider {
         options: {},
       }
     },
+    google: async () => {
+      return {
+        autoload: true,
+        options: {},
+      }
+    },
     azure: async () => {
       return {
         autoload: true,
