@@ -248,16 +248,16 @@ export class PromptProcessor {
           text: `Called the Read tool with the following input: {"filePath":"${filePath}"}`,
           synthetic: true,
         } as MessageV2.Part,
-        {
-          id: part.id ?? Identifier.ascending("part"),
-          messageID: userMsg.id,
-          sessionID: this.sessionID,
-          type: "file",
-          url: `data:${part.mime};base64,` + Buffer.from(await file.bytes()).toString("base64"),
-          mime: part.mime,
-          filename: part.filename!,
-          source: part.source,
-        } as MessageV2.Part,
+         {
+            id: part.id ?? Identifier.ascending("part"),
+            messageID: userMsg.id,
+            sessionID: this.sessionID,
+            type: "file",
+            url: `data:${part.mime};base64,` + Buffer.from(await file.bytes()).toString("base64"),
+            mime: part.mime,
+            filename: part.filename,
+            source: part.source,
+            } as MessageV2.Part,
       ]
     } catch (error) {
       log.error("Failed to process file", { filePath, error })
