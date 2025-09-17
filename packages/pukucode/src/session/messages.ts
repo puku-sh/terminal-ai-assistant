@@ -113,135 +113,135 @@ export async function updatePart(part: MessageV2.Part): Promise<MessageV2.Part> 
 // MESSAGE CREATION
 // ===================================================================
 
-export async function createMessage(
-  sessionID: string,
-  type: "user" | "assistant",
-  parts: MessageV2.Part[] = []
-): Promise<MessageV2.Info> {
-  // Verify session exists
-  if (!(await sessionExists(sessionID))) {
-    throw new Error(`Session not found: ${sessionID}`)
-  }
+// export async function createMessage(
+//   sessionID: string,
+//   type: "user" | "assistant",
+//   parts: MessageV2.Part[] = []
+// ): Promise<MessageV2.Info> {
+//   // Verify session exists
+//   if (!(await sessionExists(sessionID))) {
+//     throw new Error(`Session not found: ${sessionID}`)
+//   }
 
-  const now = Date.now()
+//   const now = Date.now()
 
-  const message: MessageV2.Info = {
-    id: Identifier.ascending("message"),
-    sessionID,
-    role: type,
-    time: {
-      created: now,
-    },
-  } as MessageV2.Info
+//   const message: MessageV2.Info = {
+//     id: Identifier.ascending("message"),
+//     sessionID,
+//     role: type,
+//     time: {
+//       created: now,
+//     },
+//   } as MessageV2.Info
 
-  // Store the message
-  await Storage.write(["message", sessionID, message.id], message)
+//   // Store the message
+//   await Storage.write(["message", sessionID, message.id], message)
 
-  // Store all parts with proper IDs
-  for (const part of parts) {
-    await updatePart({
-      ...part,
-      id: part.id || Identifier.ascending("part"),
-      messageID: message.id,
-      sessionID,
-    })
-  }
+//   // Store all parts with proper IDs
+//   for (const part of parts) {
+//     await updatePart({
+//       ...part,
+//       id: part.id || Identifier.ascending("part"),
+//       messageID: message.id,
+//       sessionID,
+//     })
+//   }
 
-  // Emit creation event
-  Bus.publish(MessageV2.Event.Created, {
-    info: message,
-  } as any)
+//   // Emit creation event
+//   Bus.publish(MessageV2.Event.Created, {
+//     info: message,
+//   } as any)
 
-  return message
-}
+//   return message
+// }
 
-// ===================================================================
-// MESSAGE DELETION
-// ===================================================================
+// // ===================================================================
+// // MESSAGE DELETION
+// // ===================================================================
 
-export async function deleteMessage(sessionID: string, messageID: string): Promise<void> {
-  // Verify message exists and belongs to session
-  await getMessage(sessionID, messageID)
+// export async function deleteMessage(sessionID: string, messageID: string): Promise<void> {
+//   // Verify message exists and belongs to session
+//   await getMessage(sessionID, messageID)
 
-  // Remove all parts
-  const parts = await getParts(messageID)
-  for (const part of parts) {
-    await Storage.remove(["part", messageID, part.id])
-  }
+//   // Remove all parts
+//   const parts = await getParts(messageID)
+//   for (const part of parts) {
+//     await Storage.remove(["part", messageID, part.id])
+//   }
 
-  // Remove the message
-  await Storage.remove(["message", sessionID, messageID])
+//   // Remove the message
+//   await Storage.remove(["message", sessionID, messageID])
 
-  // Emit deletion event
-  Bus.publish(MessageV2.Event.Removed, {
-    sessionID,
-    messageID,
-  } as any)
-}
+//   // Emit deletion event
+//   Bus.publish(MessageV2.Event.Removed, {
+//     sessionID,
+//     messageID,
+//   } as any)
+// }
 
-// ===================================================================
-// MESSAGE UTILITIES
-// ===================================================================
+// // ===================================================================
+// // MESSAGE UTILITIES
+// // ===================================================================
 
-export async function getLastMessage(sessionID: string): Promise<{
-  info: MessageV2.Info
-  parts: MessageV2.Part[]
-} | null> {
-  const messages = await getMessages(sessionID)
-  return messages.length > 0 ? messages[messages.length - 1] : null
-}
+// export async function getLastMessage(sessionID: string): Promise<{
+//   info: MessageV2.Info
+//   parts: MessageV2.Part[]
+// } | null> {
+//   const messages = await getMessages(sessionID)
+//   return messages.length > 0 ? messages[messages.length - 1] : null
+// }
 
-export async function getMessagesPaginated(
-  sessionID: string,
-  limit: number = 50,
-  offset: number = 0
-): Promise<{
-  messages: { info: MessageV2.Info; parts: MessageV2.Part[] }[]
-  total: number
-  hasMore: boolean
-}> {
-  const allMessages = await getMessages(sessionID)
-  const total = allMessages.length
-  const messages = allMessages.slice(offset, offset + limit)
-  const hasMore = offset + limit < total
+// export async function getMessagesPaginated(
+//   sessionID: string,
+//   limit: number = 50,
+//   offset: number = 0
+// ): Promise<{
+//   messages: { info: MessageV2.Info; parts: MessageV2.Part[] }[]
+//   total: number
+//   hasMore: boolean
+// }> {
+//   const allMessages = await getMessages(sessionID)
+//   const total = allMessages.length
+//   const messages = allMessages.slice(offset, offset + limit)
+//   const hasMore = offset + limit < total
 
-  return {
-    messages,
-    total,
-    hasMore,
-  }
-}
+//   return {
+//     messages,
+//     total,
+//     hasMore,
+//   }
+// }
 
-export async function searchMessages(
-  sessionID: string,
-  query: string
-): Promise<{ info: MessageV2.Info; parts: MessageV2.Part[] }[]> {
-  const messages = await getMessages(sessionID)
-  const lowerQuery = query.toLowerCase()
+// export async function searchMessages(
+//   sessionID: string,
+//   query: string
+// ): Promise<{ info: MessageV2.Info; parts: MessageV2.Part[] }[]> {
+//   const messages = await getMessages(sessionID)
+//   const lowerQuery = query.toLowerCase()
 
-  return messages.filter(message => {
-    // Search in parts content
-    return message.parts.some(part => {
-      if (part.type === "text" && 'text' in part && part.text) {
-        return part.text.toLowerCase().includes(lowerQuery)
-      }
-      return false
-    })
-  })
-}
+//   return messages.filter(message => {
+//     // Search in parts content
+//     return message.parts.some(part => {
+//       if (part.type === "text" && 'text' in part && part.text) {
+//         return part.text.toLowerCase().includes(lowerQuery)
+//       }
+//       return false
+//     })
+//   })
+// }
 
-export async function getMessageStats(sessionID: string): Promise<{
-  total: number
-  userMessages: number
-  assistantMessages: number
-  totalParts: number
-}> {
-  const messages = await getMessages(sessionID)
+// export async function getMessageStats(sessionID: string): Promise<{
+//   total: number
+//   userMessages: number
+//   assistantMessages: number
+//   totalParts: number
+// }> {
+//   const messages = await getMessages(sessionID)
 
-  return {
-    total: messages.length,
-    userMessages: messages.filter(m => m.info.role === "user").length,
-    assistantMessages: messages.filter(m => m.info.role === "assistant").length,
-    totalParts: messages.reduce((sum, m) => sum + m.parts.length, 0),
-  }
-}
+//   return {
+//     total: messages.length,
+//     userMessages: messages.filter(m => m.info.role === "user").length,
+//     assistantMessages: messages.filter(m => m.info.role === "assistant").length,
+//     totalParts: messages.reduce((sum, m) => sum + m.parts.length, 0),
+//   }
+// }
