@@ -7,7 +7,7 @@ import { extendZodWithOpenApi } from "@asteasolutions/zod-to-openapi"
 extendZodWithOpenApi(z)
 
 // Now import Message after extending Zod
-import { Message } from "../session/message"
+import { Message } from "../session/message-v1"
 
 describe("Message V1 Tests", () => {
   test("TextPart schema validation", () => {
