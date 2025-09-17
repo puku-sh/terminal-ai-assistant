@@ -19,6 +19,7 @@ import { Log } from "../util/log"
 import type { SessionInfo, ShareInfo, SessionCreateResult, SessionListItem } from "./types"
 import { SessionNotFoundError } from "./types"
 import { createDefaultTitle, getCurrentTimestamp, validateSessionID, abort } from "./utils"
+import { Event } from "./types"
 
 const log = Log.create({ service: "session-crud" })
 
@@ -57,22 +58,22 @@ export async function createNext(input: {
   await Storage.write(["session", Instance.project.id, result.id], result)
 
   const cfg = await Config.get()
-  if (!result.parentID && ( cfg.share === "auto")) {
-    share(result.id)
-      .then((shareInfo) => {
-        update(result.id, (draft) => {
-          draft.share = shareInfo
-        })
-      })
-      .catch(() => {
-        // Silently ignore sharing errors during session creation
-      })
-  }
+//   if (!result.parentID && ( cfg.share === "auto")) {
+//     share(result.id)
+//       .then((shareInfo) => {
+//         update(result.id, (draft) => {
+//           draft.share = shareInfo
+//         })
+//       })
+//       .catch(() => {
+//         // Silently ignore sharing errors during session creation
+//       })
+//   }
 
-  Bus.publish({
-    type: "session.updated",
-    data: { info: result }
-  } as any)
+ 
+  Bus.publish(Event.Updated, {
+    info: result 
+   })
 
   return result
 }
@@ -81,51 +82,51 @@ export async function createNext(input: {
 // SESSION RETRIEVAL
 // ===================================================================
 
-export async function get(id: string): Promise<SessionInfo> {
-  if (!validateSessionID(id)) {
-    throw new Error(`Invalid session ID: ${id}`)
+export async function get(id: string){
+    // if (!validateSessionID(id)) {
+    //   throw new Error(`Invalid session ID: ${id}`)
+    // }
+  
+    const read = await Storage.read<SessionInfo>(["session", Instance.project.id, id])
+    // if (!read) {
+    //   throw new SessionNotFoundError(id)
+    // }
+  
+    return read as SessionInfo
   }
-
-  const read = await Storage.read<SessionInfo>(["session", Instance.project.id, id])
-  if (!read) {
-    throw new SessionNotFoundError(id)
+  
+  export async function getShare(id: string){
+    return Storage.read<ShareInfo>(["share", id])
   }
-
-  return read as SessionInfo
-}
-
-export async function getShare(id: string): Promise<ShareInfo | null> {
-  return Storage.read<ShareInfo>(["share", id])
-}
 
 // ===================================================================
 // SESSION SHARING
 // ===================================================================
 
-// export async function share(id: string): Promise<ShareInfo> {
-//   const cfg = await Config.get()
-//   if (cfg.share === "disabled") {
-//     throw new Error("Sharing is disabled in configuration")
+// export async function share(id: string) {
+//     const cfg = await Config.get()
+//     if (cfg.share === "disabled") {
+//       throw new Error("Sharing is disabled in configuration")
+//     }
+
+//     const session = await get(id)
+//     if (session.share) return session.share
+//     const share = await Share.create(id)
+//     await update(id, (draft) => {
+//       draft.share = {
+//         url: share.url,
+//       }
+//     })
+//     await Storage.write(["share", id], share)
+//     await Share.sync("session/info/" + id, session)
+//     for (const msg of await messages(id)) {
+//       await Share.sync("session/message/" + id + "/" + msg.info.id, msg.info)
+//       for (const part of msg.parts) {
+//         await Share.sync("session/part/" + id + "/" + msg.info.id + "/" + part.id, part)
+//       }
+//     }
+//     return share
 //   }
-
-//   const session = await get(id)
-//   if (session.share) return session.share as ShareInfo
-
-// //   const shareInfo = await Share.create(id)
-// //   await update(id, (draft) => {
-// //     draft.share = {
-// //       url: shareInfo.url,
-// //     }
-// //   })
-
-//   await Storage.write(["share", id])
-//  // await Share.sync("session/info/" + id, session)
-
-//   // Note: In the modular version, messages would be imported from messages.ts
-//   // For now, we'll skip the message syncing part
-
-//   return shareInfo
-// }
 
 export async function unshare(id: string): Promise<void> {
   const shareInfo = await getShare(id)
@@ -146,17 +147,16 @@ export async function unshare(id: string): Promise<void> {
 export async function update(
   id: string,
   editor: (session: SessionInfo) => void
-): Promise<SessionInfo> {
+){
   const project = Instance.project
   const result = await Storage.update<SessionInfo>(["session", project.id, id], (draft) => {
     editor(draft)
     draft.time.updated = Date.now()
   })
 
-  Bus.publish({
-    type: "session.updated",
-    data: { info: result }
-  } as any)
+  Bus.publish(Event.Updated, {
+    info: result,
+  })
 
   return result
 }
@@ -175,29 +175,29 @@ export async function* list(): AsyncGenerator<SessionInfo> {
   }
 }
 
-export async function listSorted(limit?: number): Promise<SessionListItem[]> {
-  const sessions: SessionListItem[] = []
+// export async function listSorted(limit?: number): Promise<SessionListItem[]> {
+//   const sessions: SessionListItem[] = []
 
-  for await (const session of list()) {
-    sessions.push({
-      id: session.id,
-      title: session.title,
-      created: session.time.created,
-      updated: session.time.updated,
-      parentID: session.parentID,
-    })
-  }
+//   for await (const session of list()) {
+//     sessions.push({
+//       id: session.id,
+//       title: session.title,
+//       created: session.time.created,
+//       updated: session.time.updated,
+//       parentID: session.parentID,
+//     })
+//   }
 
-  // Sort by updated time (most recent first)
-  sessions.sort((a, b) => b.updated - a.updated)
+//   // Sort by updated time (most recent first)
+//   sessions.sort((a, b) => b.updated - a.updated)
 
-  // Apply limit if specified
-  if (limit) {
-    return sessions.slice(0, limit)
-  }
+//   // Apply limit if specified
+//   if (limit) {
+//     return sessions.slice(0, limit)
+//   }
 
-  return sessions
-}
+//   return sessions
+// }
 
 export async function children(parentID: string): Promise<SessionInfo[]> {
   const project = Instance.project
@@ -217,24 +217,24 @@ export async function children(parentID: string): Promise<SessionInfo[]> {
 // SESSION SEARCH
 // ===================================================================
 
-export async function search(query: string): Promise<SessionListItem[]> {
-  const sessions: SessionListItem[] = []
-  const lowerQuery = query.toLowerCase()
+// export async function search(query: string): Promise<SessionListItem[]> {
+//   const sessions: SessionListItem[] = []
+//   const lowerQuery = query.toLowerCase()
 
-  for await (const session of list()) {
-    if (session.title.toLowerCase().includes(lowerQuery)) {
-      sessions.push({
-        id: session.id,
-        title: session.title,
-        created: session.time.created,
-        updated: session.time.updated,
-        parentID: session.parentID,
-      })
-    }
-  }
+//   for await (const session of list()) {
+//     if (session.title.toLowerCase().includes(lowerQuery)) {
+//       sessions.push({
+//         id: session.id,
+//         title: session.title,
+//         created: session.time.created,
+//         updated: session.time.updated,
+//         parentID: session.parentID,
+//       })
+//     }
+//   }
 
-  return sessions.sort((a, b) => b.updated - a.updated)
-}
+//   return sessions.sort((a, b) => b.updated - a.updated)
+// }
 
 // ===================================================================
 // SESSION EXISTENCE & COUNTING
@@ -292,10 +292,9 @@ export async function remove(sessionID: string, emitEvent = true): Promise<void>
     await Storage.remove(["session", project.id, sessionID])
 
     if (emitEvent) {
-      Bus.publish({
-        type: "session.deleted",
-        data: { info: session }
-      } as any)
+        Bus.publish(Event.Deleted, {
+          info: session,
+        })
     }
   } catch (e) {
     log.error(e)
