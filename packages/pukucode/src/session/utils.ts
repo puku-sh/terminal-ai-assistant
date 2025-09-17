@@ -11,7 +11,9 @@ import type { LanguageModelUsage, ProviderMetadata } from "ai"
 import type { ModelsDev } from "../provider/models"
 import { Log } from "../util/log"
 
-import type { SessionState} from "./types"
+import { Event, type SessionState} from "./types"
+import { Bus } from "../bus"
+import { get } from "./crud"
 
 
 const log = Log.create({ service: "session" })
@@ -97,6 +99,12 @@ export function lock(sessionID: string): {
         state.autoCompacting.delete(sessionID)
         return
       }
+      const session  = await get(sessionID)
+      if(session.parentID) return 
+
+      Bus.publish(Event.Idle,{
+        sessionID,
+      })
 
       // Note: In the modular version, this would need to import from crud.ts
       // For now, we'll emit the event directly - this needs proper event structure

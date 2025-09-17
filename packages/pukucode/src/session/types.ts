@@ -10,6 +10,8 @@ import { z } from "zod"
 import { Identifier } from "../id/id"
 import { MessageV2 } from "./message-v2"
 import { extendZodWithOpenApi } from "@asteasolutions/zod-to-openapi"
+import { Bus } from '../bus';
+
 
 
 extendZodWithOpenApi(z)
@@ -60,6 +62,34 @@ export const ShareInfo = z
   })
   .openapi("SessionShare")
 export type ShareInfo = z.output<typeof ShareInfo>
+
+export const Event = {
+  Updated: Bus.event(
+    "session.updated",
+    z.object({
+      info: SessionInfo,
+    }),
+  ),
+  Deleted: Bus.event(
+    "session.deleted",
+    z.object({
+      info: SessionInfo,
+    }),
+  ),
+  Idle: Bus.event(
+    "session.idle",
+    z.object({
+      sessionID: z.string(),
+    }),
+  ),
+  Error: Bus.event(
+    "session.error",
+    z.object({
+      sessionID: z.string().optional(),
+      error: MessageV2.Assistant.shape.error,
+    }),
+  ),
+}
 
 // ===================================================================
 // INPUT SCHEMAS
