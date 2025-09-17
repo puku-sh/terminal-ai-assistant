@@ -33,9 +33,5 @@ Thumbs.db
 .opencode/
 /CLAUDE.md
 
-crud.ts
-messages.ts
-processor.ts
-types.ts
-utils.ts
-stream-processor.ts
+
+session.ts
