@@ -10,7 +10,6 @@ import os from "os"
 import path from "path"
 import { useAppInfoService } from "./services/appInfoService"
 import { File } from "./file"
-import { Ripgrep } from "./file/ripgrep"
 import { FileTime } from "./file/time"
 import { FileWatcher } from "./file/watch"
 import { ModelsDev } from "./provider/models" // import for models-test command
@@ -136,15 +135,17 @@ const cli = yargs(hideBin(process.argv))
     describe: "Check git tracked files (added, deleted, modified)",
     handler: async () => {
       await App.provide({ cwd: process.cwd() }, async () => {
-        const files = await File.status()
-        console.log("=== Git File Status ===")
-        if (files.length === 0) {
-          console.log("No changes found")
-        } else {
-          for (const f of files) {
-            console.log(`${f.status.toUpperCase()} → ${f.path}  (+${f.added} -${f.removed})`)
+        await Instance.provide(process.cwd(), async () => {
+          const files = await File.status()
+          console.log("=== Git File Status ===")
+          if (files.length === 0) {
+            console.log("No changes found")
+          } else {
+            for (const f of files) {
+              console.log(`${f.status.toUpperCase()} → ${f.path}  (+${f.added} -${f.removed})`)
+            }
           }
-        }
+        })
       })
     }
   })
@@ -155,30 +156,43 @@ const cli = yargs(hideBin(process.argv))
     handler: async (args) => {
       const file = args.file as string
       await App.provide({ cwd: process.cwd() }, async () => {
-        const result = await File.read(file)
-        console.log("=== File Read Result ===")
-        console.log(`Type: ${result.type}`)
-        console.log(result.content.substring(0, 400)) // show first 400 chars
+        await Instance.provide(process.cwd(), async () => {
+          const result = await File.read(file)
+          console.log("=== File Read Result ===")
+          console.log(`Type: ${result.type}`)
+          console.log(result.content.substring(0, 400)) // show first 400 chars
+        })
       })
     }
   })
   cli.command({
     command: "file-tree",
-    describe: "List project files using Ripgrep stub implementation",
+    describe: "List project files and directories",
     builder: (yargs) =>
-      yargs.option("limit", {
-        alias: "l",
-        type: "number",
-        describe: "Limit number of files shown",
+      yargs.option("dir", {
+        alias: "d",
+        type: "string",
+        describe: "Directory to list (relative to project root)",
       }),
     handler: async (args) => {
-      await App.provide({ cwd: process.cwd() }, async (app) => {
-        console.log("=== File Tree ===")
-        const tree = await Ripgrep.tree({
-          cwd: app.path.cwd,
-          limit: args.limit,
+      await App.provide({ cwd: process.cwd() }, async () => {
+        await Instance.provide(process.cwd(), async () => {
+          console.log("=== File Tree ===")
+          try {
+            const nodes = await File.list(args.dir)
+            if (nodes.length === 0) {
+              console.log("No files found")
+            } else {
+              for (const node of nodes) {
+                const icon = node.type === "directory" ? "📁" : "📄"
+                const ignoreFlag = node.ignored ? " (ignored)" : ""
+                console.log(`${icon} ${node.name}${ignoreFlag}`)
+              }
+            }
+          } catch (error) {
+            console.error("Error listing directory:", error)
+          }
         })
-        console.log(tree)
       })
     },
   })

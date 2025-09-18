@@ -3,10 +3,11 @@ import { Bus } from "../bus"
 import { $ } from "bun"
 import { createPatch } from "diff"
 import path from "path"
-import * as git from "isomorphic-git"
-import { App } from "../app/app"
+import ignore from "ignore"
+//import { App } from "../app/app"
 import fs from "fs"
 import { Log } from "../util/log"
+import {Instance } from "../project/instance"
 
 export namespace File {
   const log = Log.create({ service: "file" })
@@ -26,10 +27,30 @@ export namespace File {
       removed: z.number().int(),
       status: z.enum(["added", "deleted", "modified"]),
     })
-    // .openapi({ ref: "File" }) 
+    .openapi("File") 
 
   export type Info = z.infer<typeof Info>
 
+  /**
+   * The Node type  represents a file system entry with these properties 
+
+    Purpose: Used by the list() function  to return structured directory listings that include:
+    - File metadata for UI display
+    - Git ignore status for visual indicators
+    - Type information for sorting (directories first, then files alphabetically)
+
+    This enables the IDE to show file trees with proper icons, sorting, and ignore status visualization.
+  */
+
+    export const Node = z
+      .object({
+        name: z.string(),
+        path: z.string(),
+        type: z.enum(["file", "directory"]),
+        ignored: z.boolean(),
+      })
+      .openapi("FileNode")
+    export type Node = z.infer<typeof Node>
   /**
    * File-related Events on the Bus
    * -------------------------------
@@ -58,16 +79,11 @@ export namespace File {
    *    - deleted files → `git diff --name-only --diff-filter=D HEAD`
    */
   export async function status() {
-    const app = App.info()
-    if (!app.git) return [] // short-circuit if not in a Git repo
-
+    const project = Instance.project        // Get current project configuration
+    if (project.vcs !== "git") return []   // If not Git, return empty array
     // 1. Modified files (added/removed stats)
     // e.g. "12\t7\tsrc/index.ts"
-    const diffOutput = await $`git diff --numstat HEAD`
-      .cwd(app.path.cwd)
-      .quiet()
-      .nothrow()
-      .text()
+    const diffOutput = await $`git diff --numstat HEAD`.cwd(Instance.directory).quiet().nothrow().text()
 
     const changedFiles: Info[] = []
 
@@ -86,7 +102,7 @@ export namespace File {
 
     // 2. Untracked files (new files not in Git yet)
     const untrackedOutput = await $`git ls-files --others --exclude-standard`
-      .cwd(app.path.cwd)
+      .cwd(Instance.directory)
       .quiet()
       .nothrow()
       .text()
@@ -111,7 +127,7 @@ export namespace File {
 
     // 3. Deleted files
     const deletedOutput = await $`git diff --name-only --diff-filter=D HEAD`
-      .cwd(app.path.cwd)
+      .cwd(Instance.directory)
       .quiet()
       .nothrow()
       .text()
@@ -131,7 +147,7 @@ export namespace File {
     // Normalize paths (relative to cwd, not git root)
     return changedFiles.map((x) => ({
       ...x,
-      path: path.relative(app.path.cwd, path.join(app.path.root, x.path)),
+      path: path.relative(Instance.directory, path.join(Instance.worktree, x.path)),
     }))
   }
 
@@ -151,8 +167,8 @@ export namespace File {
   export async function read(file: string) {
     using _ = log.time("read", { file })
 
-    const app = App.info()
-    const full = path.join(app.path.cwd, file)
+    const project = Instance.project
+    const full = path.join(Instance.directory, file)
 
     // read current file content (trim)
     const content = await Bun.file(full)
@@ -160,32 +176,53 @@ export namespace File {
       .catch(() => "")
       .then((x) => x.trim())
 
-    if (app.git) {
-      const rel = path.relative(app.path.root, full)
-      const diff = await git.status({
-        fs,
-        dir: app.path.root,
-        filepath: rel,
-      })
+    if (project.vcs === "git") {
+      const rel = path.relative(Instance.worktree, full)
+      const diff = await $`git diff ${rel}`.cwd(Instance.worktree).quiet().nothrow().text()
 
-      // if status != "unmodified", generate patch
-      if (diff !== "unmodified") {
-        const original = await $`git show HEAD:${rel}`
-          .cwd(app.path.root)
-          .quiet()
-          .nothrow()
-          .text()
-
-        // Create a human-readable diff patch
+      
+      if (diff.trim()) {
+        const original = await $`git show HEAD:${rel}`.cwd(Instance.worktree).quiet().nothrow().text()
         const patch = createPatch(file, original, content, "old", "new", {
           context: Infinity,
         })
-
         return { type: "patch", content: patch }
       }
     }
 
     // Fallback for non-git or unchanged files
     return { type: "raw", content }
+  }
+  export async function list(dir?: string) {
+    const exclude = [".git", ".DS_Store"]
+    const project = Instance.project
+    let ignored = (_: string) => false
+    if (project.vcs === "git") {
+      const gitignore = Bun.file(path.join(Instance.worktree, ".gitignore"))
+      if (await gitignore.exists()) {
+        const ig = ignore().add(await gitignore.text())
+        ignored = ig.ignores.bind(ig)
+      }
+    }
+    const resolved = dir ? path.join(Instance.directory, dir) : Instance.directory
+    const nodes: Node[] = []
+    for (const entry of await fs.promises.readdir(resolved, { withFileTypes: true })) {
+      if (exclude.includes(entry.name)) continue
+      const fullPath = path.join(resolved, entry.name)
+      const relativePath = path.relative(Instance.directory, fullPath)
+      const type = entry.isDirectory() ? "directory" : "file"
+      nodes.push({
+        name: entry.name,
+        path: relativePath,
+        type,
+        ignored: ignored(type === "directory" ? relativePath + "/" : relativePath),
+      })
+    }
+    return nodes.sort((a, b) => {
+      if (a.type !== b.type) {
+        return a.type === "directory" ? -1 : 1
+      }
+      return a.name.localeCompare(b.name)
+    })
   }
 }
