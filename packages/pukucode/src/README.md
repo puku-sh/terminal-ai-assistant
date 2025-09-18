@@ -1,15 +1,17 @@
-# 🐉 PukuCode - Terminal AI Assistant
+# 🐉 PukuCode
 
-A TypeScript-based terminal AI assistant built on the Bun runtime.
 
-It uses a clean and modular architecture featuring:
 
-- **Application Contexts** → Provides global app info & service lifecycle
-- **Configuration System** → Multi-source config loading with validation and schema support
-- **Authentication** → Secure credential management for AI providers and services
-- **Event Bus** → Decoupled publish–subscribe messaging
-- **Filesystem Utilities** → Powerful helpers for working with the system paths
-- **Services** → Lazy-loaded, reusable runtime dependencies with lifecycle hooks
+[![asciicast](https://asciinema.org/a/tgZ0Xfvkh7TGXKdIxWzz8zEUJ.svg)](https://asciinema.org/a/tgZ0Xfvkh7TGXKdIxWzz8zEUJ)
+
+## Key Features
+
+- **Multi-Provider AI Support** → Anthropic, OpenAI, Google, Groq, Azure, Bedrock
+- **Advanced Session Management** → 10 specialized modules for AI interaction
+- **Git-Aware File Operations** → Real-time change tracking and project detection
+- **Context-Driven Architecture** → AsyncLocalStorage patterns for state management
+- **Tool Registry System** → 5 core AI tools (Bash, Edit, Grep, Read, Write)
+- **Event-Driven Design** → Type-safe pub/sub system
 
 ## Architecture
 ```mermaid
@@ -178,89 +180,98 @@ flowchart TD
 
 ## 🚀 Quick Start
 
-### Option 1: Global Installation (Recommended)
+### Installation
 
 ```bash
-# Install globally
+# Install globally (Recommended)
 npm install -g .
 
-# Run directly
-pukucode test
-pukucode event-test
-pukucode fs-test
-pukucode app-info
-pukucode config-test
-pukucode auth-test
-pukucode auth login --provider groq --key your-api-key
+# Or install dependencies for development
+bun install
+```
+
+### Core Commands
+
+#### Authentication & Models
+```bash
+# Authentication commands
+pukucode auth login --provider anthropic --key sk-ant-xxx
+pukucode auth login --provider openai --key sk-xxx
+pukucode auth login --provider groq --key gsk-xxx
+pukucode auth login --provider google --key your-google-key
 pukucode auth logout --provider groq
 pukucode auth list
-pukucode models
-pukucode project-test
-```
-
-### Option 2: Direct Execution with Bun
-
-```bash
-# Run application context test
-bun src/index.ts test
-
-# Run event bus test
-bun src/index.ts event-test
-
-# Run filesystem test
-bun src/index.ts fs-test
-
-# Run app services test
-bun src/index.ts app-info
-
-# Run configuration system test
-bun src/index.ts config-test
-
-# Run authentication system test
-bun src/index.ts auth-test
-
-# Authentication commands
-bun src/index.ts auth login --provider groq --key your-api-key
-bun src/index.ts auth logout --provider groq
-bun src/index.ts auth list
 
 # List available AI models
-bun src/index.ts models
-
-# Test project system
-bun src/index.ts project-test
+pukucode models
 ```
 
-### Option 3: Using npm Scripts
-
+#### AI Interaction
 ```bash
-bun run test
-bun run event-test
-bun run fs-test
-bun run app-info
-bun run config-test
-bun run auth-test
-bun run models
-bun run project-test
+# Start AI conversation
+pukucode run "Hello, help me with my TypeScript project"
+
+# Use specific model
+pukucode run "Explain async/await" --model anthropic/claude-3-sonnet
+
+# Continue session
+pukucode run --session mysession --continue "Continue our discussion"
+
+# Use different agent
+pukucode run --agent build "Compile my project"
 ```
 
-## ❗ Troubleshooting `pukucode: command not found`
+#### File Operations
+```bash
+# Check git file status
+pukucode file-status
 
-**Make file executable:**
+# Show project file tree
+pukucode file-tree
 
+# Read file with diff support
+pukucode file-read src/index.ts
+```
+
+### Development Commands
+
+#### System Testing
+```bash
+# Test core systems
+bun src/index.ts test              # Application context test
+bun src/index.ts event-test        # Event bus test
+bun src/index.ts config-test       # Configuration system test
+bun src/index.ts auth-test         # Authentication system test
+bun src/index.ts project-test      # Project detection test
+
+# File system testing
+bun src/index.ts fs-test           # Filesystem utilities test
+bun src/index.ts file-time-test src/index.ts  # File freshness test
+bun src/index.ts watch-test        # File watcher test
+
+# Provider testing
+bun src/index.ts provider-test     # AI provider system test
+bun src/index.ts bun-test --package chalk  # Bun module test
+
+# Service testing
+bun src/index.ts app-info          # App services test
+```
+
+#### Using npm Scripts
+```bash
+bun run test          # Application context test
+bun run event-test    # Event bus test
+bun run config-test   # Configuration test
+bun run auth-test     # Authentication test
+bun run models        # List AI models
+```
+
+## ❗ Troubleshooting
+
+**Command not found:**
 ```bash
 chmod +x src/index.ts
-```
-
-**Install globally:**
-
-```bash
 npm install -g .
-```
-
-**Verify installation:**
-
-```bash
 pukucode --help
 ```
 
@@ -400,321 +411,69 @@ src/
 
 ## 📖 Example Usage
 
-### 🔹 Application Context
-
+### Authentication Setup
 ```bash
-bun src/index.ts test
+# List stored credentials
+pukucode auth list
+
+# Example output:
+# ┌  Credentials ~/.config/pukucode/auth.json
+# │  Anthropic (api)
+# │  Groq (api)
+# └  2 credentials
 ```
 
-**Example Output:**
-
-```
-App initialized: {
-  hostname: "my-machine",
-  git: false,
-  path: { config, data, root, cwd, state },
-  time: { initialized: 1700000000 }
-}
-```
-
-### 🔹 Event Bus
-
+### AI Interaction Examples
 ```bash
-bun src/index.ts event-test
+# Basic conversation
+pukucode run "Explain TypeScript interfaces"
+
+# With specific model
+pukucode run "Review this code" --model anthropic/claude-3-sonnet
+
+# Continue previous session
+pukucode run --session project-help --continue "What about error handling?"
 ```
 
-**Example Output:**
-
-```
-Received: Hello Events!
-```
-
-### 🔹 Filesystem Utilities
-
+### File Operations Examples
 ```bash
-bun src/index.ts fs-test
-```
+# Check git status
+pukucode file-status
+# Shows: 5 files changed (+120 -45 lines)
 
-**Example Output:**
+# View project structure
+pukucode file-tree -l 10
+# Shows: Directory tree with 10 items
 
-```
-Is cwd inside home? true
-Found package.json files: [ '/project/package.json' ]
-Does cwd overlap with cwd/subdir? true
-Found .gitignore walking up: /project/.gitignore
-```
-
-### 🔹 Services + Lifecycle
-
-Test the App Info Service (with init + shutdown hooks):
-
-```bash
-bun src/index.ts app-info
-```
-
-**Example Output:**
-
-```
-=== From App.info() ===
-Hostname: my-laptop
-Root directory: /home/user/my-project
-Git repo?: true
-
-=== From App.state (App Info Service) ===
-🚀 Initializing AppInfoService
-{
-  hostname: 'my-laptop',
-  cwd: '/home/user/my-project',
-  root: '/home/user/my-project',
-  configDir: '/home/user/.config/pukucode',
-  gitRepo: true
-}
-🛑 Shutting down AppInfoService
-```
-
-### 🔹 Configuration System
-
-```bash
-bun src/index.ts config-test
-```
-
-**Example Output:**
-
-```
-=== Configuration System Test ===
-✅ Global config loaded from: /home/user/.config/pukucode
-✅ Project configs found: pukucode.jsonc, pukucode.json
-✅ Agent definitions loaded: 3 agents from markdown files
-✅ Command templates loaded: 5 custom commands
-✅ Plugin discovery: 2 TypeScript plugins found
-✅ Schema validation: All configurations valid
-
-Final merged configuration:
-{
-  "theme": "dark",
-  "model": "anthropic/claude-3-sonnet",
-  "agents": { "plan": {...}, "build": {...} },
-  "keybinds": { "leader": "ctrl+x" },
-  ...
-}
-```
-
-### 🔹 Authentication System
-
-```bash
-bun src/index.ts auth-test
-```
-
-**Example Output:**
-
-```
-=== Authentication System Test ===
-✅ Credential storage initialized
-✅ Provider authentication configured
-✅ Well-known endpoints discovered: 2 remote configs
-✅ Environment variables injected: ANTHROPIC_API_KEY, OPENAI_API_KEY
-✅ Token validation successful
-
-Authentication providers:
-- anthropic: ✅ Valid API key
-- openai: ✅ Valid API key
-- custom-provider: ⚠️  Well-known config loaded
-```
-
-### 🔹 Authentication Commands
-
-**Login to a provider:**
-```bash
-# Login with Groq
-bun src/index.ts auth login --provider groq --key gsk_xyz123...
-
-# Login with Anthropic
-bun src/index.ts auth login --provider anthropic --key sk-ant-xyz123...
-
-# Login with OpenAI
-bun src/index.ts auth login --provider openai --key sk-xyz123...
-
-# Login with custom provider
-bun src/index.ts auth login --provider other --key your-api-key
-```
-
-**Logout from a provider:**
-```bash
-# Remove Groq credentials
-bun src/index.ts auth logout --provider groq
-
-# Remove Anthropic credentials
-bun src/index.ts auth logout --provider anthropic
-```
-
-**List stored credentials:**
-```bash
-bun src/index.ts auth list
-```
-
-**Example Output:**
-```
-┌  Credentials ~/.config/pukucode/auth.json
-│  Anthropic (api)
-│  Groq (api)
-└  2 credentials
-
-┌  Environment
-│  OpenAI OPENAI_API_KEY
-└  1 environment variable
+# Read with diff
+pukucode file-read src/app.ts
+# Shows: File content with git diff if modified
 ```
 
 ## 🧠 Key Concepts
 
-- **Application Lifecycle:** Each run = context created → work → services cleaned up.
-- **Info:** Static metadata (hostname, paths, git detection).
-- **Services:** Live, reusable singletons that are initialized once and optionally have shutdown hooks.
-- **Context:** AsyncLocalStorage-based "backpack" for sharing state across commands without passing manually.
-- **Configuration:** Multi-layered system supporting global, project, and user configurations with validation.
-- **Authentication:** Secure credential management with support for multiple AI providers and remote configs.
-- **Modularity:** Clean separation between core systems, services, and utilities for maintainability.
+- **Application Lifecycle:** Context created → work performed → services cleaned up
+- **Context System:** AsyncLocalStorage-based state sharing across commands
+- **Session Management:** Persistent AI conversations with revert/undo capabilities
+- **Multi-Provider AI:** Unified interface for different AI providers
+- **Git Integration:** Project-aware file operations with change tracking
+- **Modular Architecture:** Clean separation of concerns across 25 specialized modules
 
+## 🤖 AI Provider Support
 
+**Supported Providers:**
+- **Anthropic** - Claude models (claude-3-sonnet, claude-3-haiku, etc.)
+- **OpenAI** - GPT models (gpt-4, gpt-3.5-turbo, etc.)
+- **Google** - Gemini models (gemini-1.5-pro, gemini-1.5-flash)
+- **Groq** - Fast inference models (llama-3.1-70b-versatile, etc.)
+- **Azure OpenAI** - Enterprise OpenAI models
+- **AWS Bedrock** - Amazon's managed AI models
 
-# Testing for understanding:
-### File.status()
+**Usage Examples:**
 ```bash
-bun src/index.ts file-status
-```
-###File.read()
-```bash
-bun src/index.ts file-read src/README.md
-```
-
-### ripgrep Show all
-```bash
-bun src/index.ts file-tree
-```
-
-### ripgrep Limit to 5
-```bash
-bun src/index.ts file-tree -l 5
-```
-
-## time.ts testing
-
-🧪Testing Instructions
-Now, you can properly test the intended behavior:
-
-### Scenario 1: Don't modify the file
-
-Run the command:
-```bash
-bun src/index.ts file-time-test src/index.ts
-```
-Do nothing for 10 seconds.
-
-Expected Output:
-```text
-[1] Reading file 'src/index.ts' and recording timestamp...
-   -> Timestamp recorded: 2023-10-27T10:30:00.123Z
-   -> ✔ Immediately after reading, the file is fresh. Correct.
-
-[2] You now have 10 seconds to manually edit and save the file: src/index.ts
-
-[3] Checking file freshness again after 10 seconds...
-   -> ✔ OK: The file was NOT modified in the last 10 seconds.
-```
-
-### Scenario 2: Modify the file
-Run the command:
-```bash
-bun src/index.ts file-time-test src/index.ts
-```
-You will see the message: [2] You now have 10 seconds...
-Quickly open src/index.ts in your editor, add a space or a comment, and save it.
-Wait for the 10 seconds to finish.
-
-Expected Output:
-```text
-[1] Reading file 'src/index.ts' and recording timestamp...
-   -> Timestamp recorded: 2023-10-27T10:35:00.456Z
-   -> ✔ Immediately after reading, the file is fresh. Correct.
-
-[2] You now have 10 seconds to manually edit and save the file: src/index.ts
-
-[3] Checking file freshness again after 10 seconds...
-   -> ❌ FAILED: The file was modified since it was last read. Correct!
-      Reason: File src/index.ts has been modified since it was last read.
-      Last modification: 2023-10-27T10:35:05.789Z
-      Last read: 2023-10-27T10:35:00.456Z
-
-      Please read the file again before modifying it.
-```
-
-
-## watcher testing
-```bash
-bun src/index.ts watch-test
-```
-
-Open another terminal on pukucode directory, and then do this:
-```bash
-echo "// test" >> src/test.ts
-```
-
-## Bun module test
-```bash
-bun src/index.ts bun-test --package chalk
-```
-
-## provider.ts test
-```bash
-bun src/index.ts provider-test
-```
-
-## 🤖 AI Model Usage
-
-### Google Gemini Authentication & Usage
-
-To use Google Gemini models, you need to set up authentication first:
-
-```bash
-# Set your Google Generative AI API key
-export GOOGLE_GENERATIVE_AI_API_KEY="your-google-api-key-here"
-
-# Test with Gemini 1.5 Flash model
+# Use different providers
+pukucode run "hello" --model anthropic/claude-3-sonnet
+pukucode run "hello" --model openai/gpt-4
 pukucode run "hello" --model google/gemini-1.5-flash
-```
-
-**Example with story generation:**
-```bash
-# Set API key and run story generation
-export GOOGLE_GENERATIVE_AI_API_KEY="your-api-key" && pukucode run "tell me a story" --model google/gemini-1.5-flash
-```
-
-### Other AI Providers
-
-**Anthropic Claude:**
-```bash
-# Using environment variable
-export ANTHROPIC_API_KEY="your-anthropic-key"
-pukucode run "hello" --model anthropic/claude-3-sonnet
-
-# Or using auth command
-pukucode auth login --provider anthropic --key your-anthropic-key
-pukucode run "hello" --model anthropic/claude-3-sonnet
-```
-
-**OpenAI:**
-```bash
-# Using environment variable
-export OPENAI_API_KEY="your-openai-key"
-pukucode run "hello" --model openai/gpt-4
-
-# Or using auth command
-pukucode auth login --provider openai --key your-openai-key
-pukucode run "hello" --model openai/gpt-4
-```
-
-**Groq:**
-```bash
-# Using auth command
-pukucode auth login --provider groq --key your-groq-key
 pukucode run "hello" --model groq/llama-3.1-70b-versatile
 ```
