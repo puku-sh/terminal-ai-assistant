@@ -23,6 +23,7 @@ import { Instance } from "./project/instance"
 import { ModelsCommand } from "cli/cmd/models"
 import { AuthCommand } from "cli/cmd/auth"
 import { RunCommand } from "cli/cmd/run"
+import { ServerCommand } from "cli/cmd/server"
 
 
 
@@ -259,6 +260,7 @@ const cli = yargs(hideBin(process.argv))
   cli.command(ModelsCommand)
   cli.command(AuthCommand)
   cli.command(RunCommand)
+  cli.command(ServerCommand)
 
   // cli.command({
   //   command: "auth-test",
