@@ -477,3 +477,184 @@ pukucode run "hello" --model openai/gpt-4
 pukucode run "hello" --model google/gemini-1.5-flash
 pukucode run "hello" --model groq/llama-3.1-70b-versatile
 ```
+
+## 🌐 Server API
+
+PukuCode includes a built-in REST API server that exposes all core functionality via HTTP endpoints. This enables integration with web interfaces, TUI applications, and external tools.
+
+### Starting the Server
+
+```bash
+# Start server on default port 3000
+pukucode server
+
+# Start on custom port and hostname
+pukucode server --port 8080 --hostname 0.0.0.0
+
+# Start and auto-open browser
+pukucode server --open
+
+# Command options
+pukucode server --help
+```
+
+### API Documentation
+
+The server provides comprehensive API documentation accessible at:
+- **Documentation URL:** `http://localhost:3000/doc`
+- **Interactive docs** with copy-to-clipboard examples
+- **25+ endpoints** organized by category
+
+### Core API Categories
+
+#### 🗂️ Session Management
+```bash
+# List all sessions
+curl -X GET http://localhost:3000/session
+
+# Create new session
+curl -X POST http://localhost:3000/session \
+  -H "Content-Type: application/json" \
+  -d '{"title": "My Project Session"}'
+
+# Get session details
+curl -X GET http://localhost:3000/session/{session_id}
+
+# Delete session
+curl -X DELETE http://localhost:3000/session/{session_id}
+```
+
+#### 💬 AI Messaging
+```bash
+# Send message to AI
+curl -X POST http://localhost:3000/session/{session_id}/message \
+  -H "Content-Type: application/json" \
+  -d '{
+    "parts": [{"type": "text", "text": "Hello, help me with TypeScript"}],
+    "agent": "build"
+  }'
+
+# Get conversation messages
+curl -X GET http://localhost:3000/session/{session_id}/message
+
+# Get specific message
+curl -X GET http://localhost:3000/session/{session_id}/message/{message_id}
+```
+
+#### 🛠️ Command Execution
+```bash
+# Execute shell command
+curl -X POST http://localhost:3000/session/{session_id}/shell \
+  -H "Content-Type: application/json" \
+  -d '{"command": "ls -la"}'
+
+# Run predefined command
+curl -X POST http://localhost:3000/session/{session_id}/command \
+  -H "Content-Type: application/json" \
+  -d '{
+    "command": "code_review",
+    "arguments": "src/main.ts"
+  }'
+```
+
+#### 📁 File Operations
+```bash
+# List files and directories
+curl -X GET "http://localhost:3000/file?path=/project/src"
+
+# Read file content
+curl -X GET "http://localhost:3000/file/content?path=/project/src/index.ts"
+
+# Get file status (git changes)
+curl -X GET http://localhost:3000/file/status
+```
+
+#### 🤖 Provider & Model Management
+```bash
+# List available AI providers
+curl -X GET http://localhost:3000/config/providers
+
+# Get available tools
+curl -X GET "http://localhost:3000/experimental/tool?provider=anthropic&model=claude-3-sonnet"
+
+# List all tool IDs
+curl -X GET http://localhost:3000/experimental/tool/ids
+```
+
+#### 🔄 Real-time Events
+```bash
+# Subscribe to real-time events via Server-Sent Events
+curl -X GET http://localhost:3000/event \
+  -H "Accept: text/event-stream"
+```
+
+#### 🖥️ TUI Integration
+```bash
+# Append prompt to TUI
+curl -X POST http://localhost:3000/tui/append-prompt \
+  -H "Content-Type: application/json" \
+  -d '{"text": "Hello from API"}'
+
+# Show toast notification
+curl -X POST http://localhost:3000/tui/show-toast \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Success",
+    "message": "Operation completed",
+    "variant": "success"
+  }'
+
+# Open help dialog
+curl -X POST http://localhost:3000/tui/open-help
+
+# Submit prompt
+curl -X POST http://localhost:3000/tui/submit-prompt
+```
+
+#### 🔐 Authentication
+```bash
+# Set provider credentials
+curl -X PUT http://localhost:3000/auth/{provider_id} \
+  -H "Content-Type: application/json" \
+  -d '{"key": "your-api-key"}'
+```
+
+### Server Features
+
+- **Full API Coverage** - All CLI functionality exposed via REST endpoints
+- **Real-time Updates** - Server-Sent Events for live session updates
+- **CORS Enabled** - Cross-origin requests supported for web integrations
+- **Error Handling** - Comprehensive error responses with detailed messages
+- **Request Logging** - Built-in request/response logging for debugging
+- **Tool Integration** - Execute bash, file operations, and AI tools via API
+- **Session State** - Persistent session management across API calls
+
+### Integration Examples
+
+**TUI Integration:**
+```bash
+# The server enables external TUI applications to:
+# - Send prompts and receive AI responses
+# - Execute commands and tools
+# - Manage session state
+# - Display real-time notifications
+```
+
+**Web Integration:**
+```bash
+# Build web interfaces that can:
+# - Browse and manage AI sessions
+# - Send messages and view responses
+# - Execute shell commands remotely
+# - Monitor file changes and git status
+```
+
+**External Tools:**
+```bash
+# Integrate with external tools via HTTP:
+# - CI/CD pipelines triggering AI analysis
+# - Code editors sending context to AI
+# - Monitoring systems using AI for diagnostics
+```
+
+The server transforms PukuCode from a CLI-only tool into a complete AI development platform accessible from any HTTP client.
