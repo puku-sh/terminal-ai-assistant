@@ -1,5 +1,5 @@
 import type { Argv } from "yargs"
-import { Server } from "../../server/server"
+import { Server } from "../../server/server-simple"
 import { UI } from "../ui"
 import { cmd } from "./cmd"
 import { bootstrap } from "../bootstrap"

@@ -1,6 +1,6 @@
 import { Log } from "../util/log"
 import { Bus } from "../bus"
-import { describeRoute, generateSpecs, validator, resolver, openAPIRouteHandler } from "hono-openapi"
+import { describeRoute, generateSpecs, validator, openAPIRouteHandler } from "hono-openapi"
 import { Hono } from "hono"
 import { cors } from "hono/cors"
 import { streamSSE } from "hono/streaming"
@@ -24,6 +24,11 @@ import { ProjectRoute } from "./project"
 import { ToolRegistry } from "../tool/registry"
 import { zodToJsonSchema } from "zod-to-json-schema"
 import { lazy } from "../util/lazy"
+
+// Helper function to convert Zod schemas to JSON Schema for OpenAPI
+function resolver(schema: any) {
+  return zodToJsonSchema(schema)
+}
 
 const ERRORS = {
   400: {
