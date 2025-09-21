@@ -79,6 +79,109 @@ export namespace Server {
         })
       })
       
+      // API Documentation
+      .get("/doc", async (c) => {
+        const endpoints = [
+          { method: "GET", path: "/", description: "Health check & server info" },
+          { method: "GET", path: "/config", description: "Get configuration" },
+          { method: "GET", path: "/path", description: "Get path information" },
+          { method: "GET", path: "/session", description: "List all sessions" },
+          { method: "GET", path: "/session/:id", description: "Get specific session" },
+          { method: "POST", path: "/session", description: "Create new session", body: { title: "string (optional)", parentID: "string (optional)" } },
+          { method: "DELETE", path: "/session/:id", description: "Delete session" },
+          { method: "PATCH", path: "/session/:id", description: "Update session", body: { title: "string" } },
+          { method: "GET", path: "/session/:id/message", description: "List messages in session" },
+          { method: "GET", path: "/session/:id/message/:messageID", description: "Get specific message" },
+          { method: "POST", path: "/session/:id/message", description: "Send message to session", body: { messageID: "string", model: { providerID: "string", modelID: "string" }, agent: "string", parts: [{ id: "string", type: "text", text: "string" }] } },
+          { method: "POST", path: "/session/:id/command", description: "Send command to session", body: { messageID: "string", agent: "string", model: "string", command: "string", arguments: "string" } },
+          { method: "POST", path: "/session/:id/shell", description: "Run shell command in session", body: { messageID: "string", command: "string" } },
+          { method: "POST", path: "/session/:id/abort", description: "Abort session processing" },
+          { method: "GET", path: "/config/providers", description: "List AI providers and models" },
+          { method: "GET", path: "/experimental/tool/ids", description: "List all tool IDs" },
+          { method: "GET", path: "/experimental/tool?provider=X&model=Y", description: "List tools for specific provider/model" },
+          { method: "GET", path: "/file?path=<path>", description: "List files and directories" },
+          { method: "GET", path: "/file/content?path=<path>", description: "Read file content" },
+          { method: "GET", path: "/file/status", description: "Get git status of files" },
+          { method: "GET", path: "/command", description: "List available commands" },
+          { method: "GET", path: "/agent", description: "List available agents" },
+          { method: "PUT", path: "/auth/:id", description: "Set authentication for provider", body: { type: "api", key: "string" } },
+          { method: "GET", path: "/project", description: "List all projects" },
+          { method: "GET", path: "/project/current", description: "Get current project" },
+          { method: "GET", path: "/event", description: "SSE endpoint for real-time events" },
+          { method: "POST", path: "/tui/*", description: "TUI communication endpoints" },
+        ]
+        
+        const html = `
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PukuCode API Documentation</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; }
+        h1 { color: #333; }
+        .endpoint { border: 1px solid #ddd; margin: 10px 0; padding: 15px; border-radius: 5px; }
+        .method { display: inline-block; padding: 3px 8px; border-radius: 3px; color: white; font-weight: bold; min-width: 60px; text-align: center; }
+        .GET { background-color: #61affe; }
+        .POST { background-color: #49cc90; }
+        .PUT { background-color: #fca130; }
+        .DELETE { background-color: #f93e3e; }
+        .PATCH { background-color: #50e3c2; }
+        .path { font-family: monospace; font-weight: bold; margin-left: 10px; }
+        .description { margin-top: 8px; color: #666; }
+        .body { margin-top: 8px; padding: 8px; background-color: #f5f5f5; border-radius: 3px; font-family: monospace; font-size: 12px; }
+        .examples { margin-top: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 5px; }
+        .example { margin: 10px 0; padding: 8px; background-color: #fff; border-left: 3px solid #007bff; font-family: monospace; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <h1>🚀 PukuCode API Documentation</h1>
+    <p>Server Status: <strong>Running</strong> | Version: <strong>1.0.0</strong></p>
+    
+    <h2>📋 Available Endpoints</h2>
+    ${endpoints.map(endpoint => `
+        <div class="endpoint">
+            <div>
+                <span class="method ${endpoint.method}">${endpoint.method}</span>
+                <span class="path">${endpoint.path}</span>
+            </div>
+            <div class="description">${endpoint.description}</div>
+            ${endpoint.body ? `<div class="body">Request Body: <pre>${JSON.stringify(endpoint.body, null, 2)}</pre></div>` : ''}
+        </div>
+    `).join('')}
+    
+    <div class="examples">
+        <h3>📝 Quick Examples</h3>
+        <div class="example">
+            <strong>Health Check:</strong><br>
+            curl http://localhost:3000/
+        </div>
+        <div class="example">
+            <strong>List Sessions:</strong><br>
+            curl http://localhost:3000/session
+        </div>
+        <div class="example">
+            <strong>Create Session:</strong><br>
+            curl -X POST http://localhost:3000/session -H "Content-Type: application/json" -d '{"title": "My Session"}'
+        </div>
+        <div class="example">
+            <strong>List Files:</strong><br>
+            curl "http://localhost:3000/file?path=."
+        </div>
+        <div class="example">
+            <strong>Get Providers:</strong><br>
+            curl http://localhost:3000/config/providers
+        </div>
+        <div class="example">
+            <strong>Real-time Events:</strong><br>
+            curl -N http://localhost:3000/event
+        </div>
+    </div>
+</body>
+</html>`
+        
+        return c.html(html)
+      })
+      
       // Config endpoints
       .get("/config", async (c) => {
         return c.json(await Config.get())
