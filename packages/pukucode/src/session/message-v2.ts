@@ -210,9 +210,12 @@ export namespace MessageV2{
       export const Part = z
         .discriminatedUnion("type", [
           TextPart,
+          ReasoningPart,
+          FilePart,
           ToolPart,
           StepStartPart,
           StepFinishPart,
+          PatchPart,
           AgentPart
         ])
         .openapi("Part")
