@@ -1,39 +1,26 @@
+#!/usr/bin/env bun
 import yargs from "yargs"
 import { hideBin } from "yargs/helpers"
-import { App } from "./app/app"
-import { Bus } from "./bus"
-import { z} from "zod"
+import { Log } from "./util/log"
+import { ModelsCommand } from "cli/cmd/models"
+import { AuthCommand } from "cli/cmd/auth"
+import { RunCommand } from "cli/cmd/run"
+import { ServerCommand } from "cli/cmd/server"
+
+
+
+const logger = Log.create({ service: "cli" })
 
 const cli = yargs(hideBin(process.argv))
-  .scriptName("my-agent")
-  .command({
-    command: "test",
-    describe: "test the app context",
-    handler: async () => {
-      await App.provide({ cwd: process.cwd() }, async (app) => {
-        console.log("App initialized:", app)
-      })
-    }
-  })
+  .scriptName("pukucode")
 
-  const TestEvent = Bus.event("test.message", z.object({
-    message: z.string()
-  }))
-
-  cli.command({
-    command: "event-test",
-    describe: "test event bus",
-    handler: async () => {
-      await App.provide({ cwd: process.cwd() }, async () => {
-        // Subscribe
-        Bus.subscribe(TestEvent, (event) => {
-          console.log("Received:", event.properties.message)
-        })
-
-        // Publish  
-        await Bus.publish(TestEvent, { message: "Hello Events!" })
-      })
-    }
-  })
-
-await cli.parse()
+  cli.command(ModelsCommand)
+  cli.command(AuthCommand)
+  cli.command(RunCommand)
+  cli.command(ServerCommand)
+try {
+  await cli.parse()
+} catch (error) {
+  logger.error("CLI command failed", { error })
+  process.exit(1)
+}

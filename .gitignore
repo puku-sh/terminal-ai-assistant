@@ -30,4 +30,9 @@ Thumbs.db
 /go.sum
 
 # User config
-.opencode/
+
+/CLAUDE.md
+
+
+session.ts
+CLAUDE.md
