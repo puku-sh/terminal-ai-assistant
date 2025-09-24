@@ -1,7 +1,5 @@
 # 🐉 PukuCode
 
-
-
 [![asciicast](https://asciinema.org/a/tgZ0Xfvkh7TGXKdIxWzz8zEUJ.svg)](https://asciinema.org/a/tgZ0Xfvkh7TGXKdIxWzz8zEUJ)
 
 ## Key Features
@@ -190,7 +188,48 @@ npm install -g .
 bun install
 ```
 
-### Core Commands
+### Main Commands
+
+#### Core Commands
+```bash
+# AI interaction - primary command
+pukucode run "your prompt here" [--model provider/model] [--agent agent-name] [--system "system prompt"]
+
+# Start HTTP API server
+pukucode server [--port 3000] [--hostname localhost] [--open]
+
+# List available AI models from all providers
+pukucode models
+
+# Authentication management
+pukucode auth login --provider <provider> --key <api-key>
+pukucode auth logout --provider <provider>
+pukucode auth list
+```
+
+#### AI Interaction Examples
+```bash
+# Basic AI conversation
+pukucode run "Hello, explain what TypeScript is"
+
+# Use specific AI model
+pukucode run "Review this code" --model anthropic/claude-3-sonnet
+pukucode run "Debug this error" --model openai/gpt-4
+pukucode run "Optimize performance" --model google/gemini-1.5-flash
+pukucode run "Write tests" --model groq/llama-3.1-70b-versatile
+
+# Use specific agent configuration
+pukucode run "Help with DevOps" --agent devops
+
+# Custom system prompt
+pukucode run "Explain this" --system "You are a senior software architect"
+
+# Start server on different port
+pukucode server --port 8080
+
+# Start server and open browser
+pukucode server --open
+```
 
 #### Authentication & Models
 ```bash
@@ -206,65 +245,8 @@ pukucode auth list
 pukucode models
 ```
 
-#### AI Interaction
-```bash
-# Start AI conversation
-pukucode run "Hello, help me with my TypeScript project"
 
-# Use specific model
-pukucode run "Explain async/await" --model anthropic/claude-3-sonnet
 
-# Continue session
-pukucode run --session mysession --continue "Continue our discussion"
-
-# Use different agent
-pukucode run --agent build "Compile my project"
-```
-
-#### File Operations
-```bash
-# Check git file status
-pukucode file-status
-
-# Show project file tree
-pukucode file-tree
-
-# Read file with diff support
-pukucode file-read src/index.ts
-```
-
-### Development Commands
-
-#### System Testing
-```bash
-# Test core systems
-bun src/index.ts test              # Application context test
-bun src/index.ts event-test        # Event bus test
-bun src/index.ts config-test       # Configuration system test
-bun src/index.ts auth-test         # Authentication system test
-bun src/index.ts project-test      # Project detection test
-
-# File system testing
-bun src/index.ts fs-test           # Filesystem utilities test
-bun src/index.ts file-time-test src/index.ts  # File freshness test
-bun src/index.ts watch-test        # File watcher test
-
-# Provider testing
-bun src/index.ts provider-test     # AI provider system test
-bun src/index.ts bun-test --package chalk  # Bun module test
-
-# Service testing
-bun src/index.ts app-info          # App services test
-```
-
-#### Using npm Scripts
-```bash
-bun run test          # Application context test
-bun run event-test    # Event bus test
-bun run config-test   # Configuration test
-bun run auth-test     # Authentication test
-bun run models        # List AI models
-```
 
 ## ❗ Troubleshooting
 
@@ -338,7 +320,7 @@ src/
 ## 🔄 High-level Architecture
 
 ### CLI (`index.ts`)
-- Registers commands (`test`, `event-test`, `fs-test`, `app-info`, `config-test`, `auth-test`, `auth`, `models`, `project-test`, `run`)
+- Registers commands ( `auth`, `models`, `run`)
 - Wraps all commands inside an App context using `App.provide`
 - Models command uses both App and Instance contexts for full functionality
 - Auth command provides credential management with command-line interface
@@ -424,30 +406,7 @@ pukucode auth list
 ```
 
 ### AI Interaction Examples
-```bash
-# Basic conversation
-pukucode run "Explain TypeScript interfaces"
 
-# With specific model
-pukucode run "Review this code" --model anthropic/claude-3-sonnet
-
-# Continue previous session
-pukucode run --session project-help --continue "What about error handling?"
-```
-
-### File Operations Examples
-```bash
-# Check git status
-pukucode file-status
-# Shows: 5 files changed (+120 -45 lines)
-
-# View project structure
-pukucode file-tree -l 10
-# Shows: Directory tree with 10 items
-
-# Read with diff
-pukucode file-read src/app.ts
-# Shows: File content with git diff if modified
 ```
 
 ## 🧠 Key Concepts
@@ -707,28 +666,6 @@ curl -X GET "http://localhost:3000/experimental/tool?provider=anthropic&model=cl
 # Subscribe to real-time events via Server-Sent Events
 curl -X GET http://localhost:3000/event \
   -H "Accept: text/event-stream"
-
-# Example events received:
-# data: {"type":"server.connected","properties":{}}
-# data: {"type":"session.created","properties":{"sessionID":"ses_123"}}
-# data: {"type":"message.started","properties":{"messageID":"msg_456"}}
-# data: {"type":"file.edited","properties":{"file":"src/index.ts"}}
-```
-
-#### 📋 Logging
-```bash
-# Write log entry to server logs
-curl -X POST http://localhost:3000/log \
-  -H "Content-Type: application/json" \
-  -d '{
-    "service": "my-app",
-    "level": "info",
-    "message": "User action completed",
-    "extra": {
-      "userId": "123",
-      "action": "file_read"
-    }
-  }'
 ```
 
 #### 🖥️ TUI Integration
@@ -747,20 +684,11 @@ curl -X POST http://localhost:3000/tui/show-toast \
     "variant": "success"
   }'
 
-# Open various dialogs
+# Open help dialog
 curl -X POST http://localhost:3000/tui/open-help
-curl -X POST http://localhost:3000/tui/open-sessions
-curl -X POST http://localhost:3000/tui/open-themes
-curl -X POST http://localhost:3000/tui/open-models
 
-# Execute TUI commands
-curl -X POST http://localhost:3000/tui/execute-command \
-  -H "Content-Type: application/json" \
-  -d '{"command": "agent_cycle"}'
-
-# Prompt actions
+# Submit prompt
 curl -X POST http://localhost:3000/tui/submit-prompt
-curl -X POST http://localhost:3000/tui/clear-prompt
 ```
 
 #### 🔐 Authentication
@@ -768,92 +696,7 @@ curl -X POST http://localhost:3000/tui/clear-prompt
 # Set provider credentials
 curl -X PUT http://localhost:3000/auth/{provider_id} \
   -H "Content-Type: application/json" \
-  -d '{
-    "key": "your-api-key",
-    "endpoint": "https://api.example.com"
-  }'
-
-# Examples for different providers:
-# Anthropic
-curl -X PUT http://localhost:3000/auth/anthropic \
-  -H "Content-Type: application/json" \
-  -d '{"key": "sk-ant-api03-xxx"}'
-
-# OpenAI
-curl -X PUT http://localhost:3000/auth/openai \
-  -H "Content-Type: application/json" \
-  -d '{"key": "sk-xxx"}'
-
-# Google
-curl -X PUT http://localhost:3000/auth/google \
-  -H "Content-Type: application/json" \
-  -d '{"key": "your-google-api-key"}'
-```
-
-### Complete API Workflow Examples
-
-#### Example 1: AI Code Review Workflow
-```bash
-# 1. Create session for code review
-SESSION_ID=$(curl -s -X POST http://localhost:3000/session \
-  -H "Content-Type: application/json" \
-  -d '{"title":"Code Review Session"}' | jq -r '.id')
-
-# 2. Get file status to see what changed
-curl -X GET http://localhost:3000/file/status
-
-# 3. Read specific file
-curl -X GET "http://localhost:3000/file/content?path=src/server.ts"
-
-# 4. Send to AI for review
-curl -X POST http://localhost:3000/session/$SESSION_ID/message \
-  -H "Content-Type: application/json" \
-  -d '{
-    "model": {"providerID": "anthropic", "modelID": "claude-3-sonnet"},
-    "parts": [{"type": "text", "text": "Please review the server.ts file for potential issues"}],
-    "tools": {"read": true, "bash": true}
-  }'
-
-# 5. Get the AI response
-curl -X GET http://localhost:3000/session/$SESSION_ID/message
-```
-
-#### Example 2: Real-time Development Assistant
-```bash
-# 1. Subscribe to file events
-curl -X GET http://localhost:3000/event -H "Accept: text/event-stream" &
-
-# 2. Create persistent session
-SESSION_ID=$(curl -s -X POST http://localhost:3000/session \
-  -d '{"title":"Development Assistant"}' | jq -r '.id')
-
-# 3. Monitor and respond to changes (simulated)
-curl -X POST http://localhost:3000/session/$SESSION_ID/message \
-  -H "Content-Type: application/json" \
-  -d '{
-    "parts": [{"type": "text", "text": "Monitor my project for errors and suggest fixes"}],
-    "tools": {"bash": true, "read": true}
-  }'
-```
-
-#### Example 3: Automated Testing Integration
-```bash
-# 1. Create testing session
-SESSION_ID=$(curl -s -X POST http://localhost:3000/session \
-  -d '{"title":"Automated Testing"}' | jq -r '.id')
-
-# 2. Run tests via shell command
-curl -X POST http://localhost:3000/session/$SESSION_ID/shell \
-  -H "Content-Type: application/json" \
-  -d '{"command": "npm test"}'
-
-# 3. If tests fail, ask AI to analyze
-curl -X POST http://localhost:3000/session/$SESSION_ID/message \
-  -H "Content-Type: application/json" \
-  -d '{
-    "parts": [{"type": "text", "text": "The tests failed. Please analyze the errors and suggest fixes."}],
-    "tools": {"bash": true, "read": true}
-  }'
+  -d '{"key": "your-api-key"}'
 ```
 
 ### Server Features
