@@ -1,8 +1,9 @@
 import { Log } from "../util/log"
 import { Bus } from "../bus"
-import { describeRoute, generateSpecs, validator, openAPIRouteHandler } from "hono-openapi"
+import { describeRoute, generateSpecs, validator, resolver, openAPIRouteHandler } from "hono-openapi"
 import { Hono } from "hono"
 import { cors } from "hono/cors"
+import { zValidator } from "@hono/zod-validator"
 import { streamSSE } from "hono/streaming"
 import { Session } from "../session"
 import z from "zod"
@@ -100,9 +101,9 @@ export namespace Server {
         openAPIRouteHandler(app, {
           documentation: {
             info: {
-              title: "opencode",
+              title: "pcode",
               version: "0.0.3",
-              description: "opencode api",
+              description: "pukucode api",
             },
             openapi: "3.1.1",
           },
@@ -572,7 +573,7 @@ export namespace Server {
             id: z.string().meta({ description: "Session ID" }),
           }),
         ),
-        validator("json", Session.PromptInput.omit({ sessionID: true })),
+        zValidator("json", Session.PromptInput.omit({ sessionID: true })),
         async (c) => {
           const sessionID = c.req.valid("param").id
           const body = c.req.valid("json")
@@ -1200,9 +1201,9 @@ export namespace Server {
     const result = await generateSpecs(App(), {
       documentation: {
         info: {
-          title: "opencode",
-          version: "1.0.0",
-          description: "opencode api",
+          title: "pukucode",
+          version: "0.0.1",
+          description: "pukucode api",
         },
         openapi: "3.1.1",
       },

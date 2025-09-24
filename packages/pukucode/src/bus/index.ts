@@ -31,21 +31,26 @@ import {Log} from "../util/log"
       return result
     }
     export function payloads() {
+      const entries = Array.from(registry.entries())
+
+      if (entries.length === 0) {
+        // Return a fallback schema when no events are registered
+        return z.object({
+          type: z.string(),
+          properties: z.any(),
+        }).openapi("Event")
+      }
+
       return z.discriminatedUnion(
         "type",
-        registry
-          .entries()
-          .map(([type, def]) =>
-            z
-              .object({
-                type: z.literal(type),
-                properties: def.properties,
-              })
-              .openapi({
-                ref: "Event" + "." + def.type,
-              }),
-          )
-          .toArray() as any,
+        entries.map(([type, def]) =>
+          z
+            .object({
+              type: z.literal(type),
+              properties: def.properties,
+            })
+            .openapi("Event." + def.type),
+        ) as any,
       )
     }
   

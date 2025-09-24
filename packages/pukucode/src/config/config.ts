@@ -14,6 +14,10 @@ import matter from "gray-matter"
 //import { Flag } from "../flag/flag"
 import { Auth } from "../auth"
 import { type ParseError as JsoncParseError, parse as parseJsonc, printParseErrorCode } from "jsonc-parser"
+import { extendZodWithOpenApi } from "@asteasolutions/zod-to-openapi"
+
+
+extendZodWithOpenApi(z)
 
 export namespace Config {
   const log = Log.create({ service: "config" })
@@ -198,9 +202,7 @@ export namespace Config {
       enabled: z.boolean().optional().describe("Enable or disable the MCP server on startup"),
     })
     .strict()
-    .openapi({
-      ref: "McpLocalConfig",
-    })
+    .openapi("McpLocalConfig")
 
   // MCP (Model Context Protocol) Remote Server Configuration Schema
   export const McpRemote = z
@@ -211,9 +213,7 @@ export namespace Config {
       headers: z.record(z.string(), z.string()).optional().describe("Headers to send with the request"),
     })
     .strict()
-    .openapi({
-      ref: "McpRemoteConfig",
-    })
+    .openapi("McpRemoteConfig")
 
   export const Mcp = z.discriminatedUnion("type", [McpLocal, McpRemote])
   export type Mcp = z.infer<typeof Mcp>
@@ -251,9 +251,7 @@ export namespace Config {
         .optional(),
     })
     .catchall(z.any())
-    .openapi({
-      ref: "AgentConfig",
-    })
+    .openapi("AgentConfig")
   export type Agent = z.infer<typeof Agent>
 
   // Keybinds Configuration Schema - defines keyboard shortcuts for the application
@@ -327,17 +325,13 @@ export namespace Config {
       messages_revert: z.string().optional().default("none").describe("@deprecated use messages_undo. Revert message"),
     })
     .strict()
-    .openapi({
-      ref: "KeybindsConfig",
-    })
+    .openapi("KeybindsConfig")
 
   export const TUI = z.object({
     scroll_speed: z.number().min(1).optional().default(2).describe("TUI scroll speed"),
   })
 
-  export const Layout = z.enum(["auto", "stretch"]).openapi({
-    ref: "LayoutConfig",
-  })
+  export const Layout = z.enum(["auto", "stretch"]).openapi("LayoutConfig")
   export type Layout = z.infer<typeof Layout>
 
   // Main Configuration Schema - comprehensive application configuration structure

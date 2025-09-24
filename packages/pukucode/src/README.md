@@ -505,6 +505,34 @@ The server provides comprehensive API documentation accessible at:
 - **Interactive docs** with copy-to-clipboard examples
 - **25+ endpoints** organized by category
 
+### API Equivalent of CLI Commands
+
+**CLI Command:** `pukucode run "hello" --model google/gemini-1.5-flash`
+
+**API Equivalent:**
+```bash
+# Step 1: Create session
+SESSION_ID=$(curl -s -X POST http://localhost:3000/session \
+  -H "Content-Type: application/json" \
+  -d '{"title":"CLI Run Session"}' | jq -r '.id')
+
+# Step 2: Send prompt
+curl -X POST http://localhost:3000/session/$SESSION_ID/message \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": {
+      "providerID": "google",
+      "modelID": "gemini-1.5-flash"
+    },
+    "parts": [
+      {
+        "type": "text",
+        "text": "hello"
+      }
+    ]
+  }'
+```
+
 ### Core API Categories
 
 #### 🗂️ Session Management
@@ -520,18 +548,64 @@ curl -X POST http://localhost:3000/session \
 # Get session details
 curl -X GET http://localhost:3000/session/{session_id}
 
+# Get session children
+curl -X GET http://localhost:3000/session/{session_id}/children
+
+# Update session
+curl -X PATCH http://localhost:3000/session/{session_id} \
+  -H "Content-Type: application/json" \
+  -d '{"title": "Updated Session Title"}'
+
 # Delete session
 curl -X DELETE http://localhost:3000/session/{session_id}
+
+# Initialize session
+curl -X POST http://localhost:3000/session/{session_id}/init \
+  -H "Content-Type: application/json" \
+  -d '{
+    "messageID": "msg_123",
+    "providerID": "anthropic",
+    "modelID": "claude-3-sonnet"
+  }'
+
+# Abort session
+curl -X POST http://localhost:3000/session/{session_id}/abort
+
+# Revert session messages
+curl -X POST http://localhost:3000/session/{session_id}/revert \
+  -H "Content-Type: application/json" \
+  -d '{"messageID": "msg_123"}'
+
+# Unrevert session
+curl -X POST http://localhost:3000/session/{session_id}/unrevert
 ```
 
 #### 💬 AI Messaging
 ```bash
-# Send message to AI
+# Send message to AI (with model selection)
 curl -X POST http://localhost:3000/session/{session_id}/message \
   -H "Content-Type: application/json" \
   -d '{
-    "parts": [{"type": "text", "text": "Hello, help me with TypeScript"}],
-    "agent": "build"
+    "model": {
+      "providerID": "anthropic",
+      "modelID": "claude-3-sonnet"
+    },
+    "parts": [
+      {
+        "type": "text",
+        "text": "Hello, help me with TypeScript"
+      }
+    ],
+    "agent": "build",
+    "system": "You are a TypeScript expert"
+  }'
+
+# Send message with tools enabled
+curl -X POST http://localhost:3000/session/{session_id}/message \
+  -H "Content-Type: application/json" \
+  -d '{
+    "parts": [{"type": "text", "text": "Read the README file"}],
+    "tools": {"read": true, "bash": true}
   }'
 
 # Get conversation messages
@@ -546,24 +620,32 @@ curl -X GET http://localhost:3000/session/{session_id}/message/{message_id}
 # Execute shell command
 curl -X POST http://localhost:3000/session/{session_id}/shell \
   -H "Content-Type: application/json" \
-  -d '{"command": "ls -la"}'
+  -d '{
+    "command": "ls -la",
+    "cwd": "/path/to/directory"
+  }'
 
 # Run predefined command
 curl -X POST http://localhost:3000/session/{session_id}/command \
   -H "Content-Type: application/json" \
   -d '{
     "command": "code_review",
-    "arguments": "src/main.ts"
+    "arguments": {"file": "src/main.ts"}
   }'
+
+# Permission response
+curl -X POST http://localhost:3000/session/{session_id}/permissions/{permission_id} \
+  -H "Content-Type: application/json" \
+  -d '{"response": "allow"}'
 ```
 
 #### 📁 File Operations
 ```bash
 # List files and directories
-curl -X GET "http://localhost:3000/file?path=/project/src"
+curl -X GET "http://localhost:3000/file?path=src"
 
-# Read file content
-curl -X GET "http://localhost:3000/file/content?path=/project/src/index.ts"
+# Read file content (with git diff if modified)
+curl -X GET "http://localhost:3000/file/content?path=src/index.ts"
 
 # Get file status (git changes)
 curl -X GET http://localhost:3000/file/status
@@ -571,14 +653,53 @@ curl -X GET http://localhost:3000/file/status
 
 #### 🤖 Provider & Model Management
 ```bash
-# List available AI providers
+# Get current configuration
+curl -X GET http://localhost:3000/config
+
+# Get current paths
+curl -X GET http://localhost:3000/path
+
+# List available AI providers and models
 curl -X GET http://localhost:3000/config/providers
 
-# Get available tools
-curl -X GET "http://localhost:3000/experimental/tool?provider=anthropic&model=claude-3-sonnet"
+# List all available commands
+curl -X GET http://localhost:3000/command
 
+# List all agents
+curl -X GET http://localhost:3000/agent
+```
+
+#### 🔧 Tool Management
+```bash
 # List all tool IDs
 curl -X GET http://localhost:3000/experimental/tool/ids
+
+# Get tools for specific provider/model
+curl -X GET "http://localhost:3000/experimental/tool?provider=anthropic&model=claude-3-sonnet"
+
+# Example response:
+# [
+#   {
+#     "id": "bash",
+#     "description": "Execute bash commands",
+#     "parameters": {
+#       "type": "object",
+#       "properties": {
+#         "command": {"type": "string"}
+#       }
+#     }
+#   },
+#   {
+#     "id": "read",
+#     "description": "Read file contents",
+#     "parameters": {
+#       "type": "object",
+#       "properties": {
+#         "path": {"type": "string"}
+#       }
+#     }
+#   }
+# ]
 ```
 
 #### 🔄 Real-time Events
@@ -586,6 +707,28 @@ curl -X GET http://localhost:3000/experimental/tool/ids
 # Subscribe to real-time events via Server-Sent Events
 curl -X GET http://localhost:3000/event \
   -H "Accept: text/event-stream"
+
+# Example events received:
+# data: {"type":"server.connected","properties":{}}
+# data: {"type":"session.created","properties":{"sessionID":"ses_123"}}
+# data: {"type":"message.started","properties":{"messageID":"msg_456"}}
+# data: {"type":"file.edited","properties":{"file":"src/index.ts"}}
+```
+
+#### 📋 Logging
+```bash
+# Write log entry to server logs
+curl -X POST http://localhost:3000/log \
+  -H "Content-Type: application/json" \
+  -d '{
+    "service": "my-app",
+    "level": "info",
+    "message": "User action completed",
+    "extra": {
+      "userId": "123",
+      "action": "file_read"
+    }
+  }'
 ```
 
 #### 🖥️ TUI Integration
@@ -604,11 +747,20 @@ curl -X POST http://localhost:3000/tui/show-toast \
     "variant": "success"
   }'
 
-# Open help dialog
+# Open various dialogs
 curl -X POST http://localhost:3000/tui/open-help
+curl -X POST http://localhost:3000/tui/open-sessions
+curl -X POST http://localhost:3000/tui/open-themes
+curl -X POST http://localhost:3000/tui/open-models
 
-# Submit prompt
+# Execute TUI commands
+curl -X POST http://localhost:3000/tui/execute-command \
+  -H "Content-Type: application/json" \
+  -d '{"command": "agent_cycle"}'
+
+# Prompt actions
 curl -X POST http://localhost:3000/tui/submit-prompt
+curl -X POST http://localhost:3000/tui/clear-prompt
 ```
 
 #### 🔐 Authentication
@@ -616,7 +768,92 @@ curl -X POST http://localhost:3000/tui/submit-prompt
 # Set provider credentials
 curl -X PUT http://localhost:3000/auth/{provider_id} \
   -H "Content-Type: application/json" \
-  -d '{"key": "your-api-key"}'
+  -d '{
+    "key": "your-api-key",
+    "endpoint": "https://api.example.com"
+  }'
+
+# Examples for different providers:
+# Anthropic
+curl -X PUT http://localhost:3000/auth/anthropic \
+  -H "Content-Type: application/json" \
+  -d '{"key": "sk-ant-api03-xxx"}'
+
+# OpenAI
+curl -X PUT http://localhost:3000/auth/openai \
+  -H "Content-Type: application/json" \
+  -d '{"key": "sk-xxx"}'
+
+# Google
+curl -X PUT http://localhost:3000/auth/google \
+  -H "Content-Type: application/json" \
+  -d '{"key": "your-google-api-key"}'
+```
+
+### Complete API Workflow Examples
+
+#### Example 1: AI Code Review Workflow
+```bash
+# 1. Create session for code review
+SESSION_ID=$(curl -s -X POST http://localhost:3000/session \
+  -H "Content-Type: application/json" \
+  -d '{"title":"Code Review Session"}' | jq -r '.id')
+
+# 2. Get file status to see what changed
+curl -X GET http://localhost:3000/file/status
+
+# 3. Read specific file
+curl -X GET "http://localhost:3000/file/content?path=src/server.ts"
+
+# 4. Send to AI for review
+curl -X POST http://localhost:3000/session/$SESSION_ID/message \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": {"providerID": "anthropic", "modelID": "claude-3-sonnet"},
+    "parts": [{"type": "text", "text": "Please review the server.ts file for potential issues"}],
+    "tools": {"read": true, "bash": true}
+  }'
+
+# 5. Get the AI response
+curl -X GET http://localhost:3000/session/$SESSION_ID/message
+```
+
+#### Example 2: Real-time Development Assistant
+```bash
+# 1. Subscribe to file events
+curl -X GET http://localhost:3000/event -H "Accept: text/event-stream" &
+
+# 2. Create persistent session
+SESSION_ID=$(curl -s -X POST http://localhost:3000/session \
+  -d '{"title":"Development Assistant"}' | jq -r '.id')
+
+# 3. Monitor and respond to changes (simulated)
+curl -X POST http://localhost:3000/session/$SESSION_ID/message \
+  -H "Content-Type: application/json" \
+  -d '{
+    "parts": [{"type": "text", "text": "Monitor my project for errors and suggest fixes"}],
+    "tools": {"bash": true, "read": true}
+  }'
+```
+
+#### Example 3: Automated Testing Integration
+```bash
+# 1. Create testing session
+SESSION_ID=$(curl -s -X POST http://localhost:3000/session \
+  -d '{"title":"Automated Testing"}' | jq -r '.id')
+
+# 2. Run tests via shell command
+curl -X POST http://localhost:3000/session/$SESSION_ID/shell \
+  -H "Content-Type: application/json" \
+  -d '{"command": "npm test"}'
+
+# 3. If tests fail, ask AI to analyze
+curl -X POST http://localhost:3000/session/$SESSION_ID/message \
+  -H "Content-Type: application/json" \
+  -d '{
+    "parts": [{"type": "text", "text": "The tests failed. Please analyze the errors and suggest fixes."}],
+    "tools": {"bash": true, "read": true}
+  }'
 ```
 
 ### Server Features

@@ -32,6 +32,22 @@ export namespace File {
   export type Info = z.infer<typeof Info>
 
   /**
+   * File.Content schema
+   * -------------------
+   * Defines the shape of file content returned by read()
+   * - type: "raw" for unchanged files, "patch" for git diff
+   * - content: file content or patch string
+   */
+  export const Content = z
+    .object({
+      type: z.enum(["raw", "patch"]),
+      content: z.string(),
+    })
+    .openapi("FileContent")
+
+  export type Content = z.infer<typeof Content>
+
+  /**
    * The Node type  represents a file system entry with these properties 
 
     Purpose: Used by the list() function  to return structured directory listings that include:
@@ -111,7 +127,7 @@ export namespace File {
       const untrackedFiles = untrackedOutput.trim().split("\n")
       for (const filepath of untrackedFiles) {
         try {
-          const content = await Bun.file(path.join(app.path.root, filepath)).text()
+          const content = await Bun.file(path.join(Instance.directory, filepath)).text()
           const lines = content.split("\n").length
           changedFiles.push({
             path: filepath,

@@ -91,7 +91,16 @@ export const PromptInput = z.object({
     .optional(),
   agent: z.string().optional(),
   system: z.string().optional(),
-  tools: z.record(z.boolean()).optional(),
+  tools: z.preprocess((val) => {
+    if (typeof val === 'object' && val !== null) {
+      const result: Record<string, boolean> = {};
+      for (const [key, value] of Object.entries(val as Record<string, any>)) {
+        result[key] = value === true || value === "true";
+      }
+      return result;
+    }
+    return val;
+  }, z.record(z.string(), z.boolean())).optional(),
   parts: z.array(
     z.discriminatedUnion("type", [
       MessageV2.TextPart.omit({

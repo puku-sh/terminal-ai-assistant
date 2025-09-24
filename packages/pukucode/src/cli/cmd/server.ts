@@ -1,5 +1,5 @@
 import type { Argv } from "yargs"
-import { Server } from "../../server/server-simple"
+import { Server } from "../../server/server"
 import { UI } from "../ui"
 import { cmd } from "./cmd"
 import { bootstrap } from "../bootstrap"
@@ -38,6 +38,8 @@ export const ServerCommand = cmd({
       UI.println(UI.Style.TEXT_DIM + `Hostname: ${hostname}`)
       
       const server = Server.listen({ port, hostname })
+
+      console.log(`pukucode server listening on http://${server.hostname}:${server.port}`)
       
       const url = `http://${hostname}:${port}`
       UI.println(UI.Style.TEXT_SUCCESS_BOLD + `Server running at ${url}`)
@@ -58,6 +60,7 @@ export const ServerCommand = cmd({
       
       // Keep the process alive
       await new Promise(() => {})
+      server.stop()
     })
   },
 })

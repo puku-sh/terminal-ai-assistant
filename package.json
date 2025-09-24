@@ -1,1 +1,6 @@
-{"dependencies": {}}
+{
+  "dependencies": {
+    "@hono/standard-validator": "^0.1.5",
+    "zod-to-json-schema": "^3.24.6"
+  }
+}
