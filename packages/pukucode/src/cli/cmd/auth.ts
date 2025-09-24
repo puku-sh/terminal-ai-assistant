@@ -197,8 +197,8 @@ export const AuthLoginCommand = cmd({
         return
       }
 
-      if (finalProvider === "opencode") {
-        console_utils.log.info("Create an api key at https://opencode.ai/auth")
+      if (finalProvider === "pukucode") {
+        console_utils.log.info("Create an api key at https://pukucode.ai/auth")
       }
 
       if (finalProvider === "vercel") {

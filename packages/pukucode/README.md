@@ -1,4 +1,4 @@
-# opencode
+
 
 To install dependencies:
 

@@ -124,14 +124,3 @@ Chat2/
 - **Scalability**: New providers, themes, or commands can be added easily
 - **Code Reusability**: Components can be reused across different parts of the app
 
-## Similar to OpenCode
-
-This architecture follows similar patterns to OpenCode:
-- Clear module boundaries with specific responsibilities
-- Interface-driven design for better testability
-- Centralized configuration and theming
-- Modular command system
-- Component-based UI architecture
-- Clean separation between business logic and presentation
-
-The result is a codebase that is easier to understand, modify, and extend while maintaining the same functionality as the original monolithic structure.

@@ -564,8 +564,8 @@ export async function prompt(
     headers:
       model.providerID === "pukucode"
         ? {
-            "x-opencode-session": input.sessionID,
-            "x-opencode-request": userMsg.id,
+            "x-pukucode-session": input.sessionID,
+            "x-pukucode-request": userMsg.id,
           }
         : undefined,
     maxRetries: 3,

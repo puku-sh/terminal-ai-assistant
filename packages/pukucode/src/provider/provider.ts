@@ -50,7 +50,7 @@ export namespace Provider {
         },
       }
     },
-    // async opencode(input) {
+    // async pukucode(input) {
     //   return {
     //     // Autoload if the provider already has models in database
     //     autoload: Object.keys(input.models).length > 0,
@@ -147,8 +147,8 @@ export namespace Provider {
       autoload: true,
       options: {
         headers: {
-          "HTTP-Referer": "https://opencode.ai/",
-          "X-Title": "opencode",
+          "HTTP-Referer": "https://pukucode.ai/",
+          "X-Title": "pukucodecode",
         },
       },
     }),
