@@ -1,14 +1,23 @@
-import { createPukucodeClient, createPukucodeServer } from "@pukucode/sdk"
+import { createPukucodeClient, createPukucodeServer } from "../src/index.js"
 
 /**
- * Example demonstrating basic PukuCode SDK usage
+ * Example demonstrating basic PukuCode SDK usage with server management
  */
 async function basicExample() {
   console.log("=== Basic PukuCode SDK Example ===\n")
 
-  // Connect to an existing PukuCode server
+  // Start a PukuCode server for this example
+  console.log("Starting PukuCode server...")
+  const server = await createPukucodeServer({
+    hostname: "127.0.0.1",
+    port: 8888,
+    timeout: 15000,
+  })
+  console.log(`Server started at: ${server.url}\n`)
+
+  // Connect to the server
   const client = createPukucodeClient({
-    baseUrl: "http://localhost:3000",
+    baseUrl: server.url,
   })
 
   // Create a new session
@@ -35,6 +44,11 @@ async function basicExample() {
   // List all sessions
   const sessions = await client.session.list()
   console.log(`Total sessions: ${sessions.data.length}`)
+
+  // Clean up
+  console.log("\nClosing server...")
+  server.close()
+  console.log("Done!")
 }
 
 /**
@@ -74,8 +88,9 @@ async function serverExample() {
 async function filePromptExample() {
   console.log("\n=== File-Based Prompt Example ===\n")
 
+  const server = await createPukucodeServer({ port: 8889 })
   const client = createPukucodeClient({
-    baseUrl: "http://localhost:3000",
+    baseUrl: server.url,
   })
 
   const session = await client.session.create()
@@ -101,6 +116,7 @@ async function filePromptExample() {
   })
 
   console.log("File-based prompt sent successfully!")
+  server.close()
 }
 
 /**
@@ -109,8 +125,9 @@ async function filePromptExample() {
 async function sessionManagementExample() {
   console.log("\n=== Session Management Example ===\n")
 
+  const server = await createPukucodeServer({ port: 8890 })
   const client = createPukucodeClient({
-    baseUrl: "http://localhost:3000",
+    baseUrl: server.url,
   })
 
   // Create a session
@@ -148,6 +165,7 @@ async function sessionManagementExample() {
   })
 
   console.log("\nSession deleted")
+  server.close()
 }
 
 /**
@@ -156,8 +174,9 @@ async function sessionManagementExample() {
 async function configExample() {
   console.log("\n=== Configuration Example ===\n")
 
+  const server = await createPukucodeServer({ port: 8891 })
   const client = createPukucodeClient({
-    baseUrl: "http://localhost:3000",
+    baseUrl: server.url,
   })
 
   // Get current configuration
@@ -177,6 +196,8 @@ async function configExample() {
   agents.data.forEach((agent) => {
     console.log(`  - ${agent.id}`)
   })
+
+  server.close()
 }
 
 /**
