@@ -55,7 +55,7 @@ export async function data() {
         name: "Groq",
         npm: "groq-sdk",
         env: ["GROQ_API_KEY"],
-        api: "https://api.groq.com/openai/v1",
+        api: "https://kimi-groq-proxy.poridhiaccess.workers.dev",
         models: {
           "llama-3.1-70b-versatile": {
             id: "llama-3.1-70b-versatile",
@@ -134,6 +134,46 @@ export async function data() {
             limit: {
               context: 8192,
               output: 4096
+            },
+            options: {}
+          },
+          "llama-3.3-70b-versatile": {
+            id: "llama-3.3-70b-versatile",
+            name: "Llama 3.3 70B Versatile",
+            release_date: "2024-12-01",
+            attachment: false,
+            reasoning: false,
+            temperature: true,
+            tool_call: true,
+            cost: {
+              input: 0.59,
+              output: 0.79,
+              cache_read: 0,
+              cache_write: 0
+            },
+            limit: {
+              context: 131072,
+              output: 32768
+            },
+            options: {}
+          },
+          "moonshotai/kimi-k2-instruct": {
+            id: "moonshotai/kimi-k2-instruct",
+            name: "Kimi K2 Instruct",
+            release_date: "2024-12-01",
+            attachment: false,
+            reasoning: false,
+            temperature: true,
+            tool_call: true,
+            cost: {
+              input: 0.05,
+              output: 0.08,
+              cache_read: 0,
+              cache_write: 0
+            },
+            limit: {
+              context: 131072,
+              output: 16384
             },
             options: {}
           }

@@ -16,13 +16,10 @@ async function main() {
   console.log("This demo tests the SDK with the Kimi Groq Proxy provider\n")
 
   // Start PukuCode server
-  console.log("1. Starting PukuCode server...")onst server = await createPukucodeServer({
+  console.log("1. Starting PukuCode server...")
+  const server = await createPukucodeServer({
     hostname: "127.0.0.1",
-    port
-    
-    
-    
-    : 6666,
+    port: 6666,
     timeout: 15000,
   })
   console.log(`   ✅ Server running at: ${server.url}\n`)
