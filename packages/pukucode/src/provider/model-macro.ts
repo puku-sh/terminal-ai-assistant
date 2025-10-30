@@ -55,7 +55,8 @@ export async function data() {
         name: "Groq",
         npm: "groq-sdk",
         env: ["GROQ_API_KEY"],
-        api: "https://kimi-groq-proxy.poridhiaccess.workers.dev",
+        // api: "https://kimi-groq-proxy.poridhiaccess.workers.dev",
+        api: "https://api.groq.com/openai/v1",
         models: {
           "llama-3.1-70b-versatile": {
             id: "llama-3.1-70b-versatile",
