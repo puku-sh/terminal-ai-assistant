@@ -21,20 +21,22 @@ async function main() {
   const client = createPukucodeClient({ baseUrl: server.url })
 
   try {
-    // Create session with Groq provider (via Kimi Groq Proxy)
-    console.log("Creating session with groq/llama-3.1-8b-instant model...")
+    // Create session (sessions don't store model preference)
+    console.log("Creating test session...")
     const session = await client.session.create({
-      body: {
-        model: "groq/llama-3.1-8b-instant",
-      },
+      body: {},
     })
     console.log(`✅ Session created: ${session.data.id}\n`)
 
-    // Send a simple prompt
-    console.log("Sending prompt: 'Say hello in exactly 5 words'\n")
+    // Send a simple prompt with Groq model specified
+    console.log("Sending prompt with groq/llama-3.1-8b-instant model: 'Say hello in exactly 5 words'\n")
     await client.session.prompt({
       path: { id: session.data.id },
       body: {
+        model: {
+          providerID: "groq",
+          modelID: "llama-3.1-8b-instant",
+        },
         parts: [
           {
             type: "text",
