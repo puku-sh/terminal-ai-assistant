@@ -16,7 +16,8 @@ async function main() {
   console.log("This demo tests the SDK with the Kimi Groq Proxy provider\n")
 
   // Start PukuCode server
-  console.log("1. Starting PukuCode server...")onst server = await createPukucodeServer({
+  console.log("1. Starting PukuCode server...")
+  const server = await createPukucodeServer({
     hostname: "127.0.0.1",
     port
     
@@ -53,10 +54,10 @@ async function main() {
       },
     })
     console.log("   ✅ Prompt sent successfully")
-    console.log("   💬 AI response will be streamed via server events\n")
+    console.log("   💬 Waiting for AI response to complete...\n")
 
-    // Wait a bit for the response to process
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    // Wait longer for the first response to fully process
+    await new Promise((resolve) => setTimeout(resolve, 10000))
 
     // Test 2: Math question
     console.log("3. Testing math question with AI...")
@@ -81,7 +82,7 @@ async function main() {
     })
     console.log("   ✅ Prompt sent successfully\n")
 
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    await new Promise((resolve) => setTimeout(resolve, 5000))
 
     // Test 3: Code generation
     console.log("4. Testing code generation with AI...")
@@ -172,6 +173,26 @@ async function main() {
     console.log(`   ✅ Messages in session: ${messages.data.length}`)
     if (messages.data.length > 0) {
       console.log(`   ✅ AI has responded!\n`)
+
+      // Display all messages with their content
+      // Note: messages.data already contains full message objects with info and parts
+      for (const message of messages.data) {
+        const role = message.info?.role || "unknown"
+        console.log(`   📨 Message [${role}]:`)
+
+        // Display each part
+        const parts = message.parts || []
+        for (const part of parts) {
+          if (part.type === "text" && part.text) {
+            console.log(`      ${part.text}`)
+          } else if (part.type === "tool-call") {
+            console.log(`      [Tool Call: ${part.tool?.name}]`)
+          } else if (part.type === "tool-result") {
+            console.log(`      [Tool Result]`)
+          }
+        }
+        console.log() // Empty line between messages
+      }
     } else {
       console.log(`   ⚠️  No messages yet (may still be processing)\n`)
     }
