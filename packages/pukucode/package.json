@@ -27,7 +27,7 @@
     "@hono/standard-validator": "^0.1.5",
     "@hono/zod-validator": "^0.7.3",
     "@types/node": "^24.3.0",
-    "@zip.js/zip.js": "^2.8.2",
+    "@zip.js/zip.js": "^2.7.62",
     "ai": "^5.0.27",
     "async_hooks": "^1.0.0",
     "decimal.js": "^10.6.0",
