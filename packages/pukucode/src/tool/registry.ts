@@ -12,6 +12,7 @@ import { ReadTool } from "./read"
 import { WriteTool } from "./write"
 // import { InvalidTool } from "./invalid"
 import type { Agent } from "../agent/agent"
+import { ListTool } from "./ls"
 
 export namespace ToolRegistry {
   const ALL = [
@@ -21,7 +22,7 @@ export namespace ToolRegistry {
    // WebFetchTool,
     //GlobTool,
     GrepTool,
-   // ListTool,
+    ListTool,
    // PatchTool,
     ReadTool,
     WriteTool,

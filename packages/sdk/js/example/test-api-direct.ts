@@ -18,7 +18,7 @@ async function testAPI() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "groq/llama-3.1-8b-instant",
+        model: "openrouter/z-ai/glm-4.6",
       }),
     })
 
@@ -39,7 +39,7 @@ async function testAPI() {
       parts: [
         {
           type: "text",
-          text: "Say hello in one sentence",
+          text: "Hi. Can you please show me the files that are located in the current directory?",
         },
       ],
     }
