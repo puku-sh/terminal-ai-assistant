@@ -10,7 +10,7 @@
         "@hono/standard-validator": "^0.1.5",
         "@hono/zod-validator": "^0.7.3",
         "@types/node": "^24.3.0",
-        "@zip.js/zip.js": "^2.8.2",
+        "@zip.js/zip.js": "2.7.62",
         "ai": "^5.0.27",
         "async_hooks": "^1.0.0",
         "decimal.js": "^10.6.0",
@@ -82,7 +82,7 @@
 
     "@types/react": ["@types/react@19.1.12", "", { "dependencies": { "csstype": "^3.0.2" } }, "sha512-cMoR+FoAf/Jyq6+Df2/Z41jISvGZZ2eTlnsaJRptmZ76Caldwy1odD4xTr/gNV9VLj0AWgg/nmkevIyUfIIq5w=="],
 
-    "@zip.js/zip.js": ["@zip.js/zip.js@2.8.2", "", {}, "sha512-PI6UdgpSeVoGvzguKHmy2bwOqI3UYkntLZOCpyJSKIi7234c5aJmQYkJB/P4P2YUJkqhbqvu7iM2/0eJZ178nA=="],
+    "@zip.js/zip.js": ["@zip.js/zip.js@2.7.62", "", {}, "sha512-OaLvZ8j4gCkLn048ypkZu29KX30r8/OfFF2w4Jo5WXFr+J04J+lzJ5TKZBVgFXhlvSkqNFQdfnY1Q8TMTCyBVA=="],
 
     "abbrev": ["abbrev@3.0.1", "", {}, "sha512-AO2ac6pjRB3SJmGJo+v5/aK6Omggp6fsLrs6wN9bd35ulu4cCwaAU9+7ZhXjeqHVkaHThLuzH0nZr0YpCDhygg=="],
 

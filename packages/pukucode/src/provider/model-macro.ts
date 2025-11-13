@@ -275,6 +275,40 @@ export async function data() {
               output: 8192
             },
             options: {}
+          },
+          "gemini-2.5-flash": {
+            id: "gemini-2.5-flash",
+            name: "Gemini 2.5 Flash",
+            attachment: true,
+            reasoning: true,
+            temperature: true,
+            tool_call: true,
+            knowledge: "2025-01",
+            release_date: "2025-03-20",
+            last_updated: "2025-06-05",
+            modalities: {
+              "input": [
+                "text",
+                "image",
+                "audio",
+                "video",
+                "pdf"
+              ],
+              "output": [
+                "text"
+              ]
+            },
+            open_weights: false,
+            cost: {
+              input: 0.3,
+              output: 2.5,
+              cache_read: 0.075,
+              input_audio: 1
+            },
+            limit: {
+              context: 1048576,
+              output: 65536
+            }
           }
         }
       },
@@ -325,6 +359,75 @@ export async function data() {
             },
             options: {}
           }
+        }
+      },
+      "openrouter": {
+        "id": "openrouter",
+        "env": [
+          "OPENROUTER_API_KEY"
+        ],
+        "npm": "@ai-sdk/openai-compatible",
+        "api": "https://openrouter.ai/api/v1",
+        "name": "OpenRouter",
+        "doc": "https://openrouter.ai/models",
+        "models": {
+          "moonshotai/kimi-k2": {
+            "id": "moonshotai/kimi-k2",
+            "name": "Kimi K2",
+            "attachment": false,
+            "reasoning": false,
+            "temperature": true,
+            "tool_call": true,
+            "knowledge": "2024-10",
+            "release_date": "2025-07-11",
+            "last_updated": "2025-07-11",
+            "modalities": {
+              "input": [
+                "text"
+              ],
+              "output": [
+                "text"
+              ]
+            },
+            "open_weights": true,
+            "cost": {
+              "input": 0.55,
+              "output": 2.2
+            },
+            "limit": {
+              "context": 131072,
+              "output": 32768
+            }
+          },
+          "z-ai/glm-4.6": {
+            "id": "z-ai/glm-4.6",
+            "name": "GLM 4.6",
+            "attachment": false,
+            "reasoning": true,
+            "temperature": true,
+            "tool_call": true,
+            "knowledge": "2025-09",
+            "release_date": "2025-09-30",
+            "last_updated": "2025-09-30",
+            "modalities": {
+              "input": [
+                "text"
+              ],
+              "output": [
+                "text"
+              ]
+            },
+            "open_weights": true,
+            "cost": {
+              "input": 0.6,
+              "output": 2.2,
+              "cache_read": 0.11
+            },
+            "limit": {
+              "context": 200000,
+              "output": 128000
+            }
+          },
         }
       }
     })
