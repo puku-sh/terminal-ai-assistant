@@ -13,15 +13,16 @@ async function main() {
 
   // Start server
   console.log("Starting PukuCode server...")
-  const server = await createPukucodeServer({
-    hostname: "127.0.0.1",
-    port: 6667,
-    timeout: 15000,
-  })
-  console.log(`✅ Server running at: ${server.url}\n`)
+  // const server = await createPukucodeServer({
+  //   hostname: "127.0.0.1",
+  //   port: 6667,
+  //   timeout: 15000,
+  // })
+  // console.log(`✅ Server running at: ${server.url}\n`)
 
   // Create client
-  const client = createPukucodeClient({ baseUrl: server.url })
+  // const client = createPukucodeClient({ baseUrl: server.url })
+  const client = createPukucodeClient({ baseUrl: "http://localhost:1337" })
 
   try {
     // Create session with GLM-4.6 model
@@ -101,7 +102,7 @@ async function main() {
   } finally {
     // Close server
     console.log("\n🛑 Shutting down server...")
-    server.close()
+    // server.close()
     console.log("✅ Server stopped")
   }
 

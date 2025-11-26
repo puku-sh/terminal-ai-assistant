@@ -97,6 +97,10 @@ func (m *MainView) handleDefaultKeys(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 				m.sidebar.SetVisible(true)
 			}
 
+			// Try SDK first, fall back to direct API
+			if api.GetSDKClient() != nil {
+				return m, api.SendToAIViaSDK(message)
+			}
 			return m, api.SendToAI(message, m.currentProvider, m.apiKeys)
 		}
 	}
