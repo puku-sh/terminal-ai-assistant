@@ -50,7 +50,7 @@ import (
 func main() {
     // Create a new client
     client := pukucode.NewClient(
-        option.WithBaseURL("http://localhost:3000"),
+        option.WithBaseURL("http://localhost:1337"),
     )
 
     ctx := context.Background()
@@ -610,7 +610,9 @@ tools, err := client.Tool.List(ctx, pukucode.ToolListParams{
 
 ### Event Service
 
-Subscribe to server-sent events for real-time updates.
+Subscribe to server-sent events for real-time updates. Events are pushed from the server whenever something happens (messages, session updates, errors, etc.).
+
+#### Basic Event Subscription
 
 ```go
 stream, err := client.Event.Subscribe(ctx)
@@ -625,12 +627,13 @@ for stream.Next() {
 
     fmt.Printf("Event Type: %s\n", event.Type)
 
-    if event.SessionID != "" {
-        fmt.Printf("Session: %s\n", event.SessionID)
+    // Use helper methods to get session/message IDs
+    if sessionID := event.GetSessionID(); sessionID != "" {
+        fmt.Printf("Session: %s\n", sessionID)
     }
 
-    if event.MessageID != "" {
-        fmt.Printf("Message: %s\n", event.MessageID)
+    if messageID := event.GetMessageID(); messageID != "" {
+        fmt.Printf("Message: %s\n", messageID)
     }
 }
 
@@ -638,6 +641,130 @@ for stream.Next() {
 if err := stream.Err(); err != nil {
     log.Fatal(err)
 }
+```
+
+#### Event Types
+
+| Event Type | Description |
+|------------|-------------|
+| `session.updated` | Session created or metadata changed |
+| `session.deleted` | Session removed |
+| `session.idle` | AI finished responding (important!) |
+| `session.error` | Error occurred during processing |
+| `message.updated` | Message created or updated |
+| `message.removed` | Message deleted |
+| `message.part.updated` | Message part added/updated (text streaming) |
+| `message.part.removed` | Message part deleted |
+| `file.edited` | File modified by Write/Edit tool |
+| `permission.updated` | Permission request created |
+| `permission.replied` | User responded to permission |
+| `server.connected` | SSE connection established |
+
+#### Handling Specific Events
+
+```go
+for stream.Next() {
+    event := stream.Current()
+
+    switch event.Type {
+    case "session.idle":
+        // AI finished responding - safe to fetch messages now
+        fmt.Printf("Session %s is idle\n", event.GetSessionID())
+
+    case "message.part.updated":
+        // Text streaming - get the text content
+        if part := event.GetPart(); part != nil {
+            if part.Type == "text" {
+                fmt.Printf("Text: %s\n", part.Text)
+            }
+            if part.Type == "tool" {
+                fmt.Printf("Tool: %s (status: %s)\n", part.Tool, part.State.Status)
+            }
+        }
+
+    case "session.error":
+        // Handle errors
+        if event.Properties.Error != nil {
+            fmt.Printf("Error: %s - %s\n",
+                event.Properties.Error.Name,
+                event.Properties.Error.Message)
+        }
+    }
+}
+```
+
+#### Wait for AI Response Pattern
+
+The recommended pattern for sending a prompt and waiting for the response:
+
+```go
+// 1. Send the prompt
+_, err := client.Session.Prompt(ctx, sessionID, pukucode.SessionPromptParams{
+    Parts: []pukucode.MessagePart{
+        {Type: "text", Text: "Hello!"},
+    },
+})
+if err != nil {
+    log.Fatal(err)
+}
+
+// 2. Subscribe to events
+stream, _ := client.Event.Subscribe(ctx)
+defer stream.Close()
+
+// 3. Wait for session.idle event
+for stream.Next() {
+    event := stream.Current()
+    if event.Type == "session.idle" && event.GetSessionID() == sessionID {
+        break // AI is done!
+    }
+}
+
+// 4. Fetch the messages
+messages, _ := client.Session.Messages(ctx, sessionID, pukucode.SessionMessagesParams{})
+
+// 5. Get the assistant's response
+for i := len(messages) - 1; i >= 0; i-- {
+    if messages[i].Role == "assistant" {
+        for _, part := range messages[i].Parts {
+            if part.Type == "text" {
+                fmt.Println(part.Text)
+            }
+        }
+        break
+    }
+}
+```
+
+#### Event Structure
+
+Events have this structure:
+
+```go
+type Event struct {
+    Type       string          // Event type (e.g., "session.idle")
+    Properties EventProperties // Event-specific data
+}
+
+type EventProperties struct {
+    SessionID    string            // Session ID (if applicable)
+    MessageID    string            // Message ID (if applicable)
+    PartID       string            // Part ID (if applicable)
+    Info         *SessionInfo      // For session.updated/deleted
+    Part         *EventMessagePart // For message.part.updated
+    Error        *EventError       // For session.error
+    Permission   *PermissionInfo   // For permission.updated
+    // ... other fields
+}
+```
+
+#### Helper Methods
+
+```go
+event.GetSessionID()  // Get session ID from any event
+event.GetMessageID()  // Get message ID from any event
+event.GetText()       // Get text content (for text part updates)
+event.GetPart()       // Get the message part (for part updates)
 ```
 
 ## Field Helpers
