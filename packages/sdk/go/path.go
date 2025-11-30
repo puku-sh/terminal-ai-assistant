@@ -26,7 +26,7 @@ func NewPathService(opts ...option.RequestOption) (r *PathService) {
 }
 
 // Get the current path
-func (r *PathService) Get(ctx context.Context, query PathGetParams, opts ...option.RequestOption) (res *string, err error) {
+func (r *PathService) Get(ctx context.Context, query PathGetParams, opts ...option.RequestOption) (res *Path, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "path"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
