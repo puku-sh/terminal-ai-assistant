@@ -12,37 +12,37 @@ import (
 	"log/slog"
 
 	tea "github.com/charmbracelet/bubbletea/v2"
-	"github.com/sst/opencode-sdk-go"
-	"github.com/sst/opencode/internal/clipboard"
-	"github.com/sst/opencode/internal/commands"
-	"github.com/sst/opencode/internal/components/toast"
-	"github.com/sst/opencode/internal/id"
-	"github.com/sst/opencode/internal/styles"
-	"github.com/sst/opencode/internal/theme"
-	"github.com/sst/opencode/internal/util"
+	"github.com/pukucode/pukucode-sdk-go"
+	"github.com/pukucode/pukucode-tui/internal/clipboard"
+	"github.com/pukucode/pukucode-tui/internal/commands"
+	"github.com/pukucode/pukucode-tui/internal/components/toast"
+	"github.com/pukucode/pukucode-tui/internal/id"
+	"github.com/pukucode/pukucode-tui/internal/styles"
+	"github.com/pukucode/pukucode-tui/internal/theme"
+	"github.com/pukucode/pukucode-tui/internal/util"
 )
 
 type Message struct {
-	Info  opencode.MessageUnion
-	Parts []opencode.PartUnion
+	Info  pukucode.MessageUnion
+	Parts []pukucode.PartUnion
 }
 
 type App struct {
-	Project           opencode.Project
-	Agents            []opencode.Agent
-	Providers         []opencode.Provider
+	Project           pukucode.Project
+	Agents            []pukucode.Agent
+	Providers         []pukucode.Provider
 	Version           string
 	StatePath         string
-	Config            *opencode.Config
-	Client            *opencode.Client
+	Config            *pukucode.Config
+	Client            *pukucode.Client
 	State             *State
 	AgentIndex        int
-	Provider          *opencode.Provider
-	Model             *opencode.Model
-	Session           *opencode.Session
+	Provider          *pukucode.Provider
+	Model             *pukucode.Model
+	Session           *pukucode.Session
 	Messages          []Message
-	Permissions       []opencode.Permission
-	CurrentPermission opencode.Permission
+	Permissions       []pukucode.Permission
+	CurrentPermission pukucode.Permission
 	Commands          commands.CommandRegistry
 	InitialModel      *string
 	InitialPrompt     *string
@@ -54,25 +54,25 @@ type App struct {
 	ScrollSpeed       int
 }
 
-func (a *App) Agent() *opencode.Agent {
+func (a *App) Agent() *pukucode.Agent {
 	return &a.Agents[a.AgentIndex]
 }
 
 type SessionCreatedMsg = struct {
-	Session *opencode.Session
+	Session *pukucode.Session
 }
-type SessionSelectedMsg = *opencode.Session
+type SessionSelectedMsg = *pukucode.Session
 type MessageRevertedMsg struct {
-	Session opencode.Session
+	Session pukucode.Session
 	Message Message
 }
 type SessionUnrevertedMsg struct {
-	Session opencode.Session
+	Session pukucode.Session
 }
 type SessionLoadedMsg struct{}
 type ModelSelectedMsg struct {
-	Provider opencode.Provider
-	Model    opencode.Model
+	Provider pukucode.Provider
+	Model    pukucode.Model
 }
 
 type AgentSelectedMsg struct {
@@ -96,16 +96,16 @@ type FileRenderedMsg struct {
 	FilePath string
 }
 type PermissionRespondedToMsg struct {
-	Response opencode.SessionPermissionRespondParamsResponse
+	Response pukucode.SessionPermissionRespondParamsResponse
 }
 
 func New(
 	ctx context.Context,
 	version string,
-	project *opencode.Project,
-	path *opencode.Path,
-	agents []opencode.Agent,
-	httpClient *opencode.Client,
+	project *pukucode.Project,
+	path *pukucode.Path,
+	agents []pukucode.Agent,
+	httpClient *pukucode.Client,
 	initialModel *string,
 	initialPrompt *string,
 	initialAgent *string,
@@ -114,7 +114,7 @@ func New(
 	util.RootPath = project.Worktree
 	util.CwdPath, _ = os.Getwd()
 
-	configInfo, err := httpClient.Config.Get(ctx, opencode.ConfigGetParams{})
+	configInfo, err := httpClient.Config.Get(ctx, pukucode.ConfigGetParams{})
 	if err != nil {
 		return nil, err
 	}
@@ -143,10 +143,10 @@ func New(
 		appState.Theme = themeEnv
 	}
 
-	agentIndex := slices.IndexFunc(agents, func(a opencode.Agent) bool {
+	agentIndex := slices.IndexFunc(agents, func(a pukucode.Agent) bool {
 		return a.Mode != "subagent"
 	})
-	var agent *opencode.Agent
+	var agent *pukucode.Agent
 	modeName := "build"
 	if appState.Agent != "" {
 		modeName = appState.Agent
@@ -189,7 +189,7 @@ func New(
 
 	slog.Debug("Loaded config", "config", configInfo)
 
-	customCommands, err := httpClient.Command.List(ctx, opencode.CommandListParams{})
+	customCommands, err := httpClient.Command.List(ctx, pukucode.CommandListParams{})
 	if err != nil {
 		return nil, err
 	}
@@ -203,7 +203,7 @@ func New(
 		State:          appState,
 		Client:         httpClient,
 		AgentIndex:     agentIndex,
-		Session:        &opencode.Session{},
+		Session:        &pukucode.Session{},
 		Messages:       []Message{},
 		Commands:       commands.LoadFromConfig(configInfo, *customCommands),
 		InitialModel:   initialModel,
@@ -400,9 +400,9 @@ func (a *App) SwitchToAgent(agentName string) (*App, tea.Cmd) {
 
 // findModelByFullID finds a model by its full ID in the format "provider/model"
 func findModelByFullID(
-	providers []opencode.Provider,
+	providers []pukucode.Provider,
 	fullModelID string,
-) (*opencode.Provider, *opencode.Model) {
+) (*pukucode.Provider, *pukucode.Model) {
 	modelParts := strings.SplitN(fullModelID, "/", 2)
 	if len(modelParts) < 2 {
 		return nil, nil
@@ -416,9 +416,9 @@ func findModelByFullID(
 
 // findModelByProviderAndModelID finds a model by provider ID and model ID
 func findModelByProviderAndModelID(
-	providers []opencode.Provider,
+	providers []pukucode.Provider,
 	providerID, modelID string,
-) (*opencode.Provider, *opencode.Model) {
+) (*pukucode.Provider, *pukucode.Model) {
 	for _, provider := range providers {
 		if provider.ID != providerID {
 			continue
@@ -439,7 +439,7 @@ func findModelByProviderAndModelID(
 }
 
 // findProviderByID finds a provider by its ID
-func findProviderByID(providers []opencode.Provider, providerID string) *opencode.Provider {
+func findProviderByID(providers []pukucode.Provider, providerID string) *pukucode.Provider {
 	for _, provider := range providers {
 		if provider.ID == providerID {
 			return &provider
@@ -449,7 +449,7 @@ func findProviderByID(providers []opencode.Provider, providerID string) *opencod
 }
 
 func (a *App) InitializeProvider() tea.Cmd {
-	providersResponse, err := a.Client.App.Providers(context.Background(), opencode.AppProvidersParams{})
+	providersResponse, err := a.Client.App.Providers(context.Background(), pukucode.AppProvidersParams{})
 	if err != nil {
 		slog.Error("Failed to list providers", "error", err)
 		// TODO: notify user
@@ -469,8 +469,8 @@ func (a *App) InitializeProvider() tea.Cmd {
 		a.State.Model = model.ModelID
 	}
 
-	var selectedProvider *opencode.Provider
-	var selectedModel *opencode.Model
+	var selectedProvider *pukucode.Provider
+	var selectedModel *pukucode.Model
 
 	// Priority 1: Command line --model flag (InitialModel)
 	if a.InitialModel != nil && *a.InitialModel != "" {
@@ -627,9 +627,9 @@ func (a *App) InitializeProvider() tea.Cmd {
 }
 
 func getDefaultModel(
-	response *opencode.AppProvidersResponse,
-	provider opencode.Provider,
-) *opencode.Model {
+	response *pukucode.AppProvidersResponse,
+	provider pukucode.Provider,
+) *pukucode.Model {
 	if match, ok := response.Default[provider.ID]; ok {
 		model := provider.Models[match]
 		return &model
@@ -649,7 +649,7 @@ func (a *App) IsBusy() bool {
 		return true
 	}
 	lastMessage := a.Messages[len(a.Messages)-1]
-	if casted, ok := lastMessage.Info.(opencode.AssistantMessage); ok {
+	if casted, ok := lastMessage.Info.(pukucode.AssistantMessage); ok {
 		return casted.Time.Completed == 0
 	}
 	return false
@@ -665,14 +665,14 @@ func (a *App) IsCompacting() bool {
 func (a *App) HasAnimatingWork() bool {
 	for _, msg := range a.Messages {
 		switch casted := msg.Info.(type) {
-		case opencode.AssistantMessage:
+		case pukucode.AssistantMessage:
 			if casted.Time.Completed == 0 {
 				return true
 			}
 		}
 		for _, p := range msg.Parts {
-			if tp, ok := p.(opencode.ToolPart); ok {
-				if tp.State.Status == opencode.ToolPartStateStatusPending {
+			if tp, ok := p.(pukucode.ToolPart); ok {
+				if tp.State.Status == pukucode.ToolPartStateStatusPending {
 					return true
 				}
 			}
@@ -704,10 +704,10 @@ func (a *App) InitializeProject(ctx context.Context) tea.Cmd {
 	cmds = append(cmds, util.CmdHandler(SessionCreatedMsg{Session: session}))
 
 	go func() {
-		_, err := a.Client.Session.Init(ctx, a.Session.ID, opencode.SessionInitParams{
-			MessageID:  opencode.F(id.Ascending(id.Message)),
-			ProviderID: opencode.F(a.Provider.ID),
-			ModelID:    opencode.F(a.Model.ID),
+		err := a.Client.Session.Init(ctx, a.Session.ID, pukucode.SessionInitParams{
+			MessageID:  pukucode.F(id.Ascending(id.Message)),
+			ProviderID: pukucode.F(a.Provider.ID),
+			ModelID:    pukucode.F(a.Model.ID),
 		})
 		if err != nil {
 			slog.Error("Failed to initialize project", "error", err)
@@ -734,9 +734,9 @@ func (a *App) CompactSession(ctx context.Context) tea.Cmd {
 		_, err := a.Client.Session.Summarize(
 			compactCtx,
 			a.Session.ID,
-			opencode.SessionSummarizeParams{
-				ProviderID: opencode.F(a.Provider.ID),
-				ModelID:    opencode.F(a.Model.ID),
+			pukucode.SessionSummarizeParams{
+				ProviderID: pukucode.F(a.Provider.ID),
+				ModelID:    pukucode.F(a.Model.ID),
 			},
 		)
 		if err != nil {
@@ -760,8 +760,8 @@ func (a *App) MarkProjectInitialized(ctx context.Context) error {
 	*/
 }
 
-func (a *App) CreateSession(ctx context.Context) (*opencode.Session, error) {
-	session, err := a.Client.Session.New(ctx, opencode.SessionNewParams{})
+func (a *App) CreateSession(ctx context.Context) (*pukucode.Session, error) {
+	session, err := a.Client.Session.New(ctx, pukucode.SessionNewParams{})
 	if err != nil {
 		return nil, err
 	}
@@ -785,14 +785,14 @@ func (a *App) SendPrompt(ctx context.Context, prompt Prompt) (*App, tea.Cmd) {
 	a.Messages = append(a.Messages, message)
 
 	cmds = append(cmds, func() tea.Msg {
-		_, err := a.Client.Session.Prompt(ctx, a.Session.ID, opencode.SessionPromptParams{
-			Model: opencode.F(opencode.SessionPromptParamsModel{
-				ProviderID: opencode.F(a.Provider.ID),
-				ModelID:    opencode.F(a.Model.ID),
+		_, err := a.Client.Session.Prompt(ctx, a.Session.ID, pukucode.SessionPromptParams{
+			Model: pukucode.F(pukucode.SessionPromptParamsModel{
+				ProviderID: pukucode.F(a.Provider.ID),
+				ModelID:    pukucode.F(a.Model.ID),
 			}),
-			Agent:     opencode.F(a.Agent().Name),
-			MessageID: opencode.F(messageID),
-			Parts:     opencode.F(message.ToSessionChatParams()),
+			Agent:     pukucode.F(a.Agent().Name),
+			MessageID: pukucode.F(messageID),
+			Parts:     pukucode.F(message.ToSessionChatParams()),
 		})
 		if err != nil {
 			errormsg := fmt.Sprintf("failed to send message: %v", err)
@@ -819,13 +819,13 @@ func (a *App) SendCommand(ctx context.Context, command string, args string) (*Ap
 	}
 
 	cmds = append(cmds, func() tea.Msg {
-		params := opencode.SessionCommandParams{
-			Command:   opencode.F(command),
-			Arguments: opencode.F(args),
-			Agent:     opencode.F(a.Agents[a.AgentIndex].Name),
+		params := pukucode.SessionCommandParams{
+			Command:   pukucode.F(command),
+			Arguments: pukucode.F(args),
+			Agent:     pukucode.F(a.Agents[a.AgentIndex].Name),
 		}
 		if a.Provider != nil && a.Model != nil {
-			params.Model = opencode.F(a.Provider.ID + "/" + a.Model.ID)
+			params.Model = pukucode.F(a.Provider.ID + "/" + a.Model.ID)
 		}
 		_, err := a.Client.Session.Command(
 			context.Background(),
@@ -856,12 +856,12 @@ func (a *App) SendShell(ctx context.Context, command string) (*App, tea.Cmd) {
 	}
 
 	cmds = append(cmds, func() tea.Msg {
-		_, err := a.Client.Session.Shell(
+		err := a.Client.Session.Shell(
 			context.Background(),
 			a.Session.ID,
-			opencode.SessionShellParams{
-				Agent:   opencode.F(a.Agent().Name),
-				Command: opencode.F(command),
+			pukucode.SessionShellParams{
+				Agent:   pukucode.F(a.Agent().Name),
+				Command: pukucode.F(command),
 			},
 		)
 		if err != nil {
@@ -883,7 +883,7 @@ func (a *App) Cancel(ctx context.Context, sessionID string) error {
 		a.compactCancel = nil
 	}
 
-	_, err := a.Client.Session.Abort(ctx, sessionID, opencode.SessionAbortParams{})
+	err := a.Client.Session.Abort(ctx, sessionID, pukucode.SessionAbortParams{})
 	if err != nil {
 		slog.Error("Failed to cancel session", "error", err)
 		return err
@@ -891,20 +891,20 @@ func (a *App) Cancel(ctx context.Context, sessionID string) error {
 	return nil
 }
 
-func (a *App) ListSessions(ctx context.Context) ([]opencode.Session, error) {
-	response, err := a.Client.Session.List(ctx, opencode.SessionListParams{})
+func (a *App) ListSessions(ctx context.Context) ([]pukucode.Session, error) {
+	response, err := a.Client.Session.List(ctx, pukucode.SessionListParams{})
 	if err != nil {
 		return nil, err
 	}
 	if response == nil {
-		return []opencode.Session{}, nil
+		return []pukucode.Session{}, nil
 	}
 	sessions := *response
 	return sessions, nil
 }
 
 func (a *App) DeleteSession(ctx context.Context, sessionID string) error {
-	_, err := a.Client.Session.Delete(ctx, sessionID, opencode.SessionDeleteParams{})
+	err := a.Client.Session.Delete(ctx, sessionID, pukucode.SessionDeleteParams{})
 	if err != nil {
 		slog.Error("Failed to delete session", "error", err)
 		return err
@@ -913,8 +913,8 @@ func (a *App) DeleteSession(ctx context.Context, sessionID string) error {
 }
 
 func (a *App) UpdateSession(ctx context.Context, sessionID string, title string) error {
-	_, err := a.Client.Session.Update(ctx, sessionID, opencode.SessionUpdateParams{
-		Title: opencode.F(title),
+	_, err := a.Client.Session.Update(ctx, sessionID, pukucode.SessionUpdateParams{
+		Title: pukucode.F(title),
 	})
 	if err != nil {
 		slog.Error("Failed to update session", "error", err)
@@ -924,7 +924,7 @@ func (a *App) UpdateSession(ctx context.Context, sessionID string, title string)
 }
 
 func (a *App) ListMessages(ctx context.Context, sessionId string) ([]Message, error) {
-	response, err := a.Client.Session.Messages(ctx, sessionId, opencode.SessionMessagesParams{})
+	response, err := a.Client.Session.Messages(ctx, sessionId, pukucode.SessionMessagesParams{})
 	if err != nil {
 		return nil, err
 	}
@@ -935,7 +935,7 @@ func (a *App) ListMessages(ctx context.Context, sessionId string) ([]Message, er
 	for _, message := range *response {
 		msg := Message{
 			Info:  message.Info.AsUnion(),
-			Parts: []opencode.PartUnion{},
+			Parts: []pukucode.PartUnion{},
 		}
 		for _, part := range message.Parts {
 			msg.Parts = append(msg.Parts, part.AsUnion())
@@ -945,13 +945,13 @@ func (a *App) ListMessages(ctx context.Context, sessionId string) ([]Message, er
 	return messages, nil
 }
 
-func (a *App) ListProviders(ctx context.Context) ([]opencode.Provider, error) {
-	response, err := a.Client.App.Providers(ctx, opencode.AppProvidersParams{})
+func (a *App) ListProviders(ctx context.Context) ([]pukucode.Provider, error) {
+	response, err := a.Client.App.Providers(ctx, pukucode.AppProvidersParams{})
 	if err != nil {
 		return nil, err
 	}
 	if response == nil {
-		return []opencode.Provider{}, nil
+		return []pukucode.Provider{}, nil
 	}
 
 	providers := *response

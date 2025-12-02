@@ -14,17 +14,17 @@ import (
 	tea "github.com/charmbracelet/bubbletea/v2"
 	"github.com/charmbracelet/lipgloss/v2"
 	"github.com/google/uuid"
-	"github.com/sst/opencode-sdk-go"
-	"github.com/sst/opencode/internal/app"
-	"github.com/sst/opencode/internal/attachment"
-	"github.com/sst/opencode/internal/clipboard"
-	"github.com/sst/opencode/internal/commands"
-	"github.com/sst/opencode/internal/components/dialog"
-	"github.com/sst/opencode/internal/components/textarea"
-	"github.com/sst/opencode/internal/components/toast"
-	"github.com/sst/opencode/internal/styles"
-	"github.com/sst/opencode/internal/theme"
-	"github.com/sst/opencode/internal/util"
+	"github.com/pukucode/pukucode-sdk-go"
+	"github.com/pukucode/pukucode-tui/internal/app"
+	"github.com/pukucode/pukucode-tui/internal/attachment"
+	"github.com/pukucode/pukucode-tui/internal/clipboard"
+	"github.com/pukucode/pukucode-tui/internal/commands"
+	"github.com/pukucode/pukucode-tui/internal/components/dialog"
+	"github.com/pukucode/pukucode-tui/internal/components/textarea"
+	"github.com/pukucode/pukucode-tui/internal/components/toast"
+	"github.com/pukucode/pukucode-tui/internal/styles"
+	"github.com/pukucode/pukucode-tui/internal/theme"
+	"github.com/pukucode/pukucode-tui/internal/util"
 )
 
 type EditorComponent interface {
@@ -135,7 +135,7 @@ func (m *editorComponent) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case app.MessageRevertedMsg:
 		if msg.Session.ID == m.app.Session.ID {
 			switch msg.Message.Info.(type) {
-			case opencode.UserMessage:
+			case pukucode.UserMessage:
 				prompt, err := msg.Message.ToPrompt()
 				if err != nil {
 					return m, toast.NewErrorToast("Failed to revert message")
@@ -269,7 +269,7 @@ func (m *editorComponent) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			cursorCol := m.textarea.CursorColumn()
 			m.textarea.ReplaceRange(atIndex, cursorCol, "")
 
-			symbol := msg.Item.RawData.(opencode.Symbol)
+			symbol := msg.Item.RawData.(pukucode.Symbol)
 			parts := strings.Split(symbol.Name, ".")
 			lastPart := parts[len(parts)-1]
 			attachment := &attachment.Attachment{

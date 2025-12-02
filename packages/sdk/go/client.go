@@ -25,6 +25,8 @@ type Client struct {
 	Tui     *TuiService
 	Auth    *AuthService
 	Tool    *ToolService
+	Agent   *AgentService
+	Find    *FindService
 }
 
 // DefaultClientOptions read from the environment (PUKUCODE_BASE_URL).
@@ -54,6 +56,8 @@ func NewClient(opts ...option.RequestOption) (r *Client) {
 	r.Tui = NewTuiService(opts...)
 	r.Auth = NewAuthService(opts...)
 	r.Tool = NewToolService(opts...)
+	r.Agent = NewAgentService(opts...)
+	r.Find = NewFindService(opts...)
 
 	return
 }

@@ -5,10 +5,10 @@ import (
 	"log/slog"
 	"strings"
 
-	"github.com/sst/opencode-sdk-go"
-	"github.com/sst/opencode/internal/app"
-	"github.com/sst/opencode/internal/styles"
-	"github.com/sst/opencode/internal/theme"
+	"github.com/pukucode/pukucode-sdk-go"
+	"github.com/pukucode/pukucode-tui/internal/app"
+	"github.com/pukucode/pukucode-tui/internal/styles"
+	"github.com/pukucode/pukucode-tui/internal/theme"
 )
 
 type agentsContextGroup struct {
@@ -32,7 +32,7 @@ func (cg *agentsContextGroup) GetChildEntries(
 
 	agents, err := cg.app.Client.Agent.List(
 		context.Background(),
-		opencode.AgentListParams{},
+		pukucode.AgentListParams{},
 	)
 	if err != nil {
 		slog.Error("Failed to get agent list", "error", err)
@@ -42,11 +42,11 @@ func (cg *agentsContextGroup) GetChildEntries(
 		return items, nil
 	}
 
-	for _, agent := range *agents {
+	for _, agent := range agents {
 		if query != "" && !strings.Contains(strings.ToLower(agent.Name), strings.ToLower(query)) {
 			continue
 		}
-		if agent.Mode == opencode.AgentModePrimary {
+		if agent.Mode == pukucode.AgentModePrimary {
 			continue
 		}
 

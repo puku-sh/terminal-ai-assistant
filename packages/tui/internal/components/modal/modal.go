@@ -4,9 +4,9 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/lipgloss/v2"
-	"github.com/sst/opencode/internal/layout"
-	"github.com/sst/opencode/internal/styles"
-	"github.com/sst/opencode/internal/theme"
+	"github.com/pukucode/pukucode-tui/internal/layout"
+	"github.com/pukucode/pukucode-tui/internal/styles"
+	"github.com/pukucode/pukucode-tui/internal/theme"
 )
 
 // CloseModalMsg is a message to signal that the active modal should be closed.

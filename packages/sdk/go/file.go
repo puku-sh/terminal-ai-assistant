@@ -106,22 +106,27 @@ func (r *FileInfo) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// FileStatus represents file status
-type FileStatus struct {
-	Modified []string       `json:"modified"`
-	Added    []string       `json:"added"`
-	Deleted  []string       `json:"deleted"`
-	JSON     fileStatusJSON `json:"-"`
+// FileStatus represents file status (list of file change entries)
+type FileStatus []FileStatusEntry
+
+// FileStatusEntry represents a single file's status
+type FileStatusEntry struct {
+	Path    string             `json:"path,required"`
+	Added   int64              `json:"added"`
+	Removed int64              `json:"removed"`
+	Status  string             `json:"status"`
+	JSON    fileStatusEntryJSON `json:"-"`
 }
 
-type fileStatusJSON struct {
-	Modified    apijson.Field
+type fileStatusEntryJSON struct {
+	Path        apijson.Field
 	Added       apijson.Field
-	Deleted     apijson.Field
+	Removed     apijson.Field
+	Status      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *FileStatus) UnmarshalJSON(data []byte) (err error) {
+func (r *FileStatusEntry) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }

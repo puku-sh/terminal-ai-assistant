@@ -26,7 +26,7 @@ func NewCommandService(opts ...option.RequestOption) (r *CommandService) {
 }
 
 // List lists all available commands
-func (r *CommandService) List(ctx context.Context, query CommandListParams, opts ...option.RequestOption) (res []Command, err error) {
+func (r *CommandService) List(ctx context.Context, query CommandListParams, opts ...option.RequestOption) (res *[]Command, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "command"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)

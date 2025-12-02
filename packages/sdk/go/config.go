@@ -83,14 +83,14 @@ func (r *ProvidersResponse) UnmarshalJSON(data []byte) (err error) {
 
 // Provider represents an AI provider
 type Provider struct {
-	ID     string            `json:"id,required"`
-	Name   string            `json:"name,required"`
-	Models map[string]Model  `json:"models"`
-	Env    []string          `json:"env"`
-	API    string            `json:"api"`
-	NPM    string            `json:"npm"`
-	Doc    string            `json:"doc"`
-	JSON   providerJSON      `json:"-"`
+	ID     string       `json:"id,required"`
+	Name   string       `json:"name,required"`
+	Models []Model      `json:"models"`
+	Env    []string     `json:"env"`
+	API    string       `json:"api"`
+	NPM    string       `json:"npm"`
+	Doc    string       `json:"doc"`
+	JSON   providerJSON `json:"-"`
 }
 
 type providerJSON struct {
@@ -111,15 +111,29 @@ func (r *Provider) UnmarshalJSON(data []byte) (err error) {
 
 // Model represents an AI model
 type Model struct {
-	ID          string    `json:"id,required"`
-	Name        string    `json:"name,required"`
-	Attachment  bool      `json:"attachment"`
-	Reasoning   bool      `json:"reasoning"`
-	Temperature bool      `json:"temperature"`
-	ToolCall    bool      `json:"tool_call"`
-	Knowledge   string    `json:"knowledge"`
-	ReleaseDate string    `json:"release_date"`
-	JSON        modelJSON `json:"-"`
+	ID          string     `json:"id,required"`
+	Name        string     `json:"name,required"`
+	Attachment  bool       `json:"attachment"`
+	Reasoning   bool       `json:"reasoning"`
+	Temperature bool       `json:"temperature"`
+	ToolCall    bool       `json:"tool_call"`
+	Knowledge   string     `json:"knowledge"`
+	ReleaseDate string     `json:"release_date"`
+	Limit       ModelLimit `json:"limit"`
+	Cost        ModelCost  `json:"cost"`
+	JSON        modelJSON  `json:"-"`
+}
+
+// ModelLimit represents token limits for a model
+type ModelLimit struct {
+	Context int64 `json:"context"`
+	Output  int64 `json:"output"`
+}
+
+// ModelCost represents cost per token for a model
+type ModelCost struct {
+	Input  float64 `json:"input"`
+	Output float64 `json:"output"`
 }
 
 type modelJSON struct {
@@ -141,12 +155,24 @@ func (r *Model) UnmarshalJSON(data []byte) (err error) {
 
 // Config represents the configuration
 type Config struct {
-	Agent    map[string]interface{} `json:"agent"`
-	Mode     map[string]interface{} `json:"mode"`
-	Command  map[string]interface{} `json:"command"`
-	Plugin   []interface{}          `json:"plugin"`
-	Username string                 `json:"username"`
-	JSON     configJSON             `json:"-"`
+	Agent        map[string]interface{} `json:"agent"`
+	Mode         map[string]interface{} `json:"mode"`
+	Command      map[string]interface{} `json:"command"`
+	Plugin       []interface{}          `json:"plugin"`
+	Username     string                 `json:"username"`
+	Model        string                 `json:"model"`
+	Theme        string                 `json:"theme"`
+	Share        ConfigShare            `json:"share"`
+	Keybinds     ConfigKeybinds         `json:"keybinds"`
+	Tui          ConfigTui              `json:"tui"`
+	Experimental ConfigExperimental     `json:"experimental"`
+	JSON         configJSON             `json:"-"`
+}
+
+// ConfigExperimental represents experimental features
+type ConfigExperimental struct {
+	Symbols             bool `json:"symbols"`
+	DisablePasteSummary bool `json:"disablePasteSummary"`
 }
 
 type configJSON struct {
@@ -155,6 +181,11 @@ type configJSON struct {
 	Command     apijson.Field
 	Plugin      apijson.Field
 	Username    apijson.Field
+	Model       apijson.Field
+	Theme       apijson.Field
+	Share       apijson.Field
+	Keybinds    apijson.Field
+	Tui         apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -162,3 +193,21 @@ type configJSON struct {
 func (r *Config) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// ConfigKeybinds represents keybinding configuration
+type ConfigKeybinds struct {
+	Leader string `json:"leader"`
+}
+
+// ConfigTui represents TUI configuration
+type ConfigTui struct {
+	ScrollSpeed float64 `json:"scrollSpeed"`
+}
+
+// ConfigShare represents sharing configuration
+type ConfigShare string
+
+const (
+	ConfigShareEnabled  ConfigShare = "enabled"
+	ConfigShareDisabled ConfigShare = "disabled"
+)

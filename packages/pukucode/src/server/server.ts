@@ -132,6 +132,94 @@ export namespace Server {
         },
       )
       .get(
+        "/config/providers",
+        describeRoute({
+          description: "Get all providers with their models",
+          operationId: "app.providers",
+          responses: {
+            200: {
+              description: "Providers list",
+              content: {
+                "application/json": {
+                  schema: resolver(
+                    z
+                      .object({
+                        providers: z.array(
+                          z.object({
+                            id: z.string(),
+                            name: z.string(),
+                            models: z.array(
+                              z.object({
+                                id: z.string(),
+                                name: z.string(),
+                                attachment: z.boolean().optional(),
+                                reasoning: z.boolean().optional(),
+                                temperature: z.boolean().optional(),
+                                tool_call: z.boolean().optional(),
+                                knowledge: z.string().optional(),
+                                release_date: z.string().optional(),
+                                limit: z.object({
+                                  context: z.number().optional(),
+                                  output: z.number().optional(),
+                                }).optional(),
+                                cost: z.object({
+                                  input: z.number().optional(),
+                                  output: z.number().optional(),
+                                }).optional(),
+                              }),
+                            ),
+                            env: z.array(z.string()).optional(),
+                            api: z.string().optional(),
+                            npm: z.string().optional(),
+                            doc: z.string().optional(),
+                          }),
+                        ),
+                        default: z.record(z.string()).optional(),
+                      })
+                      .meta({ ref: "AppProvidersResponse" }),
+                  ),
+                },
+              },
+            },
+            ...ERRORS,
+          },
+        }),
+        async (c) => {
+          const providers = await Provider.list()
+
+          // Convert providers object to array format expected by TUI
+          const providersArray = Object.entries(providers).map(([id, provider]: [string, any]) => {
+            const modelsArray = Object.entries(provider.info.models || {}).map(([modelId, model]: [string, any]) => ({
+              id: modelId,
+              name: model.name || modelId,
+              attachment: model.attachment,
+              reasoning: model.reasoning,
+              temperature: model.temperature,
+              tool_call: model.toolCall,
+              knowledge: model.knowledge,
+              release_date: model.releaseDate,
+              limit: model.limit,
+              cost: model.cost,
+            }))
+
+            return {
+              id,
+              name: provider.info.name || id,
+              models: modelsArray,
+              env: provider.info.env,
+              api: provider.info.api,
+              npm: provider.info.npm,
+              doc: provider.info.doc,
+            }
+          })
+
+          return c.json({
+            providers: providersArray,
+            default: {},
+          })
+        },
+      )
+      .get(
         "/experimental/tool/ids",
         describeRoute({
           description: "List all tool IDs (including built-in and dynamically registered)",

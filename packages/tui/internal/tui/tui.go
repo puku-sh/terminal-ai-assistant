@@ -15,21 +15,21 @@ import (
 	tea "github.com/charmbracelet/bubbletea/v2"
 	"github.com/charmbracelet/lipgloss/v2"
 
-	"github.com/sst/opencode-sdk-go"
-	"github.com/sst/opencode/internal/api"
-	"github.com/sst/opencode/internal/app"
-	"github.com/sst/opencode/internal/commands"
-	"github.com/sst/opencode/internal/completions"
-	"github.com/sst/opencode/internal/components/chat"
-	cmdcomp "github.com/sst/opencode/internal/components/commands"
-	"github.com/sst/opencode/internal/components/dialog"
-	"github.com/sst/opencode/internal/components/modal"
-	"github.com/sst/opencode/internal/components/status"
-	"github.com/sst/opencode/internal/components/toast"
-	"github.com/sst/opencode/internal/layout"
-	"github.com/sst/opencode/internal/styles"
-	"github.com/sst/opencode/internal/theme"
-	"github.com/sst/opencode/internal/util"
+	"github.com/pukucode/pukucode-sdk-go"
+	"github.com/pukucode/pukucode-tui/internal/api"
+	"github.com/pukucode/pukucode-tui/internal/app"
+	"github.com/pukucode/pukucode-tui/internal/commands"
+	"github.com/pukucode/pukucode-tui/internal/completions"
+	"github.com/pukucode/pukucode-tui/internal/components/chat"
+	cmdcomp "github.com/pukucode/pukucode-tui/internal/components/commands"
+	"github.com/pukucode/pukucode-tui/internal/components/dialog"
+	"github.com/pukucode/pukucode-tui/internal/components/modal"
+	"github.com/pukucode/pukucode-tui/internal/components/status"
+	"github.com/pukucode/pukucode-tui/internal/components/toast"
+	"github.com/pukucode/pukucode-tui/internal/layout"
+	"github.com/pukucode/pukucode-tui/internal/styles"
+	"github.com/pukucode/pukucode-tui/internal/theme"
+	"github.com/pukucode/pukucode-tui/internal/util"
 )
 
 // InterruptDebounceTimeoutMsg is sent when the interrupt key debounce timeout expires
@@ -113,30 +113,30 @@ func (a Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				if len(a.app.Permissions) > 0 {
 					a.app.CurrentPermission = a.app.Permissions[0]
 				} else {
-					a.app.CurrentPermission = opencode.Permission{}
+					a.app.CurrentPermission = pukucode.Permission{}
 				}
-				response := opencode.SessionPermissionRespondParamsResponseOnce
+				response := pukucode.SessionPermissionRespondParamsResponseOnce
 				switch keyString {
 				case "enter":
-					response = opencode.SessionPermissionRespondParamsResponseOnce
+					response = pukucode.SessionPermissionRespondParamsResponseOnce
 				case "a":
-					response = opencode.SessionPermissionRespondParamsResponseAlways
+					response = pukucode.SessionPermissionRespondParamsResponseAlways
 				case "esc":
-					response = opencode.SessionPermissionRespondParamsResponseReject
+					response = pukucode.SessionPermissionRespondParamsResponseReject
 				}
 
 				return a, func() tea.Msg {
-					resp, err := a.app.Client.Session.Permissions.Respond(
+					err := a.app.Client.Session.Permissions(
 						context.Background(),
 						sessionID,
 						permissionID,
-						opencode.SessionPermissionRespondParams{Response: opencode.F(response)},
+						pukucode.SessionPermissionRespondParams{Response: pukucode.F(response)},
 					)
 					if err != nil {
 						slog.Error("Failed to respond to permission request", "error", err)
 						return toast.NewErrorToast("Failed to respond to permission request")()
 					}
-					slog.Debug("Responded to permission request", "response", resp)
+					slog.Debug("Responded to permission request")
 					return nil
 				}
 			}
@@ -399,7 +399,7 @@ func (a Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		a.showCompletionDialog = false
 		// If we're in a child session, switch back to parent before sending prompt
 		if a.app.Session.ParentID != "" {
-			parentSession, err := a.app.Client.Session.Get(context.Background(), a.app.Session.ParentID, opencode.SessionGetParams{})
+			parentSession, err := a.app.Client.Session.Get(context.Background(), a.app.Session.ParentID, pukucode.SessionGetParams{})
 			if err != nil {
 				slog.Error("Failed to get parent session", "error", err)
 				return a, toast.NewErrorToast("Failed to get parent session")
@@ -417,7 +417,7 @@ func (a Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case app.SendCommand:
 		// If we're in a child session, switch back to parent before sending prompt
 		if a.app.Session.ParentID != "" {
-			parentSession, err := a.app.Client.Session.Get(context.Background(), a.app.Session.ParentID, opencode.SessionGetParams{})
+			parentSession, err := a.app.Client.Session.Get(context.Background(), a.app.Session.ParentID, pukucode.SessionGetParams{})
 			if err != nil {
 				slog.Error("Failed to get parent session", "error", err)
 				return a, toast.NewErrorToast("Failed to get parent session")
@@ -435,7 +435,7 @@ func (a Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case app.SendShell:
 		// If we're in a child session, switch back to parent before sending prompt
 		if a.app.Session.ParentID != "" {
-			parentSession, err := a.app.Client.Session.Get(context.Background(), a.app.Session.ParentID, opencode.SessionGetParams{})
+			parentSession, err := a.app.Client.Session.Get(context.Background(), a.app.Session.ParentID, pukucode.SessionGetParams{})
 			if err != nil {
 				slog.Error("Failed to get parent session", "error", err)
 				return a, toast.NewErrorToast("Failed to get parent session")
@@ -457,59 +457,59 @@ func (a Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		a.editor = updated.(chat.EditorComponent)
 		cmds = append(cmds, cmd)
 	case app.SessionClearedMsg:
-		a.app.Session = &opencode.Session{}
+		a.app.Session = &pukucode.Session{}
 		a.app.Messages = []app.Message{}
 	case dialog.CompletionDialogCloseMsg:
 		a.showCompletionDialog = false
-	case opencode.EventListResponseEventInstallationUpdated:
+	case pukucode.EventListResponseEventInstallationUpdated:
 		return a, toast.NewSuccessToast(
 			"opencode updated to "+msg.Properties.Version+", restart to apply.",
 			toast.WithTitle("New version installed"),
 		)
 		/*
-			case opencode.EventListResponseEventIdeInstalled:
+			case pukucode.EventListResponseEventIdeInstalled:
 				return a, toast.NewSuccessToast(
 					"Installed the opencode extension in "+msg.Properties.Ide,
 					toast.WithTitle(msg.Properties.Ide+" extension installed"),
 				)
 		*/
-	case opencode.EventListResponseEventSessionDeleted:
+	case pukucode.EventListResponseEventSessionDeleted:
 		if a.app.Session != nil && msg.Properties.Info.ID == a.app.Session.ID {
-			a.app.Session = &opencode.Session{}
+			a.app.Session = &pukucode.Session{}
 			a.app.Messages = []app.Message{}
 		}
 		return a, toast.NewSuccessToast("Session deleted successfully")
-	case opencode.EventListResponseEventSessionUpdated:
+	case pukucode.EventListResponseEventSessionUpdated:
 		if msg.Properties.Info.ID == a.app.Session.ID {
-			a.app.Session = &msg.Properties.Info
+			a.app.Session = msg.Properties.Info
 		}
-	case opencode.EventListResponseEventMessagePartUpdated:
+	case pukucode.EventListResponseEventMessagePartUpdated:
 		slog.Debug("message part updated", "message", msg.Properties.Part.MessageID, "part", msg.Properties.Part.ID)
 		if msg.Properties.Part.SessionID == a.app.Session.ID {
 			messageIndex := slices.IndexFunc(a.app.Messages, func(m app.Message) bool {
 				switch casted := m.Info.(type) {
-				case opencode.UserMessage:
+				case pukucode.UserMessage:
 					return casted.ID == msg.Properties.Part.MessageID
-				case opencode.AssistantMessage:
+				case pukucode.AssistantMessage:
 					return casted.ID == msg.Properties.Part.MessageID
 				}
 				return false
 			})
 			if messageIndex > -1 {
 				message := a.app.Messages[messageIndex]
-				partIndex := slices.IndexFunc(message.Parts, func(p opencode.PartUnion) bool {
+				partIndex := slices.IndexFunc(message.Parts, func(p pukucode.PartUnion) bool {
 					switch casted := p.(type) {
-					case opencode.TextPart:
+					case pukucode.TextPart:
 						return casted.ID == msg.Properties.Part.ID
-					case opencode.ReasoningPart:
+					case pukucode.ReasoningPart:
 						return casted.ID == msg.Properties.Part.ID
-					case opencode.FilePart:
+					case pukucode.FilePart:
 						return casted.ID == msg.Properties.Part.ID
-					case opencode.ToolPart:
+					case pukucode.ToolPart:
 						return casted.ID == msg.Properties.Part.ID
-					case opencode.StepStartPart:
+					case pukucode.StepStartPart:
 						return casted.ID == msg.Properties.Part.ID
-					case opencode.StepFinishPart:
+					case pukucode.StepFinishPart:
 						return casted.ID == msg.Properties.Part.ID
 					}
 					return false
@@ -523,33 +523,33 @@ func (a Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				a.app.Messages[messageIndex] = message
 			}
 		}
-	case opencode.EventListResponseEventMessagePartRemoved:
+	case pukucode.EventListResponseEventMessagePartRemoved:
 		slog.Debug("message part removed", "session", msg.Properties.SessionID, "message", msg.Properties.MessageID, "part", msg.Properties.PartID)
 		if msg.Properties.SessionID == a.app.Session.ID {
 			messageIndex := slices.IndexFunc(a.app.Messages, func(m app.Message) bool {
 				switch casted := m.Info.(type) {
-				case opencode.UserMessage:
+				case pukucode.UserMessage:
 					return casted.ID == msg.Properties.MessageID
-				case opencode.AssistantMessage:
+				case pukucode.AssistantMessage:
 					return casted.ID == msg.Properties.MessageID
 				}
 				return false
 			})
 			if messageIndex > -1 {
 				message := a.app.Messages[messageIndex]
-				partIndex := slices.IndexFunc(message.Parts, func(p opencode.PartUnion) bool {
+				partIndex := slices.IndexFunc(message.Parts, func(p pukucode.PartUnion) bool {
 					switch casted := p.(type) {
-					case opencode.TextPart:
+					case pukucode.TextPart:
 						return casted.ID == msg.Properties.PartID
-					case opencode.ReasoningPart:
+					case pukucode.ReasoningPart:
 						return casted.ID == msg.Properties.PartID
-					case opencode.FilePart:
+					case pukucode.FilePart:
 						return casted.ID == msg.Properties.PartID
-					case opencode.ToolPart:
+					case pukucode.ToolPart:
 						return casted.ID == msg.Properties.PartID
-					case opencode.StepStartPart:
+					case pukucode.StepStartPart:
 						return casted.ID == msg.Properties.PartID
-					case opencode.StepFinishPart:
+					case pukucode.StepFinishPart:
 						return casted.ID == msg.Properties.PartID
 					}
 					return false
@@ -561,14 +561,14 @@ func (a Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				}
 			}
 		}
-	case opencode.EventListResponseEventMessageRemoved:
+	case pukucode.EventListResponseEventMessageRemoved:
 		slog.Debug("message removed", "session", msg.Properties.SessionID, "message", msg.Properties.MessageID)
 		if msg.Properties.SessionID == a.app.Session.ID {
 			messageIndex := slices.IndexFunc(a.app.Messages, func(m app.Message) bool {
 				switch casted := m.Info.(type) {
-				case opencode.UserMessage:
+				case pukucode.UserMessage:
 					return casted.ID == msg.Properties.MessageID
-				case opencode.AssistantMessage:
+				case pukucode.AssistantMessage:
 					return casted.ID == msg.Properties.MessageID
 				}
 				return false
@@ -577,14 +577,14 @@ func (a Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				a.app.Messages = append(a.app.Messages[:messageIndex], a.app.Messages[messageIndex+1:]...)
 			}
 		}
-	case opencode.EventListResponseEventMessageUpdated:
-		if msg.Properties.Info.SessionID == a.app.Session.ID {
+	case pukucode.EventListResponseEventMessageUpdated:
+		if msg.Properties.Message != nil && msg.Properties.Message.SessionID == a.app.Session.ID {
 			matchIndex := slices.IndexFunc(a.app.Messages, func(m app.Message) bool {
 				switch casted := m.Info.(type) {
-				case opencode.UserMessage:
-					return casted.ID == msg.Properties.Info.ID
-				case opencode.AssistantMessage:
-					return casted.ID == msg.Properties.Info.ID
+				case pukucode.UserMessage:
+					return casted.ID == msg.Properties.Message.ID
+				case pukucode.AssistantMessage:
+					return casted.ID == msg.Properties.Message.ID
 				}
 				return false
 			})
@@ -592,7 +592,7 @@ func (a Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if matchIndex > -1 {
 				match := a.app.Messages[matchIndex]
 				a.app.Messages[matchIndex] = app.Message{
-					Info:  msg.Properties.Info.AsUnion(),
+					Info:  msg.Properties.Message.AsUnion(),
 					Parts: match.Parts,
 				}
 			}
@@ -600,10 +600,10 @@ func (a Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if matchIndex == -1 {
 				// Extract the new message ID
 				var newMessageID string
-				switch casted := msg.Properties.Info.AsUnion().(type) {
-				case opencode.UserMessage:
+				switch casted := msg.Properties.Message.AsUnion().(type) {
+				case pukucode.UserMessage:
 					newMessageID = casted.ID
-				case opencode.AssistantMessage:
+				case pukucode.AssistantMessage:
 					newMessageID = casted.ID
 				}
 
@@ -613,9 +613,9 @@ func (a Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				for i := len(a.app.Messages) - 1; i >= 0; i-- {
 					var existingID string
 					switch casted := a.app.Messages[i].Info.(type) {
-					case opencode.UserMessage:
+					case pukucode.UserMessage:
 						existingID = casted.ID
-					case opencode.AssistantMessage:
+					case pukucode.AssistantMessage:
 						existingID = casted.ID
 					}
 					if existingID < newMessageID {
@@ -626,21 +626,33 @@ func (a Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 				// Create the new message
 				newMessage := app.Message{
-					Info:  msg.Properties.Info.AsUnion(),
-					Parts: []opencode.PartUnion{},
+					Info:  msg.Properties.Message.AsUnion(),
+					Parts: []pukucode.PartUnion{},
 				}
 
 				// Insert at the correct position
 				a.app.Messages = append(a.app.Messages[:insertIndex], append([]app.Message{newMessage}, a.app.Messages[insertIndex:]...)...)
 			}
 		}
-	case opencode.EventListResponseEventPermissionUpdated:
+	case pukucode.EventListResponseEventPermissionUpdated:
 		slog.Debug("permission updated", "session", msg.Properties.SessionID, "permission", msg.Properties.ID)
-		a.app.Permissions = append(a.app.Permissions, msg.Properties)
+		// Convert PermissionInfo to Permission
+		if msg.Properties.PermissionInfo != nil {
+			perm := pukucode.Permission{
+				ID:        msg.Properties.PermissionInfo.ID,
+				SessionID: msg.Properties.PermissionInfo.SessionID,
+				MessageID: msg.Properties.PermissionInfo.MessageID,
+				CallID:    msg.Properties.PermissionInfo.CallID,
+				Type:      msg.Properties.PermissionInfo.Type,
+				Title:     msg.Properties.PermissionInfo.Title,
+				Metadata:  msg.Properties.PermissionInfo.Metadata,
+			}
+			a.app.Permissions = append(a.app.Permissions, perm)
+		}
 		a.app.CurrentPermission = a.app.Permissions[0]
 		a.editor.Blur()
-	case opencode.EventListResponseEventPermissionReplied:
-		index := slices.IndexFunc(a.app.Permissions, func(p opencode.Permission) bool {
+	case pukucode.EventListResponseEventPermissionReplied:
+		index := slices.IndexFunc(a.app.Permissions, func(p pukucode.Permission) bool {
 			return p.ID == msg.Properties.PermissionID
 		})
 		if index > -1 {
@@ -650,34 +662,33 @@ func (a Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if len(a.app.Permissions) > 0 {
 				a.app.CurrentPermission = a.app.Permissions[0]
 			} else {
-				a.app.CurrentPermission = opencode.Permission{}
+				a.app.CurrentPermission = pukucode.Permission{}
 			}
 		}
-	case opencode.EventListResponseEventSessionError:
-		switch err := msg.Properties.Error.AsUnion().(type) {
-		case nil:
-			// No error details provided
-		case opencode.ProviderAuthError:
-			slog.Error("Failed to authenticate with provider", "error", err.Data.Message)
-			return a, toast.NewErrorToast("Provider error: " + err.Data.Message)
-		case opencode.UnknownError:
-			slog.Error("Server error", "name", err.Name, "message", err.Data.Message)
-			return a, toast.NewErrorToast(err.Data.Message, toast.WithTitle(string(err.Name)))
-		case opencode.EventListResponseEventSessionErrorPropertiesErrorAPIError:
-			slog.Error("API error", "message", err.Data.Message, "statusCode", err.Data.StatusCode)
-			return a, toast.NewErrorToast(err.Data.Message, toast.WithTitle(string(err.Name)))
-		case opencode.MessageAbortedError:
-			// Message was aborted - this is expected when user cancels, so just log it
-			slog.Debug("Message aborted", "message", err.Data.Message)
-		case opencode.EventListResponseEventSessionErrorPropertiesErrorMessageOutputLengthError:
-			slog.Error("Message output length error")
-			return a, toast.NewErrorToast("Message output length exceeded limit")
-		default:
-			// Handle any unhandled error types
-			slog.Error("Unhandled session error type", "type", fmt.Sprintf("%T", err))
-			return a, toast.NewErrorToast("An unexpected error occurred")
+	case pukucode.EventListResponseEventSessionError:
+		// Simplified error handling using EventError directly
+		if msg.Properties.Error != nil {
+			errName := msg.Properties.Error.Name
+			errMsg := msg.Properties.Error.Message
+			switch errName {
+			case "provider_auth":
+				slog.Error("Failed to authenticate with provider", "error", errMsg)
+				return a, toast.NewErrorToast("Provider error: " + errMsg)
+			case "api":
+				slog.Error("API error", "message", errMsg)
+				return a, toast.NewErrorToast(errMsg, toast.WithTitle("API Error"))
+			case "aborted":
+				// Message was aborted - this is expected when user cancels, so just log it
+				slog.Debug("Message aborted")
+			case "output_length":
+				slog.Error("Message output length error")
+				return a, toast.NewErrorToast("Message output length exceeded limit")
+			default:
+				slog.Error("Server error", "name", errName, "message", errMsg)
+				return a, toast.NewErrorToast(errMsg, toast.WithTitle(errName))
+			}
 		}
-	case opencode.EventListResponseEventSessionCompacted:
+	case pukucode.EventListResponseEventSessionCompacted:
 		if msg.Properties.SessionID == a.app.Session.ID {
 			return a, toast.NewSuccessToast("Session compacted successfully")
 		}
@@ -719,22 +730,22 @@ func (a Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// Find next user message after target
 			var nextMessageID string
 			for i := msg.Index + 1; i < len(a.app.Messages); i++ {
-				if userMsg, ok := a.app.Messages[i].Info.(opencode.UserMessage); ok {
+				if userMsg, ok := a.app.Messages[i].Info.(pukucode.UserMessage); ok {
 					nextMessageID = userMsg.ID
 					break
 				}
 			}
 
-			var response *opencode.Session
+			var response *pukucode.Session
 			var err error
 
 			if nextMessageID == "" {
 				// Last message - use unrevert to restore full conversation
-				response, err = a.app.Client.Session.Unrevert(context.Background(), a.app.Session.ID, opencode.SessionUnrevertParams{})
+				response, err = a.app.Client.Session.Unrevert(context.Background(), a.app.Session.ID, pukucode.SessionUnrevertParams{})
 			} else {
 				// Revert to next message to make target the last visible
 				response, err = a.app.Client.Session.Revert(context.Background(), a.app.Session.ID,
-					opencode.SessionRevertParams{MessageID: opencode.F(nextMessageID)})
+					pukucode.SessionRevertParams{MessageID: pukucode.F(nextMessageID)})
 			}
 
 			if err != nil || response == nil {
@@ -1244,29 +1255,30 @@ func (a Model) executeCommand(command commands.Command) (tea.Model, tea.Cmd) {
 		response, err := a.app.Client.Session.Share(
 			context.Background(),
 			a.app.Session.ID,
-			opencode.SessionShareParams{},
+			pukucode.SessionShareParams{},
 		)
 		if err != nil {
 			slog.Error("Failed to share session", "error", err)
 			return a, toast.NewErrorToast("Failed to share session")
 		}
-		shareUrl := response.Share.URL
+		shareUrl := response.URL
 		cmds = append(cmds, app.SetClipboard(shareUrl))
 		cmds = append(cmds, toast.NewSuccessToast("Share URL copied to clipboard!"))
 	case commands.SessionUnshareCommand:
 		if a.app.Session.ID == "" {
 			return a, nil
 		}
-		_, err := a.app.Client.Session.Unshare(
+		err := a.app.Client.Session.Unshare(
 			context.Background(),
 			a.app.Session.ID,
-			opencode.SessionUnshareParams{},
 		)
 		if err != nil {
 			slog.Error("Failed to unshare session", "error", err)
 			return a, toast.NewErrorToast("Failed to unshare session")
 		}
-		a.app.Session.Share.URL = ""
+		if a.app.Session.Share != nil {
+			a.app.Session.Share.URL = ""
+		}
 		cmds = append(cmds, toast.NewSuccessToast("Session unshared successfully"))
 	case commands.SessionInterruptCommand:
 		if a.app.Session.ID == "" {
@@ -1286,13 +1298,13 @@ func (a Model) executeCommand(command commands.Command) (tea.Model, tea.Cmd) {
 		}
 		cmds = append(cmds, func() tea.Msg {
 			parentSessionID := a.app.Session.ID
-			var parentSession *opencode.Session
+			var parentSession *pukucode.Session
 			if a.app.Session.ParentID != "" {
 				parentSessionID = a.app.Session.ParentID
 				session, err := a.app.Client.Session.Get(
 					context.Background(),
 					parentSessionID,
-					opencode.SessionGetParams{},
+					pukucode.SessionGetParams{},
 				)
 				if err != nil {
 					slog.Error("Failed to get parent session", "error", err)
@@ -1306,7 +1318,7 @@ func (a Model) executeCommand(command commands.Command) (tea.Model, tea.Cmd) {
 			children, err := a.app.Client.Session.Children(
 				context.Background(),
 				parentSessionID,
-				opencode.SessionChildrenParams{},
+				pukucode.SessionChildrenParams{},
 			)
 			if err != nil {
 				slog.Error("Failed to get session children", "error", err)
@@ -1314,12 +1326,12 @@ func (a Model) executeCommand(command commands.Command) (tea.Model, tea.Cmd) {
 			}
 
 			// Reverse sort the children (newest first)
-			slices.Reverse(*children)
+			slices.Reverse(children)
 
 			// Create combined array: [parent, child1, child2, ...]
-			sessions := []*opencode.Session{parentSession}
-			for i := range *children {
-				sessions = append(sessions, &(*children)[i])
+			sessions := []*pukucode.Session{parentSession}
+			for i := range children {
+				sessions = append(sessions, &children[i])
 			}
 
 			if len(sessions) == 1 {
@@ -1352,13 +1364,13 @@ func (a Model) executeCommand(command commands.Command) (tea.Model, tea.Cmd) {
 		}
 		cmds = append(cmds, func() tea.Msg {
 			parentSessionID := a.app.Session.ID
-			var parentSession *opencode.Session
+			var parentSession *pukucode.Session
 			if a.app.Session.ParentID != "" {
 				parentSessionID = a.app.Session.ParentID
 				session, err := a.app.Client.Session.Get(
 					context.Background(),
 					parentSessionID,
-					opencode.SessionGetParams{},
+					pukucode.SessionGetParams{},
 				)
 				if err != nil {
 					slog.Error("Failed to get parent session", "error", err)
@@ -1372,7 +1384,7 @@ func (a Model) executeCommand(command commands.Command) (tea.Model, tea.Cmd) {
 			children, err := a.app.Client.Session.Children(
 				context.Background(),
 				parentSessionID,
-				opencode.SessionChildrenParams{},
+				pukucode.SessionChildrenParams{},
 			)
 			if err != nil {
 				slog.Error("Failed to get session children", "error", err)
@@ -1380,12 +1392,12 @@ func (a Model) executeCommand(command commands.Command) (tea.Model, tea.Cmd) {
 			}
 
 			// Reverse sort the children (newest first)
-			slices.Reverse(*children)
+			slices.Reverse(children)
 
 			// Create combined array: [parent, child1, child2, ...]
-			sessions := []*opencode.Session{parentSession}
-			for i := range *children {
-				sessions = append(sessions, &(*children)[i])
+			sessions := []*pukucode.Session{parentSession}
+			for i := range children {
+				sessions = append(sessions, &children[i])
 			}
 
 			if len(sessions) == 1 {
@@ -1606,10 +1618,10 @@ func formatConversationToMarkdown(messages []app.Message) string {
 		var timestamp time.Time
 
 		switch info := msg.Info.(type) {
-		case opencode.UserMessage:
+		case pukucode.UserMessage:
 			role = "User"
 			timestamp = time.UnixMilli(int64(info.Time.Created))
-		case opencode.AssistantMessage:
+		case pukucode.AssistantMessage:
 			role = "Assistant"
 			timestamp = time.UnixMilli(int64(info.Time.Created))
 		default:
@@ -1622,11 +1634,11 @@ func formatConversationToMarkdown(messages []app.Message) string {
 
 		for _, part := range msg.Parts {
 			switch p := part.(type) {
-			case opencode.TextPart:
+			case pukucode.TextPart:
 				builder.WriteString(p.Text + "\n\n")
-			case opencode.FilePart:
+			case pukucode.FilePart:
 				builder.WriteString(fmt.Sprintf("[File: %s]\n\n", p.Filename))
-			case opencode.ToolPart:
+			case pukucode.ToolPart:
 				builder.WriteString(fmt.Sprintf("[Tool: %s]\n\n", p.Tool))
 			}
 		}

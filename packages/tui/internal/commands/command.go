@@ -1,13 +1,12 @@
 package commands
 
 import (
-	"encoding/json"
 	"log/slog"
 	"slices"
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea/v2"
-	"github.com/sst/opencode-sdk-go"
+	"github.com/pukucode/pukucode-sdk-go"
 )
 
 type ExecuteCommandMsg Command
@@ -190,7 +189,7 @@ func parseBindings(bindings ...string) []Keybinding {
 	return parsedBindings
 }
 
-func LoadFromConfig(config *opencode.Config, customCommands []opencode.Command) CommandRegistry {
+func LoadFromConfig(config *pukucode.Config, customCommands []pukucode.Command) CommandRegistry {
 	defaults := []Command{
 		{
 			Name:        AppHelpCommand,
@@ -227,17 +226,6 @@ func LoadFromConfig(config *opencode.Config, customCommands []opencode.Command) 
 			Description: "show session timeline",
 			Keybindings: parseBindings("<leader>g"),
 			Trigger:     []string{"timeline", "history", "goto"},
-		},
-		{
-			Name:        SessionShareCommand,
-			Description: "share session",
-			Keybindings: parseBindings("<leader>s"),
-			Trigger:     []string{"share"},
-		},
-		{
-			Name:        SessionUnshareCommand,
-			Description: "unshare session",
-			Trigger:     []string{"unshare"},
 		},
 		{
 			Name:        SessionInterruptCommand,
@@ -393,19 +381,8 @@ func LoadFromConfig(config *opencode.Config, customCommands []opencode.Command) 
 		},
 	}
 	registry := make(CommandRegistry)
-	keybinds := map[string]string{}
-	marshalled, _ := json.Marshal(config.Keybinds)
-	json.Unmarshal(marshalled, &keybinds)
+	// PukuCode doesn't have Keybinds in Config, using default bindings
 	for _, command := range defaults {
-		// Remove share/unshare commands if sharing is disabled
-		if config.Share == opencode.ConfigShareDisabled &&
-			(command.Name == SessionShareCommand || command.Name == SessionUnshareCommand) {
-			slog.Info("Removing share/unshare commands")
-			continue
-		}
-		if keybind, ok := keybinds[string(command.Name)]; ok && keybind != "" {
-			command.Keybindings = parseBindings(keybind)
-		}
 		registry[command.Name] = command
 	}
 	for _, command := range customCommands {

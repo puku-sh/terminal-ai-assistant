@@ -7,14 +7,14 @@ import (
 	"github.com/charmbracelet/bubbles/v2/key"
 	tea "github.com/charmbracelet/bubbletea/v2"
 	"github.com/lithammer/fuzzysearch/fuzzy"
-	"github.com/sst/opencode-sdk-go"
-	"github.com/sst/opencode/internal/app"
-	"github.com/sst/opencode/internal/components/list"
-	"github.com/sst/opencode/internal/components/modal"
-	"github.com/sst/opencode/internal/layout"
-	"github.com/sst/opencode/internal/styles"
-	"github.com/sst/opencode/internal/theme"
-	"github.com/sst/opencode/internal/util"
+	"github.com/pukucode/pukucode-sdk-go"
+	"github.com/pukucode/pukucode-tui/internal/app"
+	"github.com/pukucode/pukucode-tui/internal/components/list"
+	"github.com/pukucode/pukucode-tui/internal/components/modal"
+	"github.com/pukucode/pukucode-tui/internal/layout"
+	"github.com/pukucode/pukucode-tui/internal/styles"
+	"github.com/pukucode/pukucode-tui/internal/theme"
+	"github.com/pukucode/pukucode-tui/internal/util"
 )
 
 const (
@@ -48,7 +48,7 @@ type agentSelectItem struct {
 	mode        string // "primary", "subagent", "all"
 	isCurrent   bool
 	agentIndex  int
-	agent       opencode.Agent // Keep original agent for compatibility
+	agent       pukucode.Agent // Keep original agent for compatibility
 }
 
 func (a agentSelectItem) Render(

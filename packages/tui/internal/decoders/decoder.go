@@ -5,7 +5,7 @@ import (
 	"bytes"
 	"io"
 
-	"github.com/sst/opencode-sdk-go/packages/ssestream"
+	"github.com/pukucode/pukucode-sdk-go/packages/ssestream"
 )
 
 // UnboundedDecoder is an SSE decoder that uses bufio.Reader instead of bufio.Scanner

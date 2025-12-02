@@ -4,9 +4,9 @@ import (
 	"errors"
 	"time"
 
-	"github.com/sst/opencode-sdk-go"
-	"github.com/sst/opencode/internal/attachment"
-	"github.com/sst/opencode/internal/id"
+	"github.com/pukucode/pukucode-sdk-go"
+	"github.com/pukucode/pukucode-tui/internal/attachment"
+	"github.com/pukucode/pukucode-tui/internal/id"
 )
 
 type Prompt struct {
@@ -18,12 +18,12 @@ func (p Prompt) ToMessage(
 	messageID string,
 	sessionID string,
 ) Message {
-	message := opencode.UserMessage{
+	message := pukucode.UserMessage{
 		ID:        messageID,
 		SessionID: sessionID,
-		Role:      opencode.UserMessageRoleUser,
-		Time: opencode.UserMessageTime{
-			Created: float64(time.Now().UnixMilli()),
+		Role:      pukucode.UserMessageRoleUser,
+		Time: pukucode.UserMessageTime{
+			Created: time.Now().UnixMilli(),
 		},
 	}
 
@@ -50,22 +50,22 @@ func (p Prompt) ToMessage(
 		}
 	}
 
-	parts := []opencode.PartUnion{opencode.TextPart{
+	parts := []pukucode.PartUnion{pukucode.TextPart{
 		ID:        id.Ascending(id.Part),
 		MessageID: messageID,
 		SessionID: sessionID,
-		Type:      opencode.TextPartTypeText,
+		Type:      pukucode.TextPartTypeText,
 		Text:      text,
 	}}
 	for _, attachment := range p.Attachments {
 		if attachment.Type == "agent" {
 			source, _ := attachment.GetAgentSource()
-			parts = append(parts, opencode.AgentPart{
+			parts = append(parts, pukucode.AgentPart{
 				ID:        id.Ascending(id.Part),
 				MessageID: messageID,
 				SessionID: sessionID,
 				Name:      source.Name,
-				Source: opencode.AgentPartSource{
+				Source: pukucode.AgentPartSource{
 					Value: attachment.Display,
 					Start: int64(attachment.StartIndex),
 					End:   int64(attachment.EndIndex),
@@ -74,37 +74,37 @@ func (p Prompt) ToMessage(
 			continue
 		}
 
-		text := opencode.FilePartSourceText{
+		text := pukucode.FilePartSourceText{
 			Start: int64(attachment.StartIndex),
 			End:   int64(attachment.EndIndex),
 			Value: attachment.Display,
 		}
-		source := &opencode.FilePartSource{}
+		source := &pukucode.FilePartSource{}
 		switch attachment.Type {
 		case "text":
 			continue
 		case "file":
 			if fileSource, ok := attachment.GetFileSource(); ok {
-				source = &opencode.FilePartSource{
+				source = &pukucode.FilePartSource{
 					Text: text,
 					Path: fileSource.Path,
-					Type: opencode.FilePartSourceTypeFile,
+					Type: pukucode.FilePartSourceTypeFile,
 				}
 			}
 		case "symbol":
 			if symbolSource, ok := attachment.GetSymbolSource(); ok {
-				source = &opencode.FilePartSource{
+				source = &pukucode.FilePartSource{
 					Text: text,
 					Path: symbolSource.Path,
-					Type: opencode.FilePartSourceTypeSymbol,
+					Type: pukucode.FilePartSourceTypeSymbol,
 					Kind: int64(symbolSource.Kind),
 					Name: symbolSource.Name,
-					Range: opencode.SymbolSourceRange{
-						Start: opencode.SymbolSourceRangeStart{
+					Range: pukucode.SymbolSourceRange{
+						Start: pukucode.SymbolSourceRangeStart{
 							Line:      float64(symbolSource.Range.Start.Line),
 							Character: float64(symbolSource.Range.Start.Char),
 						},
-						End: opencode.SymbolSourceRangeEnd{
+						End: pukucode.SymbolSourceRangeEnd{
 							Line:      float64(symbolSource.Range.End.Line),
 							Character: float64(symbolSource.Range.End.Char),
 						},
@@ -112,11 +112,11 @@ func (p Prompt) ToMessage(
 				}
 			}
 		}
-		parts = append(parts, opencode.FilePart{
+		parts = append(parts, pukucode.FilePart{
 			ID:        id.Ascending(id.Part),
 			MessageID: messageID,
 			SessionID: sessionID,
-			Type:      opencode.FilePartTypeFile,
+			Type:      pukucode.FilePartTypeFile,
 			Filename:  attachment.Filename,
 			Mime:      attachment.MediaType,
 			URL:       attachment.URL,
@@ -131,17 +131,17 @@ func (p Prompt) ToMessage(
 
 func (m Message) ToPrompt() (*Prompt, error) {
 	switch m.Info.(type) {
-	case opencode.UserMessage:
+	case pukucode.UserMessage:
 		text := ""
 		attachments := []*attachment.Attachment{}
 		for _, part := range m.Parts {
 			switch p := part.(type) {
-			case opencode.TextPart:
+			case pukucode.TextPart:
 				if p.Synthetic {
 					continue
 				}
 				text += p.Text + " "
-			case opencode.AgentPart:
+			case pukucode.AgentPart:
 				attachments = append(attachments, &attachment.Attachment{
 					ID:         p.ID,
 					Type:       "agent",
@@ -152,7 +152,7 @@ func (m Message) ToPrompt() (*Prompt, error) {
 						Name: p.Name,
 					},
 				})
-			case opencode.FilePart:
+			case pukucode.FilePart:
 				switch p.Source.Type {
 				case "file":
 					attachments = append(attachments, &attachment.Attachment{
@@ -170,7 +170,7 @@ func (m Message) ToPrompt() (*Prompt, error) {
 						},
 					})
 				case "symbol":
-					r := p.Source.Range.(opencode.SymbolSourceRange)
+					r := p.Source.Range.(pukucode.SymbolSourceRange)
 					attachments = append(attachments, &attachment.Attachment{
 						ID:         p.ID,
 						Type:       "symbol",
@@ -207,75 +207,27 @@ func (m Message) ToPrompt() (*Prompt, error) {
 	return nil, errors.New("unknown message type")
 }
 
-func (m Message) ToSessionChatParams() []opencode.SessionPromptParamsPartUnion {
-	parts := []opencode.SessionPromptParamsPartUnion{}
+func (m Message) ToSessionChatParams() []pukucode.SessionPromptParamsPartUnion {
+	parts := []pukucode.SessionPromptParamsPartUnion{}
 	for _, part := range m.Parts {
 		switch p := part.(type) {
-		case opencode.TextPart:
-			parts = append(parts, opencode.TextPartInputParam{
-				ID:        opencode.F(p.ID),
-				Type:      opencode.F(opencode.TextPartInputTypeText),
-				Text:      opencode.F(p.Text),
-				Synthetic: opencode.F(p.Synthetic),
-				Time: opencode.F(opencode.TextPartInputTimeParam{
-					Start: opencode.F(p.Time.Start),
-					End:   opencode.F(p.Time.End),
-				}),
+		case pukucode.TextPart:
+			parts = append(parts, pukucode.SessionPromptParamsPartUnion{
+				Type: "text",
+				Text: p.Text,
 			})
-		case opencode.FilePart:
-			var source opencode.FilePartSourceUnionParam
-			switch p.Source.Type {
-			case "file":
-				source = opencode.FileSourceParam{
-					Type: opencode.F(opencode.FileSourceTypeFile),
-					Path: opencode.F(p.Source.Path),
-					Text: opencode.F(opencode.FilePartSourceTextParam{
-						Start: opencode.F(int64(p.Source.Text.Start)),
-						End:   opencode.F(int64(p.Source.Text.End)),
-						Value: opencode.F(p.Source.Text.Value),
-					}),
-				}
-			case "symbol":
-				source = opencode.SymbolSourceParam{
-					Type: opencode.F(opencode.SymbolSourceTypeSymbol),
-					Path: opencode.F(p.Source.Path),
-					Name: opencode.F(p.Source.Name),
-					Kind: opencode.F(p.Source.Kind),
-					Range: opencode.F(opencode.SymbolSourceRangeParam{
-						Start: opencode.F(opencode.SymbolSourceRangeStartParam{
-							Line:      opencode.F(float64(p.Source.Range.(opencode.SymbolSourceRange).Start.Line)),
-							Character: opencode.F(float64(p.Source.Range.(opencode.SymbolSourceRange).Start.Character)),
-						}),
-						End: opencode.F(opencode.SymbolSourceRangeEndParam{
-							Line:      opencode.F(float64(p.Source.Range.(opencode.SymbolSourceRange).End.Line)),
-							Character: opencode.F(float64(p.Source.Range.(opencode.SymbolSourceRange).End.Character)),
-						}),
-					}),
-					Text: opencode.F(opencode.FilePartSourceTextParam{
-						Value: opencode.F(p.Source.Text.Value),
-						Start: opencode.F(p.Source.Text.Start),
-						End:   opencode.F(p.Source.Text.End),
-					}),
-				}
-			}
-			parts = append(parts, opencode.FilePartInputParam{
-				ID:       opencode.F(p.ID),
-				Type:     opencode.F(opencode.FilePartInputTypeFile),
-				Mime:     opencode.F(p.Mime),
-				URL:      opencode.F(p.URL),
-				Filename: opencode.F(p.Filename),
-				Source:   opencode.F(source),
+		case pukucode.FilePart:
+			parts = append(parts, pukucode.SessionPromptParamsPartUnion{
+				Type:     "file",
+				Mime:     p.Mime,
+				URL:      p.URL,
+				Filename: p.Filename,
 			})
-		case opencode.AgentPart:
-			parts = append(parts, opencode.AgentPartInputParam{
-				ID:   opencode.F(p.ID),
-				Type: opencode.F(opencode.AgentPartInputTypeAgent),
-				Name: opencode.F(p.Name),
-				Source: opencode.F(opencode.AgentPartInputSourceParam{
-					Value: opencode.F(p.Source.Value),
-					Start: opencode.F(p.Source.Start),
-					End:   opencode.F(p.Source.End),
-				}),
+		case pukucode.AgentPart:
+			// Agent parts are converted to text with @mention format
+			parts = append(parts, pukucode.SessionPromptParamsPartUnion{
+				Type: "text",
+				Text: "@" + p.Name,
 			})
 		}
 	}

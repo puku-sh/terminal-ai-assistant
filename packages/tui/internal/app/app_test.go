@@ -3,23 +3,23 @@ package app
 import (
 	"testing"
 
-	"github.com/sst/opencode-sdk-go"
+	"github.com/pukucode/pukucode-sdk-go"
 )
 
 // TestFindModelByFullID tests the findModelByFullID function
 func TestFindModelByFullID(t *testing.T) {
 	// Create test providers with models
-	providers := []opencode.Provider{
+	providers := []pukucode.Provider{
 		{
 			ID: "anthropic",
-			Models: map[string]opencode.Model{
+			Models: map[string]pukucode.Model{
 				"claude-3-opus-20240229":   {ID: "claude-3-opus-20240229"},
 				"claude-3-sonnet-20240229": {ID: "claude-3-sonnet-20240229"},
 			},
 		},
 		{
 			ID: "openai",
-			Models: map[string]opencode.Model{
+			Models: map[string]pukucode.Model{
 				"gpt-4":         {ID: "gpt-4"},
 				"gpt-3.5-turbo": {ID: "gpt-3.5-turbo"},
 			},
@@ -98,17 +98,17 @@ func TestFindModelByFullID(t *testing.T) {
 // TestFindModelByProviderAndModelID tests the findModelByProviderAndModelID function
 func TestFindModelByProviderAndModelID(t *testing.T) {
 	// Create test providers with models
-	providers := []opencode.Provider{
+	providers := []pukucode.Provider{
 		{
 			ID: "anthropic",
-			Models: map[string]opencode.Model{
+			Models: map[string]pukucode.Model{
 				"claude-3-opus-20240229":   {ID: "claude-3-opus-20240229"},
 				"claude-3-sonnet-20240229": {ID: "claude-3-sonnet-20240229"},
 			},
 		},
 		{
 			ID: "openai",
-			Models: map[string]opencode.Model{
+			Models: map[string]pukucode.Model{
 				"gpt-4":         {ID: "gpt-4"},
 				"gpt-3.5-turbo": {ID: "gpt-3.5-turbo"},
 			},
@@ -180,7 +180,7 @@ func TestFindModelByProviderAndModelID(t *testing.T) {
 // TestFindProviderByID tests the findProviderByID function
 func TestFindProviderByID(t *testing.T) {
 	// Create test providers
-	providers := []opencode.Provider{
+	providers := []pukucode.Provider{
 		{ID: "anthropic"},
 		{ID: "openai"},
 		{ID: "google"},
@@ -229,16 +229,16 @@ func TestFindProviderByID(t *testing.T) {
 
 // TestModelSelectionPriority tests the priority order for model selection
 func TestModelSelectionPriority(t *testing.T) {
-	providers := []opencode.Provider{
+	providers := []pukucode.Provider{
 		{
 			ID: "anthropic",
-			Models: map[string]opencode.Model{
+			Models: map[string]pukucode.Model{
 				"claude-opus": {ID: "claude-opus"},
 			},
 		},
 		{
 			ID: "openai",
-			Models: map[string]opencode.Model{
+			Models: map[string]pukucode.Model{
 				"gpt-4": {ID: "gpt-4"},
 			},
 		},
@@ -275,8 +275,8 @@ func TestModelSelectionPriority(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			var selectedProvider *opencode.Provider
-			var selectedModel *opencode.Model
+			var selectedProvider *pukucode.Provider
+			var selectedModel *pukucode.Model
 
 			// Simulate priority 2: Agent model check
 			if tt.agentModelID != "" {

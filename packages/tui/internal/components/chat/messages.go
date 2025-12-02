@@ -13,17 +13,17 @@ import (
 	tea "github.com/charmbracelet/bubbletea/v2"
 	"github.com/charmbracelet/lipgloss/v2"
 	"github.com/charmbracelet/x/ansi"
-	"github.com/sst/opencode-sdk-go"
-	"github.com/sst/opencode/internal/app"
-	"github.com/sst/opencode/internal/commands"
-	"github.com/sst/opencode/internal/components/dialog"
-	"github.com/sst/opencode/internal/components/diff"
-	"github.com/sst/opencode/internal/components/toast"
-	"github.com/sst/opencode/internal/layout"
-	"github.com/sst/opencode/internal/styles"
-	"github.com/sst/opencode/internal/theme"
-	"github.com/sst/opencode/internal/util"
-	"github.com/sst/opencode/internal/viewport"
+	"github.com/pukucode/pukucode-sdk-go"
+	"github.com/pukucode/pukucode-tui/internal/app"
+	"github.com/pukucode/pukucode-tui/internal/commands"
+	"github.com/pukucode/pukucode-tui/internal/components/dialog"
+	"github.com/pukucode/pukucode-tui/internal/components/diff"
+	"github.com/pukucode/pukucode-tui/internal/components/toast"
+	"github.com/pukucode/pukucode-tui/internal/layout"
+	"github.com/pukucode/pukucode-tui/internal/styles"
+	"github.com/pukucode/pukucode-tui/internal/theme"
+	"github.com/pukucode/pukucode-tui/internal/util"
+	"github.com/pukucode/pukucode-tui/internal/viewport"
 )
 
 type MessagesComponent interface {
@@ -229,37 +229,38 @@ func (m *messagesComponent) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, m.renderView()
 		}
 
-	case opencode.EventListResponseEventSessionUpdated:
+	case pukucode.EventListResponseEventSessionUpdated:
 		if msg.Properties.Info.ID == m.app.Session.ID {
 			cmds = append(cmds, m.renderView())
 		}
-	case opencode.EventListResponseEventMessageUpdated:
-		if msg.Properties.Info.SessionID == m.app.Session.ID {
-			cmds = append(cmds, m.renderView())
-		}
-	case opencode.EventListResponseEventSessionError:
+	case pukucode.EventListResponseEventMessageUpdated:
+		// For message updates, check the SessionID from properties directly
 		if msg.Properties.SessionID == m.app.Session.ID {
 			cmds = append(cmds, m.renderView())
 		}
-	case opencode.EventListResponseEventMessagePartUpdated:
+	case pukucode.EventListResponseEventSessionError:
+		if msg.Properties.SessionID == m.app.Session.ID {
+			cmds = append(cmds, m.renderView())
+		}
+	case pukucode.EventListResponseEventMessagePartUpdated:
 		if msg.Properties.Part.SessionID == m.app.Session.ID {
 			cmds = append(cmds, m.renderView())
 		}
-	case opencode.EventListResponseEventMessageRemoved:
+	case pukucode.EventListResponseEventMessageRemoved:
 		if msg.Properties.SessionID == m.app.Session.ID {
 			m.cache.Clear()
 			cmds = append(cmds, m.renderView())
 		}
-	case opencode.EventListResponseEventMessagePartRemoved:
+	case pukucode.EventListResponseEventMessagePartRemoved:
 		if msg.Properties.SessionID == m.app.Session.ID {
 			// Clear the cache when a part is removed to ensure proper re-rendering
 			m.cache.Clear()
 			cmds = append(cmds, m.renderView())
 		}
-	case opencode.EventListResponseEventPermissionUpdated:
+	case pukucode.EventListResponseEventPermissionUpdated:
 		m.tail = true
 		return m, m.renderView()
-	case opencode.EventListResponseEventPermissionReplied:
+	case pukucode.EventListResponseEventPermissionReplied:
 		m.tail = true
 		return m, m.renderView()
 	case renderCompleteMsg:
@@ -336,7 +337,7 @@ func (m *messagesComponent) renderView() tea.Cmd {
 		lineCount := 0
 		messagePositions := make(map[string]int) // Track message ID to line position
 
-		orphanedToolCalls := make([]opencode.ToolPart, 0)
+		orphanedToolCalls := make([]pukucode.ToolPart, 0)
 
 		width := m.width // always use full width
 
@@ -344,12 +345,12 @@ func (m *messagesComponent) renderView() tea.Cmd {
 		lastStreamingReasoningID := ""
 		if m.showThinkingBlocks {
 			for mi := len(m.app.Messages) - 1; mi >= 0 && lastStreamingReasoningID == ""; mi-- {
-				if _, ok := m.app.Messages[mi].Info.(opencode.AssistantMessage); !ok {
+				if _, ok := m.app.Messages[mi].Info.(pukucode.AssistantMessage); !ok {
 					continue
 				}
 				parts := m.app.Messages[mi].Parts
 				for pi := len(parts) - 1; pi >= 0; pi-- {
-					if rp, ok := parts[pi].(opencode.ReasoningPart); ok {
+					if rp, ok := parts[pi].(pukucode.ReasoningPart); ok {
 						if strings.TrimSpace(rp.Text) != "" && rp.Time.End == 0 {
 							lastStreamingReasoningID = rp.ID
 							break
@@ -364,7 +365,7 @@ func (m *messagesComponent) renderView() tea.Cmd {
 		revertedToolCount := 0
 		lastAssistantMessage := "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"
 		for _, msg := range slices.Backward(m.app.Messages) {
-			if assistant, ok := msg.Info.(opencode.AssistantMessage); ok {
+			if assistant, ok := msg.Info.(pukucode.AssistantMessage); ok {
 				if assistant.Time.Completed > 0 {
 					break
 				}
@@ -378,7 +379,7 @@ func (m *messagesComponent) renderView() tea.Cmd {
 			error := ""
 
 			switch casted := message.Info.(type) {
-			case opencode.UserMessage:
+			case pukucode.UserMessage:
 				// Track the position of this user message
 				messagePositions[casted.ID] = lineCount
 
@@ -395,7 +396,7 @@ func (m *messagesComponent) renderView() tea.Cmd {
 
 				for partIndex, part := range message.Parts {
 					switch part := part.(type) {
-					case opencode.TextPart:
+					case pukucode.TextPart:
 						if part.Synthetic {
 							continue
 						}
@@ -403,15 +404,15 @@ func (m *messagesComponent) renderView() tea.Cmd {
 							continue
 						}
 						remainingParts := message.Parts[partIndex+1:]
-						fileParts := make([]opencode.FilePart, 0)
-						agentParts := make([]opencode.AgentPart, 0)
+						fileParts := make([]pukucode.FilePart, 0)
+						agentParts := make([]pukucode.AgentPart, 0)
 						for _, part := range remainingParts {
 							switch part := part.(type) {
-							case opencode.FilePart:
+							case pukucode.FilePart:
 								if part.Source.Text.Start >= 0 && part.Source.Text.End >= part.Source.Text.Start {
 									fileParts = append(fileParts, part)
 								}
-							case opencode.AgentPart:
+							case pukucode.AgentPart:
 								if part.Source.Start >= 0 && part.Source.End >= part.Source.Start {
 									agentParts = append(agentParts, part)
 								}
@@ -477,7 +478,7 @@ func (m *messagesComponent) renderView() tea.Cmd {
 					}
 				}
 
-			case opencode.AssistantMessage:
+			case pukucode.AssistantMessage:
 				if casted.ID == m.app.Session.Revert.MessageID {
 					reverted = true
 					revertedMessageCount = 1
@@ -487,7 +488,7 @@ func (m *messagesComponent) renderView() tea.Cmd {
 				hasContent := false
 				for partIndex, p := range message.Parts {
 					switch part := p.(type) {
-					case opencode.TextPart:
+					case pukucode.TextPart:
 						if reverted {
 							continue
 						}
@@ -497,13 +498,13 @@ func (m *messagesComponent) renderView() tea.Cmd {
 						hasTextPart = true
 						finished := part.Time.End > 0
 						remainingParts := message.Parts[partIndex+1:]
-						toolCallParts := make([]opencode.ToolPart, 0)
+						toolCallParts := make([]pukucode.ToolPart, 0)
 
 						// sometimes tool calls happen without an assistant message
 						// these should be included in this assistant message as well
 						if len(orphanedToolCalls) > 0 {
 							toolCallParts = append(toolCallParts, orphanedToolCalls...)
-							orphanedToolCalls = make([]opencode.ToolPart, 0)
+							orphanedToolCalls = make([]pukucode.ToolPart, 0)
 						}
 
 						remaining := true
@@ -512,13 +513,13 @@ func (m *messagesComponent) renderView() tea.Cmd {
 								break
 							}
 							switch part := part.(type) {
-							case opencode.TextPart:
+							case pukucode.TextPart:
 								// we only want tool calls associated with the current text part.
 								// if we hit another text part, we're done.
 								remaining = false
-							case opencode.ToolPart:
+							case pukucode.ToolPart:
 								toolCallParts = append(toolCallParts, part)
-								if part.State.Status != opencode.ToolPartStateStatusCompleted && part.State.Status != opencode.ToolPartStateStatusError {
+								if part.State.Status != pukucode.ToolPartStateStatusCompleted && part.State.Status != pukucode.ToolPartStateStatusError {
 									// i don't think there's a case where a tool call isn't in result state
 									// and the message time is 0, but just in case
 									finished = false
@@ -541,8 +542,8 @@ func (m *messagesComponent) renderView() tea.Cmd {
 									false,
 									false,
 									false,
-									[]opencode.FilePart{},
-									[]opencode.AgentPart{},
+									[]pukucode.FilePart{},
+									[]pukucode.AgentPart{},
 									toolCallParts...,
 								)
 								m.cache.Set(key, content)
@@ -559,8 +560,8 @@ func (m *messagesComponent) renderView() tea.Cmd {
 								false,
 								false,
 								false,
-								[]opencode.FilePart{},
-								[]opencode.AgentPart{},
+								[]pukucode.FilePart{},
+								[]pukucode.AgentPart{},
 								toolCallParts...,
 							)
 						}
@@ -570,13 +571,13 @@ func (m *messagesComponent) renderView() tea.Cmd {
 							blocks = append(blocks, content)
 							hasContent = true
 						}
-					case opencode.ToolPart:
+					case pukucode.ToolPart:
 						if reverted {
 							revertedToolCount++
 							continue
 						}
 
-						permission := opencode.Permission{}
+						permission := pukucode.Permission{}
 						if m.app.CurrentPermission.CallID == part.CallID {
 							permission = m.app.CurrentPermission
 						}
@@ -588,7 +589,7 @@ func (m *messagesComponent) renderView() tea.Cmd {
 							continue
 						}
 
-						if part.State.Status == opencode.ToolPartStateStatusCompleted || part.State.Status == opencode.ToolPartStateStatusError {
+						if part.State.Status == pukucode.ToolPartStateStatusCompleted || part.State.Status == pukucode.ToolPartStateStatusError {
 							key := m.cache.GenerateKey(casted.ID,
 								part.ID,
 								m.showToolDetails,
@@ -620,7 +621,7 @@ func (m *messagesComponent) renderView() tea.Cmd {
 							blocks = append(blocks, content)
 							hasContent = true
 						}
-					case opencode.ReasoningPart:
+					case pukucode.ReasoningPart:
 						if reverted {
 							continue
 						}
@@ -641,8 +642,8 @@ func (m *messagesComponent) renderView() tea.Cmd {
 								true,
 								false,
 								shimmer,
-								[]opencode.FilePart{},
-								[]opencode.AgentPart{},
+								[]pukucode.FilePart{},
+								[]pukucode.AgentPart{},
 							)
 							partCount++
 							lineCount += lipgloss.Height(content) + 1
@@ -654,15 +655,15 @@ func (m *messagesComponent) renderView() tea.Cmd {
 
 				switch err := casted.Error.AsUnion().(type) {
 				case nil:
-				case opencode.AssistantMessageErrorMessageOutputLengthError:
+				case pukucode.AssistantMessageErrorMessageOutputLengthError:
 					error = "Message output length exceeded"
-				case opencode.AssistantMessageErrorAPIError:
+				case pukucode.AssistantMessageErrorAPIError:
 					error = err.Data.Message
-				case opencode.ProviderAuthError:
+				case pukucode.ProviderAuthError:
 					error = err.Data.Message
-				case opencode.MessageAbortedError:
+				case pukucode.MessageAbortedError:
 					error = "Request was aborted"
-				case opencode.UnknownError:
+				case pukucode.UnknownError:
 					error = err.Data.Message
 				}
 
@@ -678,8 +679,8 @@ func (m *messagesComponent) renderView() tea.Cmd {
 						false,
 						false,
 						false,
-						[]opencode.FilePart{},
-						[]opencode.AgentPart{},
+						[]pukucode.FilePart{},
+						[]pukucode.AgentPart{},
 					)
 					partCount++
 					lineCount += lipgloss.Height(content) + 1
@@ -774,14 +775,14 @@ func (m *messagesComponent) renderView() tea.Cmd {
 				context.Background(),
 				m.app.CurrentPermission.SessionID,
 				m.app.CurrentPermission.MessageID,
-				opencode.SessionMessageParams{},
+				pukucode.SessionMessageParams{},
 			)
 			if err != nil || response == nil {
 				slog.Error("Failed to get message from child session", "error", err)
 			} else {
 				for _, part := range response.Parts {
 					if part.CallID == m.app.CurrentPermission.CallID {
-						if toolPart, ok := part.AsUnion().(opencode.ToolPart); ok {
+						if toolPart, ok := part.AsUnion().(pukucode.ToolPart); ok {
 							content := renderToolDetails(
 								m.app,
 								toolPart,
@@ -885,18 +886,18 @@ func (m *messagesComponent) renderHeader() string {
 	sessionInfo := ""
 	tokens := float64(0)
 	cost := float64(0)
-	contextWindow := m.app.Model.Limit.Context
+	contextWindow := float64(m.app.Model.Limit.Context)
 
 	for _, message := range m.app.Messages {
-		if assistant, ok := message.Info.(opencode.AssistantMessage); ok {
+		if assistant, ok := message.Info.(pukucode.AssistantMessage); ok {
 			cost += assistant.Cost
 			usage := assistant.Tokens
 			if usage.Output > 0 {
-				if assistant.Summary {
-					tokens = usage.Output
+				if assistant.Summary != nil {
+					tokens = float64(usage.Output)
 					continue
 				}
-				tokens = (usage.Input +
+				tokens = float64(usage.Input +
 					usage.Cache.Read +
 					usage.Cache.Write +
 					usage.Output +
@@ -915,7 +916,8 @@ func (m *messagesComponent) renderHeader() string {
 		Background(bgColor).
 		Render(sessionInfoText)
 
-	shareEnabled := m.app.Config.Share != opencode.ConfigShareDisabled
+	// Share is enabled if Config.Share is not disabled
+	shareEnabled := m.app.Config.Share != pukucode.ConfigShareDisabled
 
 	navHint := ""
 	if isChildSession {
@@ -1105,9 +1107,9 @@ func (m *messagesComponent) CopyLastMessage() (tea.Model, tea.Cmd) {
 		return m, nil
 	}
 	lastMessage := m.app.Messages[len(m.app.Messages)-1]
-	var lastTextPart *opencode.TextPart
+	var lastTextPart *pukucode.TextPart
 	for _, part := range lastMessage.Parts {
-		if p, ok := part.(opencode.TextPart); ok {
+		if p, ok := part.(pukucode.TextPart); ok {
 			lastTextPart = &p
 		}
 	}
@@ -1127,23 +1129,23 @@ func (m *messagesComponent) UndoLastMessage() (tea.Model, tea.Cmd) {
 	for i := len(m.app.Messages) - 1; i >= 0; i-- {
 		reversedMessages = append(reversedMessages, m.app.Messages[i])
 		switch casted := m.app.Messages[i].Info.(type) {
-		case opencode.UserMessage:
+		case pukucode.UserMessage:
 			if casted.ID == m.app.Session.Revert.MessageID {
-				after = casted.Time.Created
+				after = float64(casted.Time.Created)
 			}
-		case opencode.AssistantMessage:
+		case pukucode.AssistantMessage:
 			if casted.ID == m.app.Session.Revert.MessageID {
-				after = casted.Time.Created
+				after = float64(casted.Time.Created)
 			}
 		}
 		if m.app.Session.Revert.PartID != "" {
 			for _, part := range m.app.Messages[i].Parts {
 				switch casted := part.(type) {
-				case opencode.TextPart:
+				case pukucode.TextPart:
 					if casted.ID == m.app.Session.Revert.PartID {
-						after = casted.Time.Start
+						after = float64(casted.Time.Start)
 					}
-				case opencode.ToolPart:
+				case pukucode.ToolPart:
 					// TODO: handle tool parts
 				}
 			}
@@ -1153,8 +1155,8 @@ func (m *messagesComponent) UndoLastMessage() (tea.Model, tea.Cmd) {
 	messageID := ""
 	for _, msg := range reversedMessages {
 		switch casted := msg.Info.(type) {
-		case opencode.UserMessage:
-			if after > 0 && casted.Time.Created >= after {
+		case pukucode.UserMessage:
+			if after > 0 && float64(casted.Time.Created) >= after {
 				continue
 			}
 			messageID = casted.ID
@@ -1173,8 +1175,8 @@ func (m *messagesComponent) UndoLastMessage() (tea.Model, tea.Cmd) {
 		response, err := m.app.Client.Session.Revert(
 			context.Background(),
 			m.app.Session.ID,
-			opencode.SessionRevertParams{
-				MessageID: opencode.F(messageID),
+			pukucode.SessionRevertParams{
+				MessageID: pukucode.F(messageID),
 			},
 		)
 		if err != nil {
@@ -1200,23 +1202,23 @@ func (m *messagesComponent) RedoLastMessage() (tea.Model, tea.Cmd) {
 	var revertedMessage app.Message
 	for _, message := range m.app.Messages {
 		switch casted := message.Info.(type) {
-		case opencode.UserMessage:
+		case pukucode.UserMessage:
 			if casted.ID == m.app.Session.Revert.MessageID {
-				before = casted.Time.Created
+				before = float64(casted.Time.Created)
 			}
-		case opencode.AssistantMessage:
+		case pukucode.AssistantMessage:
 			if casted.ID == m.app.Session.Revert.MessageID {
-				before = casted.Time.Created
+				before = float64(casted.Time.Created)
 			}
 		}
 		if m.app.Session.Revert.PartID != "" {
 			for _, part := range message.Parts {
 				switch casted := part.(type) {
-				case opencode.TextPart:
+				case pukucode.TextPart:
 					if casted.ID == m.app.Session.Revert.PartID {
-						before = casted.Time.Start
+						before = float64(casted.Time.Start)
 					}
-				case opencode.ToolPart:
+				case pukucode.ToolPart:
 					// TODO: handle tool parts
 				}
 			}
@@ -1226,8 +1228,8 @@ func (m *messagesComponent) RedoLastMessage() (tea.Model, tea.Cmd) {
 	messageID := ""
 	for _, msg := range m.app.Messages {
 		switch casted := msg.Info.(type) {
-		case opencode.UserMessage:
-			if casted.Time.Created <= before {
+		case pukucode.UserMessage:
+			if float64(casted.Time.Created) <= before {
 				continue
 			}
 			messageID = casted.ID
@@ -1244,7 +1246,7 @@ func (m *messagesComponent) RedoLastMessage() (tea.Model, tea.Cmd) {
 			response, err := m.app.Client.Session.Unrevert(
 				context.Background(),
 				m.app.Session.ID,
-				opencode.SessionUnrevertParams{},
+				pukucode.SessionUnrevertParams{},
 			)
 			if err != nil {
 				slog.Error("Failed to unrevert session", "error", err)
@@ -1262,8 +1264,8 @@ func (m *messagesComponent) RedoLastMessage() (tea.Model, tea.Cmd) {
 		response, err := m.app.Client.Session.Revert(
 			context.Background(),
 			m.app.Session.ID,
-			opencode.SessionRevertParams{
-				MessageID: opencode.F(messageID),
+			pukucode.SessionRevertParams{
+				MessageID: pukucode.F(messageID),
 			},
 		)
 		if err != nil {

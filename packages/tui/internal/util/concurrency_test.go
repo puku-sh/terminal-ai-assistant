@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/sst/opencode/internal/util"
+	"github.com/pukucode/pukucode-tui/internal/util"
 )
 
 func TestWriteStringsPar(t *testing.T) {

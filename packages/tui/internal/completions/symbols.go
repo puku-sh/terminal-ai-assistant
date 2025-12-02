@@ -6,10 +6,10 @@ import (
 	"log/slog"
 	"strings"
 
-	"github.com/sst/opencode-sdk-go"
-	"github.com/sst/opencode/internal/app"
-	"github.com/sst/opencode/internal/styles"
-	"github.com/sst/opencode/internal/theme"
+	"github.com/pukucode/pukucode-sdk-go"
+	"github.com/pukucode/pukucode-tui/internal/app"
+	"github.com/pukucode/pukucode-tui/internal/styles"
+	"github.com/pukucode/pukucode-tui/internal/theme"
 )
 
 type symbolsContextGroup struct {
@@ -67,7 +67,7 @@ func (cg *symbolsContextGroup) GetChildEntries(
 
 	symbols, err := cg.app.Client.Find.Symbols(
 		context.Background(),
-		opencode.FindSymbolsParams{Query: opencode.F(query)},
+		pukucode.FindSymbolsParams{Query: pukucode.F(query)},
 	)
 	if err != nil {
 		slog.Error("Failed to get symbol completion items", "error", err)
@@ -77,7 +77,7 @@ func (cg *symbolsContextGroup) GetChildEntries(
 		return items, nil
 	}
 
-	for _, sym := range *symbols {
+	for _, sym := range symbols {
 		parts := strings.Split(sym.Name, ".")
 		lastPart := parts[len(parts)-1]
 		start := int(sym.Location.Range.Start.Line)

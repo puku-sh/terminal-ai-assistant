@@ -7,7 +7,7 @@ import (
 	"reflect"
 	"sync"
 
-	opencode "github.com/sst/opencode-sdk-go"
+	"github.com/pukucode/pukucode-sdk-go"
 )
 
 func sanitizeValue(val any) any {
@@ -28,23 +28,23 @@ func sanitizeValue(val any) any {
 }
 
 type APILogHandler struct {
-	client  *opencode.Client
+	client  *pukucode.Client
 	service string
 	level   slog.Level
 	attrs   []slog.Attr
 	groups  []string
 	mu      sync.Mutex
-	queue   chan opencode.AppLogParams
+	queue   chan pukucode.AppLogParams
 }
 
-func NewAPILogHandler(ctx context.Context, client *opencode.Client, service string, level slog.Level) *APILogHandler {
+func NewAPILogHandler(ctx context.Context, client *pukucode.Client, service string, level slog.Level) *APILogHandler {
 	result := &APILogHandler{
 		client:  client,
 		service: service,
 		level:   level,
 		attrs:   make([]slog.Attr, 0),
 		groups:  make([]string, 0),
-		queue:   make(chan opencode.AppLogParams, 100_000),
+		queue:   make(chan pukucode.AppLogParams, 100_000),
 	}
 	go func() {
 		for {
@@ -52,9 +52,9 @@ func NewAPILogHandler(ctx context.Context, client *opencode.Client, service stri
 			case <-ctx.Done():
 				return
 			case params := <-result.queue:
-				_, err := client.App.Log(context.Background(), params)
+				err := client.App.Log(context.Background(), params)
 				if err != nil {
-					slog.Error("Failed to log to API", "error", err)
+					// Don't log to slog to avoid infinite loop
 				}
 			}
 		}
@@ -67,18 +67,18 @@ func (h *APILogHandler) Enabled(_ context.Context, level slog.Level) bool {
 }
 
 func (h *APILogHandler) Handle(ctx context.Context, r slog.Record) error {
-	var apiLevel opencode.AppLogParamsLevel
+	var apiLevel string
 	switch r.Level {
 	case slog.LevelDebug:
-		apiLevel = opencode.AppLogParamsLevelDebug
+		apiLevel = "debug"
 	case slog.LevelInfo:
-		apiLevel = opencode.AppLogParamsLevelInfo
+		apiLevel = "info"
 	case slog.LevelWarn:
-		apiLevel = opencode.AppLogParamsLevelWarn
+		apiLevel = "warn"
 	case slog.LevelError:
-		apiLevel = opencode.AppLogParamsLevelError
+		apiLevel = "error"
 	default:
-		apiLevel = opencode.AppLogParamsLevelInfo
+		apiLevel = "info"
 	}
 
 	extra := make(map[string]any)
@@ -96,14 +96,14 @@ func (h *APILogHandler) Handle(ctx context.Context, r slog.Record) error {
 		return true
 	})
 
-	params := opencode.AppLogParams{
-		Service: opencode.F(h.service),
-		Level:   opencode.F(apiLevel),
-		Message: opencode.F(r.Message),
+	params := pukucode.AppLogParams{
+		Service: pukucode.F(h.service),
+		Level:   pukucode.F(apiLevel),
+		Message: pukucode.F(r.Message),
 	}
 
 	if len(extra) > 0 {
-		params.Extra = opencode.F(extra)
+		params.Extra = pukucode.F(extra)
 	}
 
 	h.queue <- params
@@ -123,6 +123,7 @@ func (h *APILogHandler) WithAttrs(attrs []slog.Attr) slog.Handler {
 		level:   h.level,
 		attrs:   make([]slog.Attr, len(h.attrs)+len(attrs)),
 		groups:  make([]string, len(h.groups)),
+		queue:   h.queue,
 	}
 
 	copy(newHandler.attrs, h.attrs)
@@ -144,6 +145,7 @@ func (h *APILogHandler) WithGroup(name string) slog.Handler {
 		level:   h.level,
 		attrs:   make([]slog.Attr, len(h.attrs)),
 		groups:  make([]string, len(h.groups)+1),
+		queue:   h.queue,
 	}
 
 	copy(newHandler.attrs, h.attrs)
