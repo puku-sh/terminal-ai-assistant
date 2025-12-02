@@ -93,9 +93,9 @@ func AvailableThemes() []string {
 		names = append(names, name)
 	}
 	slices.SortFunc(names, func(a, b string) int {
-		if a == "opencode" {
+		if a == "puku" {
 			return -1
-		} else if b == "opencode" {
+		} else if b == "puku" {
 			return 1
 		}
 		if a == "system" {
