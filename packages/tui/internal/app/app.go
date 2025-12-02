@@ -138,7 +138,7 @@ func New(
 		appState.Theme = configInfo.Theme
 	}
 
-	themeEnv := os.Getenv("OPENCODE_THEME")
+	themeEnv := os.Getenv("PUKUCODE_THEME")
 	if themeEnv != "" {
 		appState.Theme = themeEnv
 	}
@@ -254,7 +254,7 @@ func SetClipboard(text string) tea.Cmd {
 }
 
 func (a *App) updateModelForNewAgent() {
-	singleModelEnv := os.Getenv("OPENCODE_AGENTS_SWITCH_SINGLE_MODEL")
+	singleModelEnv := os.Getenv("PUKUCODE_AGENTS_SWITCH_SINGLE_MODEL")
 	isSingleModel := singleModelEnv == "1" || singleModelEnv == "true"
 
 	if isSingleModel {

@@ -16,7 +16,7 @@ var SUPPORTED_IDES = []struct {
 }
 
 func IsVSCode() bool {
-	return os.Getenv("OPENCODE_CALLER") == "vscode"
+	return os.Getenv("PUKUCODE_CALLER") == "vscode"
 }
 
 func Ide() string {
