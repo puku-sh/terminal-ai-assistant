@@ -463,13 +463,13 @@ func (a Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		a.showCompletionDialog = false
 	case pukucode.EventListResponseEventInstallationUpdated:
 		return a, toast.NewSuccessToast(
-			"opencode updated to "+msg.Properties.Version+", restart to apply.",
+			"pukucode updated to "+msg.Properties.Version+", restart to apply.",
 			toast.WithTitle("New version installed"),
 		)
 		/*
 			case pukucode.EventListResponseEventIdeInstalled:
 				return a, toast.NewSuccessToast(
-					"Installed the opencode extension in "+msg.Properties.Ide,
+					"Installed the pukucode extension in "+msg.Properties.Ide,
 					toast.WithTitle(msg.Properties.Ide+" extension installed"),
 				)
 		*/
@@ -984,25 +984,10 @@ func (a Model) home() (string, int, int) {
 	effectiveWidth := a.width - 4
 	baseStyle := styles.NewStyle().Foreground(t.Text()).Background(t.Background())
 	base := baseStyle.Render
-	muted := styles.NewStyle().Foreground(t.TextMuted()).Background(t.Background()).Render
+	_ = base // keep for compatibility
 
-	open := `
-                    
-█▀▀█ █▀▀█ █▀▀█ █▀▀▄ 
-█░░█ █░░█ █▀▀▀ █░░█ 
-▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀  ▀ `
-
-	code := `
-             ▄
-█▀▀▀ █▀▀█ █▀▀█ █▀▀█
-█░░░ █░░█ █░░█ █▀▀▀
-▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀`
-
-	logo := lipgloss.JoinHorizontal(
-		lipgloss.Top,
-		muted(open),
-		base(code),
-	)
+	// Use the PUKU logo with gradient
+	logo := util.GetPUKULogoWithTheme()
 	// cwd := app.Info.Path.Cwd
 	// config := app.Info.Path.Config
 
