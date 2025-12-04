@@ -230,7 +230,7 @@ func (m *messagesComponent) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 
 	case pukucode.EventListResponseEventSessionUpdated:
-		if msg.Properties.Info.ID == m.app.Session.ID {
+		if msg.Properties.Info != nil && msg.Properties.Info.ID == m.app.Session.ID {
 			cmds = append(cmds, m.renderView())
 		}
 	case pukucode.EventListResponseEventMessageUpdated:
@@ -243,7 +243,7 @@ func (m *messagesComponent) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			cmds = append(cmds, m.renderView())
 		}
 	case pukucode.EventListResponseEventMessagePartUpdated:
-		if msg.Properties.Part.SessionID == m.app.Session.ID {
+		if msg.Properties.Part != nil && msg.Properties.Part.SessionID == m.app.Session.ID {
 			cmds = append(cmds, m.renderView())
 		}
 	case pukucode.EventListResponseEventMessageRemoved:

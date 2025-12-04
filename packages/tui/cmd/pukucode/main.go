@@ -153,19 +153,23 @@ func main() {
 	signal.Notify(sigChan, syscall.SIGTERM, syscall.SIGINT)
 
 	go func() {
+		slog.Info("Attempting to subscribe to event stream", "url", url+"/event")
 		stream, err := httpClient.Event.Subscribe(ctx)
 		if err != nil {
 			slog.Error("Failed to subscribe to events", "error", err)
 			return
 		}
+		slog.Info("Successfully subscribed to event stream")
 		for stream.Next() {
 			evt := stream.Current()
-			program.Send(evt)
+			slog.Debug("Received event", "type", evt.Type)
+			program.Send(evt.AsUnion())
 		}
 		if err := stream.Err(); err != nil {
 			slog.Error("Error streaming events", "error", err)
 			program.Send(err)
 		}
+		slog.Info("Event stream ended")
 	}()
 
 	go api.Start(ctx, program, httpClient)

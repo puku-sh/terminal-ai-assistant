@@ -474,16 +474,19 @@ func (a Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				)
 		*/
 	case pukucode.EventListResponseEventSessionDeleted:
-		if a.app.Session != nil && msg.Properties.Info.ID == a.app.Session.ID {
+		if a.app.Session != nil && msg.Properties.Info != nil && msg.Properties.Info.ID == a.app.Session.ID {
 			a.app.Session = &pukucode.Session{}
 			a.app.Messages = []app.Message{}
 		}
 		return a, toast.NewSuccessToast("Session deleted successfully")
 	case pukucode.EventListResponseEventSessionUpdated:
-		if msg.Properties.Info.ID == a.app.Session.ID {
+		if msg.Properties.Info != nil && msg.Properties.Info.ID == a.app.Session.ID {
 			a.app.Session = msg.Properties.Info
 		}
 	case pukucode.EventListResponseEventMessagePartUpdated:
+		if msg.Properties.Part == nil {
+			break
+		}
 		slog.Debug("message part updated", "message", msg.Properties.Part.MessageID, "part", msg.Properties.Part.ID)
 		if msg.Properties.Part.SessionID == a.app.Session.ID {
 			messageIndex := slices.IndexFunc(a.app.Messages, func(m app.Message) bool {

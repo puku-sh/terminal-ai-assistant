@@ -428,3 +428,39 @@ type EventListResponseEventInstallationUpdated Event
 
 // EventListResponseEventSessionCompacted is an event when a session is compacted
 type EventListResponseEventSessionCompacted Event
+
+// AsUnion returns the Event as the appropriate typed event based on the Type field
+// This allows type switching in Bubble Tea message handlers
+func (e *Event) AsUnion() interface{} {
+	switch e.Type {
+	case "session.updated":
+		return EventListResponseEventSessionUpdated(*e)
+	case "session.deleted":
+		return EventListResponseEventSessionDeleted(*e)
+	case "session.error":
+		return EventListResponseEventSessionError(*e)
+	case "message.updated":
+		return EventListResponseEventMessageUpdated(*e)
+	case "message.part.updated":
+		return EventListResponseEventMessagePartUpdated(*e)
+	case "message.removed":
+		return EventListResponseEventMessageRemoved(*e)
+	case "message.part.removed":
+		return EventListResponseEventMessagePartRemoved(*e)
+	case "permission.updated":
+		return EventListResponseEventPermissionUpdated(*e)
+	case "permission.replied":
+		return EventListResponseEventPermissionReplied(*e)
+	case "file.edited":
+		return EventListResponseEventFileEdited(*e)
+	case "file.watcher":
+		return EventListResponseEventFileWatcher(*e)
+	case "installation.updated":
+		return EventListResponseEventInstallationUpdated(*e)
+	case "session.compacted":
+		return EventListResponseEventSessionCompacted(*e)
+	default:
+		// Return the base Event if type is unknown
+		return *e
+	}
+}
