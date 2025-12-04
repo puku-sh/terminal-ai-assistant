@@ -310,7 +310,7 @@ func NewTimelineDialog(app *app.App) TimelineDialog { // renamed from NewNavigat
 			func(item timelineItem, selected bool, width int, baseStyle styles.Style) string {
 				// Determine if this item is the current message for the session
 				isCurrent := false
-				if app.Session.Revert.MessageID != "" {
+				if app.Session.Revert != nil && app.Session.Revert.MessageID != "" {
 					// When reverted, Session.Revert.MessageID contains the NEXT user message ID
 					// So we need to find the previous user message to highlight the correct one
 					for i, navItem := range items {
@@ -332,7 +332,7 @@ func NewTimelineDialog(app *app.App) TimelineDialog { // renamed from NewNavigat
 					isCurrent = item.messageID == lastUserMsgID
 				}
 				// Only show the dot if undo/redo/restore is available
-				showDot := app.Session.Revert.MessageID != ""
+				showDot := app.Session.Revert != nil && app.Session.Revert.MessageID != ""
 				return item.Render(selected, width, false, baseStyle, isCurrent && showDot)
 			},
 		),

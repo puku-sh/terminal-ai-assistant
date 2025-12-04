@@ -383,7 +383,7 @@ func (m *messagesComponent) renderView() tea.Cmd {
 				// Track the position of this user message
 				messagePositions[casted.ID] = lineCount
 
-				if casted.ID == m.app.Session.Revert.MessageID {
+				if m.app.Session.Revert != nil && casted.ID == m.app.Session.Revert.MessageID {
 					reverted = true
 					revertedMessageCount = 1
 					revertedToolCount = 0
@@ -479,7 +479,7 @@ func (m *messagesComponent) renderView() tea.Cmd {
 				}
 
 			case pukucode.AssistantMessage:
-				if casted.ID == m.app.Session.Revert.MessageID {
+				if m.app.Session.Revert != nil && casted.ID == m.app.Session.Revert.MessageID {
 					reverted = true
 					revertedMessageCount = 1
 					revertedToolCount = 0
@@ -726,7 +726,7 @@ func (m *messagesComponent) renderView() tea.Cmd {
 			hint += revertedStyle.Render(" (or /redo) to restore")
 
 			content += "\n" + hint
-			if m.app.Session.Revert.Diff != "" {
+			if m.app.Session.Revert != nil && m.app.Session.Revert.Diff != "" {
 				t := theme.CurrentTheme()
 				s := styles.NewStyle().Background(t.BackgroundPanel())
 				green := s.Foreground(t.Success()).Render
@@ -956,7 +956,7 @@ func (m *messagesComponent) renderHeader() string {
 	var items []layout.FlexItem
 	if shareEnabled {
 		share := base("/share") + muted(" to create a shareable link")
-		if m.app.Session.Share.URL != "" {
+		if m.app.Session.Share != nil && m.app.Session.Share.URL != "" {
 			share = muted(m.app.Session.Share.URL + "  /unshare")
 		}
 		items = []layout.FlexItem{{View: share}, {View: sessionInfo}}
@@ -1128,25 +1128,27 @@ func (m *messagesComponent) UndoLastMessage() (tea.Model, tea.Cmd) {
 	reversedMessages := []app.Message{}
 	for i := len(m.app.Messages) - 1; i >= 0; i-- {
 		reversedMessages = append(reversedMessages, m.app.Messages[i])
-		switch casted := m.app.Messages[i].Info.(type) {
-		case pukucode.UserMessage:
-			if casted.ID == m.app.Session.Revert.MessageID {
-				after = float64(casted.Time.Created)
+		if m.app.Session.Revert != nil {
+			switch casted := m.app.Messages[i].Info.(type) {
+			case pukucode.UserMessage:
+				if casted.ID == m.app.Session.Revert.MessageID {
+					after = float64(casted.Time.Created)
+				}
+			case pukucode.AssistantMessage:
+				if casted.ID == m.app.Session.Revert.MessageID {
+					after = float64(casted.Time.Created)
+				}
 			}
-		case pukucode.AssistantMessage:
-			if casted.ID == m.app.Session.Revert.MessageID {
-				after = float64(casted.Time.Created)
-			}
-		}
-		if m.app.Session.Revert.PartID != "" {
-			for _, part := range m.app.Messages[i].Parts {
-				switch casted := part.(type) {
-				case pukucode.TextPart:
-					if casted.ID == m.app.Session.Revert.PartID {
-						after = float64(casted.Time.Start)
+			if m.app.Session.Revert.PartID != "" {
+				for _, part := range m.app.Messages[i].Parts {
+					switch casted := part.(type) {
+					case pukucode.TextPart:
+						if casted.ID == m.app.Session.Revert.PartID {
+							after = float64(casted.Time.Start)
+						}
+					case pukucode.ToolPart:
+						// TODO: handle tool parts
 					}
-				case pukucode.ToolPart:
-					// TODO: handle tool parts
 				}
 			}
 		}
@@ -1192,7 +1194,7 @@ func (m *messagesComponent) UndoLastMessage() (tea.Model, tea.Cmd) {
 
 func (m *messagesComponent) RedoLastMessage() (tea.Model, tea.Cmd) {
 	// Check if there's a revert state to redo from
-	if m.app.Session.Revert.MessageID == "" {
+	if m.app.Session.Revert == nil || m.app.Session.Revert.MessageID == "" {
 		return m, func() tea.Msg {
 			return toast.NewErrorToast("Nothing to redo")
 		}
