@@ -487,7 +487,7 @@ func (a Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		if msg.Properties.Part == nil {
 			break
 		}
-		slog.Debug("message part updated", "message", msg.Properties.Part.MessageID, "part", msg.Properties.Part.ID)
+		slog.Debug("message part updated", "message", msg.Properties.Part.MessageID, "part", msg.Properties.Part.ID, "type", msg.Properties.Part.Type)
 		if msg.Properties.Part.SessionID == a.app.Session.ID {
 			messageIndex := slices.IndexFunc(a.app.Messages, func(m app.Message) bool {
 				switch casted := m.Info.(type) {
@@ -498,6 +498,7 @@ func (a Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				}
 				return false
 			})
+			slog.Debug("searching for message to add part", "messageIndex", messageIndex, "totalMessages", len(a.app.Messages), "messageID", msg.Properties.Part.MessageID)
 			if messageIndex > -1 {
 				message := a.app.Messages[messageIndex]
 				partIndex := slices.IndexFunc(message.Parts, func(p pukucode.PartUnion) bool {
@@ -582,6 +583,7 @@ func (a Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	case pukucode.EventListResponseEventMessageUpdated:
 		if msg.Properties.Message != nil && msg.Properties.Message.SessionID == a.app.Session.ID {
+			slog.Debug("message updated event", "messageID", msg.Properties.Message.ID, "role", msg.Properties.Message.Role)
 			matchIndex := slices.IndexFunc(a.app.Messages, func(m app.Message) bool {
 				switch casted := m.Info.(type) {
 				case pukucode.UserMessage:
@@ -592,7 +594,10 @@ func (a Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				return false
 			})
 
+			slog.Debug("message search result", "matchIndex", matchIndex, "totalMessages", len(a.app.Messages))
+
 			if matchIndex > -1 {
+				slog.Debug("updating existing message", "index", matchIndex)
 				match := a.app.Messages[matchIndex]
 				a.app.Messages[matchIndex] = app.Message{
 					Info:  msg.Properties.Message.AsUnion(),
@@ -601,6 +606,7 @@ func (a Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 			if matchIndex == -1 {
+				slog.Debug("adding new message", "messageID", msg.Properties.Message.ID)
 				// Extract the new message ID
 				var newMessageID string
 				switch casted := msg.Properties.Message.AsUnion().(type) {
