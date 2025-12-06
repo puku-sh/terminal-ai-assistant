@@ -7,7 +7,9 @@ import { AuthCommand } from "cli/cmd/auth"
 import { RunCommand } from "cli/cmd/run"
 import { ServerCommand } from "cli/cmd/server"
 
-
+// Initialize logging with level from environment variable
+const logLevel = (process.env.LOG_LEVEL?.toUpperCase() as "DEBUG" | "INFO" | "WARN" | "ERROR") || "INFO"
+await Log.init({ print: true, level: logLevel })
 
 const logger = Log.create({ service: "cli" })
 

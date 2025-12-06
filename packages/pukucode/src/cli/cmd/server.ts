@@ -27,15 +27,33 @@ export const ServerCommand = cmd({
         default: false,
         alias: "o",
       })
+      .option("log-level", {
+        describe: "log level (DEBUG, INFO, WARN, ERROR)",
+        type: "string",
+        choices: ["DEBUG", "INFO", "WARN", "ERROR"],
+        alias: "l",
+      })
   },
   handler: async (args) => {
+    // Re-initialize logging if log-level flag is provided
+    if (args["log-level"]) {
+      const { Log } = await import("../../util/log")
+      await Log.init({
+        print: true,
+        level: args["log-level"] as "DEBUG" | "INFO" | "WARN" | "ERROR"
+      })
+    }
+
     await bootstrap(process.cwd(), async () => {
       const port = args.port as number
       const hostname = args.hostname as string
-      
+
       UI.println(UI.Style.TEXT_INFO_BOLD + "Starting pukucode server...")
       UI.println(UI.Style.TEXT_DIM + `Port: ${port}`)
       UI.println(UI.Style.TEXT_DIM + `Hostname: ${hostname}`)
+      if (args["log-level"]) {
+        UI.println(UI.Style.TEXT_DIM + `Log Level: ${args["log-level"]}`)
+      }
       
       const server = Server.listen({ port, hostname })
 

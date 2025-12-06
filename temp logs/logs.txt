@@ -1,0 +1,67 @@
+Adid@LAPTOP-EHERLFAL MINGW64 /c/LOCAL DISK 2/projects/poridhi/code/terminal-ai-assistant/packages/pukucode (add/minimalistic-tui)
+$ bun run src/index.ts server -p 1337
+INFO  2025-12-06T07:21:29 +48ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+INFO  2025-12-06T07:21:29 +45ms service=plugin Plugin system initialized (stub)
+Starting pukucode server...Hostname: localhost
+
+
+Port: 1337pukucode server listening on http://localhost:1337
+Server running at http://localhost:1337
+API docs at http://localhost:1337/doc
+Press Ctrl+C to stop
+INFO  2025-12-06T07:21:33 +4481ms service=server method=GET path=/path request
+INFO  2025-12-06T07:21:33 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+INFO  2025-12-06T07:21:33 +4ms service=server duration=5 response
+INFO  2025-12-06T07:21:33 +0ms service=server method=GET path=/project/current request
+INFO  2025-12-06T07:21:33 +0ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory   
+INFO  2025-12-06T07:21:33 +1ms service=server duration=1 response
+INFO  2025-12-06T07:21:33 +0ms service=server method=GET path=/agent request
+INFO  2025-12-06T07:21:33 +0ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory   
+INFO  2025-12-06T07:21:33 +3ms service=config path=C:\Users\Adid\.config\pukucode\config.json loading
+INFO  2025-12-06T07:21:33 +0ms service=config path=C:\Users\Adid\.config\pukucode\pukucode.json loading
+INFO  2025-12-06T07:21:33 +0ms service=config path=C:\Users\Adid\.config\pukucode\pukucode.jsonc loading
+INFO  2025-12-06T07:21:33 +4ms service=config agent={} mode={} command={} plugin=[] username=Adid loaded
+INFO  2025-12-06T07:21:33 +1ms service=server duration=8 response
+INFO  2025-12-06T07:21:33 +1ms service=server method=GET path=/config request
+INFO  2025-12-06T07:21:33 +0ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory   
+INFO  2025-12-06T07:21:33 +1ms service=server duration=1 response
+INFO  2025-12-06T07:21:33 +0ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory   
+INFO  2025-12-06T07:21:33 +5ms service=server method=GET path=/command request
+INFO  2025-12-06T07:21:33 +0ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory   
+INFO  2025-12-06T07:21:33 +1ms service=server duration=1 response
+INFO  2025-12-06T07:21:33 +0ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory   
+INFO  2025-12-06T07:21:33 +0ms service=server method=GET path=/file/status request
+INFO  2025-12-06T07:21:33 +0ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory   
+INFO  2025-12-06T07:21:33 +4ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+INFO  2025-12-06T07:21:33 +0ms service=tui commands={"agent_cycle":{},"agent_cycle_reverse":{},"agent_list":{},"app_exit":{},"app_help":{},"editor_open":{},"input_clear":{},"input_newline":{},"input_paste":{},"input_submit":{},"messages_copy":{},"messages_first":{},"messages_half_page_down":{},"messages_half_page_up":{},"messages_last":{},"messages_page_down":{},"messages_page_up":{},"messages_redo":{},"messages_undo":{},"model_cycle_recent":{},"model_cycle_recent_reverse":{},"model_list":{},"project_init":{},"session_child_cycle":{},"session_child_cycle_reverse":{},"session_compact":{},"session_export":{},"session_interrupt":{},"session_list":{},"session_new":{},"session_timeline":{},"theme_list":{},"thinking_blocks":{},"tool_details":{}} Loaded commands
+INFO  2025-12-06T07:21:33 +1ms service=server method=GET path=/event request
+INFO  2025-12-06T07:21:33 +0ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory   
+INFO  2025-12-06T07:21:33 +0ms service=server event connected
+INFO  2025-12-06T07:21:33 +2ms service=bus type=* subscribing
+INFO  2025-12-06T07:21:33 +2ms service=server duration=4 response
+INFO  2025-12-06T07:21:33 +1ms service=server method=GET path=/tui/control/next request
+INFO  2025-12-06T07:21:33 +0ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory   
+INFO  2025-12-06T07:21:33 +1ms service=server method=GET path=/config/providers request
+INFO  2025-12-06T07:21:33 +0ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory   
+INFO  2025-12-06T07:21:33 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory   
+INFO  2025-12-06T07:21:33 +0ms service=provider init
+INFO  2025-12-06T07:21:33 +1ms service=tui url=http://localhost:1337/event Attempting to subscribe to event stream
+INFO  2025-12-06T07:21:33 +1ms service=provider providerID=openrouter found
+INFO  2025-12-06T07:21:33 +0ms service=provider providerID=anthropic found
+INFO  2025-12-06T07:21:33 +0ms service=provider providerID=openai found
+INFO  2025-12-06T07:21:33 +0ms service=provider providerID=google found
+INFO  2025-12-06T07:21:33 +0ms service=provider providerID=groq found
+INFO  2025-12-06T07:21:33 +1ms service=server duration=4 response
+INFO  2025-12-06T07:21:33 +0ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory   
+INFO  2025-12-06T07:21:33 +1ms service=tui Successfully subscribed to event stream
+INFO  2025-12-06T07:21:33 +0ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory   
+INFO  2025-12-06T07:21:33 +2ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+INFO  2025-12-06T07:21:33 +24ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+INFO  2025-12-06T07:21:33 +4ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory   
+INFO  2025-12-06T07:21:33 +3ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+INFO  2025-12-06T07:21:33 +6ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory   
+INFO  2025-12-06T07:21:33 +24ms service=server duration=79 response
+INFO  2025-12-06T07:21:49 +16099ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+INFO  2025-12-06T07:21:49 +3ms service=tui offset=0 x=89 y=18 mouse
+INFO  2025-12-06T07:21:49 +4ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory   
+INFO  2025-12-06T07:21:49 +4ms service=tui end=-1,-1 start=89,18 mouse selection

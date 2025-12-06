@@ -80,12 +80,24 @@ export namespace Server {
             method: c.req.method,
             path: c.req.path,
           })
+          log.debug("request details", {
+            method: c.req.method,
+            path: c.req.path,
+            query: c.req.query(),
+            headers: Object.fromEntries(c.req.raw.headers.entries()),
+          })
         }
         const start = Date.now()
         await next()
         if (!skipLogging) {
+          const duration = Date.now() - start
           log.info("response", {
-            duration: Date.now() - start,
+            duration,
+          })
+          log.debug("response details", {
+            duration,
+            status: c.res.status,
+            statusText: c.res.statusText,
           })
         }
       })
@@ -1300,11 +1312,17 @@ export namespace Server {
   }
 
   export function listen(opts: { port: number; hostname: string }) {
+    log.debug("Initializing server", { port: opts.port, hostname: opts.hostname })
     const server = Bun.serve({
       port: opts.port,
       hostname: opts.hostname,
       idleTimeout: 0,
       fetch: App().fetch,
+    })
+    log.debug("Server listening", {
+      url: `http://${server.hostname}:${server.port}`,
+      hostname: server.hostname,
+      port: server.port
     })
     return server
   }
