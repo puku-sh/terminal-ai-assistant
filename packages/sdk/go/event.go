@@ -58,10 +58,10 @@ type EventProperties struct {
 	Version      string `json:"version,omitempty"`
 
 	// For session.updated, session.deleted events
-	Info *Session `json:"info,omitempty"`
+	Info *Session `json:"-"` // Populated by custom UnmarshalJSON
 
-	// For message.updated events
-	Message *EventMessage `json:"message,omitempty"`
+	// For message.updated events (also sent in "info" field by backend)
+	Message *EventMessage `json:"-"` // Populated by custom UnmarshalJSON
 
 	// For message.part.updated events
 	Part *EventMessagePart `json:"part,omitempty"`
@@ -81,6 +81,46 @@ type EventProperties struct {
 
 	// Raw JSON for accessing any field not explicitly defined
 	Raw json.RawMessage `json:"-"`
+}
+
+// UnmarshalJSON custom unmarshaler for EventProperties
+// Handles the ambiguity where both session.updated and message.updated use "info" field
+func (p *EventProperties) UnmarshalJSON(data []byte) error {
+	// First unmarshal into a temporary struct with all JSON tags intact
+	type Alias EventProperties
+	aux := &struct {
+		InfoRaw json.RawMessage `json:"info,omitempty"`
+		*Alias
+	}{
+		Alias: (*Alias)(p),
+	}
+
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return err
+	}
+
+	// If "info" field exists, determine if it's session or message data
+	if len(aux.InfoRaw) > 0 {
+		// Check if it has a "role" field (indicates message data)
+		var check map[string]interface{}
+		if err := json.Unmarshal(aux.InfoRaw, &check); err == nil {
+			if _, hasRole := check["role"]; hasRole {
+				// It's message data
+				var msg EventMessage
+				if err := json.Unmarshal(aux.InfoRaw, &msg); err == nil {
+					p.Message = &msg
+				}
+			} else {
+				// It's session data
+				var sess Session
+				if err := json.Unmarshal(aux.InfoRaw, &sess); err == nil {
+					p.Info = &sess
+				}
+			}
+		}
+	}
+
+	return nil
 }
 
 // SessionInfo contains session metadata

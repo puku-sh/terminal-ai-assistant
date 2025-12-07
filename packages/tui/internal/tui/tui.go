@@ -100,6 +100,9 @@ func (a Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	var cmds []tea.Cmd
 
+	// Debug: Log the actual type of every message for debugging type switch issues
+	slog.Debug("Update received message", "type", fmt.Sprintf("%T", msg))
+
 	switch msg := msg.(type) {
 	case tea.KeyPressMsg:
 		keyString := msg.String()
@@ -582,6 +585,16 @@ func (a Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		}
 	case pukucode.EventListResponseEventMessageUpdated:
+		slog.Debug("message.updated handler entered",
+			"messageIsNil", msg.Properties.Message == nil,
+			"currentSessionID", a.app.Session.ID)
+		if msg.Properties.Message != nil {
+			slog.Debug("message.updated has message",
+				"messageID", msg.Properties.Message.ID,
+				"messageSessionID", msg.Properties.Message.SessionID,
+				"role", msg.Properties.Message.Role,
+				"sessionsMatch", msg.Properties.Message.SessionID == a.app.Session.ID)
+		}
 		if msg.Properties.Message != nil && msg.Properties.Message.SessionID == a.app.Session.ID {
 			slog.Debug("message updated event", "messageID", msg.Properties.Message.ID, "role", msg.Properties.Message.Role)
 			matchIndex := slices.IndexFunc(a.app.Messages, func(m app.Message) bool {

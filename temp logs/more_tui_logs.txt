@@ -1,0 +1,700 @@
+025-12-06T14:32:06 +0ms service=tui type=app.Prompt Update received message
+INFO  2025-12-06T14:32:06 +1ms service=bus type=session.updated publishing
+INFO  2025-12-06T14:32:06 +0ms service=server duration=7 response
+DEBUG 2025-12-06T14:32:06 +1ms service=server duration=7 status=200 statusText= response details
+INFO  2025-12-06T14:32:06 +0ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:06 +0ms service=tui type=session.updated Received event
+INFO  2025-12-06T14:32:06 +2ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:06 +0ms service=tui type=pukucode.EventListResponseEventSessionUpdated Update received message
+INFO  2025-12-06T14:32:06 +0ms service=server method=POST path=/session/ses_50bec3ffdffer9K4Jwg6rKlUn4/message request
+DEBUG 2025-12-06T14:32:06 +0ms service=server method=POST path=/session/ses_50bec3ffdffer9K4Jwg6rKlUn4/message query={} headers={"accept":"application/json","accept-encoding":"gzip","content-length":"228","content-type":"application/json","host":"localhost:1337","user-agent":"Pukucode/Go 0.1.0","x-pukucode-arch":"x64","x-pukucode-lang":"go","x-pukucode-os":"Windows","x-pukucode-package-version":"0.1.0","x-pukucode-retry-count":"0","x-pukucode-runtime":"go","x-pukucode-runtime-version":"go1.25.1"} request details
+INFO  2025-12-06T14:32:06 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+INFO  2025-12-06T14:32:06 +4ms service=session session=ses_50bec3ffdffer9K4Jwg6rKlUn4 chatting
+INFO  2025-12-06T14:32:06 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:06 +0ms service=tui type=struct { Session *pukucode.Session } Update received message
+INFO  2025-12-06T14:32:06 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:06 +0ms service=tui timeTakenMs=0 messages.renderView
+INFO  2025-12-06T14:32:06 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:06 +0ms service=tui type=chat.renderCompleteMsg Update received message
+INFO  2025-12-06T14:32:06 +0ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:06 +0ms service=tui type=cursor.BlinkMsg Update received message
+INFO  2025-12-06T14:32:06 +11ms service=bus type=message.updated publishing
+INFO  2025-12-06T14:32:06 +1ms service=bus type=message.part.updated publishing
+INFO  2025-12-06T14:32:06 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:06 +0ms service=tui type=message.updated Received event
+INFO  2025-12-06T14:32:06 +1ms service=bus type=session.updated publishing
+INFO  2025-12-06T14:32:06 +1ms service=provider providerID=openrouter modelID=z-ai/glm-4.6 getModel
+INFO  2025-12-06T14:32:06 +0ms service=provider status=started providerID=openrouter getSDK
+INFO  2025-12-06T14:32:06 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:06 +0ms service=tui type=pukucode.EventListResponseEventMessageUpdated Update received message
+INFO  2025-12-06T14:32:06 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:06 +1ms service=tui type=message.part.updated Received event
+INFO  2025-12-06T14:32:06 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:06 +0ms service=tui type=pukucode.EventListResponseEventMessagePartUpdated Update received message
+INFO  2025-12-06T14:32:06 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:06 +0ms service=tui message=msg_af413c007001ql0ySVr271V0mT part=prt_af413c01b001hWPrKmsWstw0OU type=text message part updated        
+INFO  2025-12-06T14:32:06 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:06 +0ms service=tui messageID=msg_af413c007001ql0ySVr271V0mT messageIndex=0 totalMessages=1 searching for message to add part        
+INFO  2025-12-06T14:32:06 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:06 +0ms service=tui timeTakenMs=0 messages.renderView
+INFO  2025-12-06T14:32:06 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:06 +1ms service=tui type=chat.renderCompleteMsg Update received message
+INFO  2025-12-06T14:32:06 +0ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:06 +1ms service=tui type=session.updated Received event
+INFO  2025-12-06T14:32:06 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:06 +0ms service=tui type=pukucode.EventListResponseEventSessionUpdated Update received message
+INFO  2025-12-06T14:32:06 +0ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:06 +1ms service=tui timeTakenMs=0 messages.renderView
+INFO  2025-12-06T14:32:06 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:06 +0ms service=tui type=chat.renderCompleteMsg Update received message
+INFO  2025-12-06T14:32:08 +2105ms service=provider status=completed duration=2118 providerID=openrouter getSDK
+INFO  2025-12-06T14:32:08 +1ms service=provider providerID=openrouter modelID=z-ai/glm-4.6 found
+INFO  2025-12-06T14:32:08 +4ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:08 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:08 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:08 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:08 +1ms service=session session=ses_50bec3ffdffer9K4Jwg6rKlUn4 sessionID=ses_50bec3ffdffer9K4Jwg6rKlUn4 locking
+INFO  2025-12-06T14:32:08 +209ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:08 +1ms service=tui type=cursor.BlinkMsg Update received message
+INFO  2025-12-06T14:32:08 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:08 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:08 +0ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:08 +1ms service=tui type=tea.MouseMotionMsg Update received message
+INFO  2025-12-06T14:32:08 +0ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:08 +0ms service=tui type=tea.MouseMotionMsg Update received message
+INFO  2025-12-06T14:32:08 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:08 +0ms service=tui type=tea.MouseMotionMsg Update received message
+INFO  2025-12-06T14:32:08 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:08 +0ms service=tui type=tea.MouseMotionMsg Update received message
+INFO  2025-12-06T14:32:08 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:08 +0ms service=tui type=tea.MouseMotionMsg Update received message
+INFO  2025-12-06T14:32:08 +2ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:08 +0ms service=tui type=tea.MouseMotionMsg Update received message
+INFO  2025-12-06T14:32:08 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:08 +0ms service=tui type=tea.MouseMotionMsg Update received message
+INFO  2025-12-06T14:32:08 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:08 +0ms service=tui type=tea.MouseMotionMsg Update received message
+INFO  2025-12-06T14:32:08 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:08 +0ms service=tui type=tea.MouseMotionMsg Update received message
+INFO  2025-12-06T14:32:08 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:08 +0ms service=tui type=tea.MouseMotionMsg Update received message
+INFO  2025-12-06T14:32:08 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:08 +0ms service=tui type=tea.MouseMotionMsg Update received message
+INFO  2025-12-06T14:32:08 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:08 +0ms service=tui type=tea.MouseMotionMsg Update received message
+INFO  2025-12-06T14:32:08 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:08 +0ms service=tui type=tea.MouseMotionMsg Update received message
+INFO  2025-12-06T14:32:08 +2ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:08 +0ms service=tui type=tea.MouseMotionMsg Update received message
+INFO  2025-12-06T14:32:08 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:08 +0ms service=tui type=cursor.BlinkMsg Update received message
+INFO  2025-12-06T14:32:08 +7ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:08 +1ms service=tui type=tea.MouseMotionMsg Update received message
+INFO  2025-12-06T14:32:08 +0ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:08 +1ms service=tui type=tea.MouseMotionMsg Update received message
+INFO  2025-12-06T14:32:08 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:08 +0ms service=tui type=tea.MouseMotionMsg Update received message
+INFO  2025-12-06T14:32:08 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:08 +0ms service=tui type=tea.MouseMotionMsg Update received message
+INFO  2025-12-06T14:32:08 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:08 +0ms service=tui type=tea.MouseMotionMsg Update received message
+INFO  2025-12-06T14:32:08 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:08 +0ms service=tui type=tea.MouseMotionMsg Update received message
+INFO  2025-12-06T14:32:08 +0ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:08 +1ms service=tui type=tea.MouseMotionMsg Update received message
+INFO  2025-12-06T14:32:08 +0ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:08 +0ms service=tui type=tea.MouseMotionMsg Update received message
+INFO  2025-12-06T14:32:08 +2ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:08 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:08 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:08 +0ms service=tui type=tea.MouseMotionMsg Update received message
+INFO  2025-12-06T14:32:08 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:08 +0ms service=tui type=tea.MouseMotionMsg Update received message
+INFO  2025-12-06T14:32:08 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:08 +0ms service=tui type=tea.MouseMotionMsg Update received message
+INFO  2025-12-06T14:32:08 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:08 +0ms service=tui type=tea.MouseMotionMsg Update received message
+INFO  2025-12-06T14:32:08 +0ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:08 +0ms service=tui type=tea.MouseMotionMsg Update received message
+INFO  2025-12-06T14:32:08 +2ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:08 +0ms service=tui type=tea.MouseMotionMsg Update received message
+INFO  2025-12-06T14:32:08 +2ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:08 +0ms service=tui type=tea.MouseMotionMsg Update received message
+INFO  2025-12-06T14:32:08 +0ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:08 +1ms service=tui type=tea.MouseMotionMsg Update received message
+INFO  2025-12-06T14:32:08 +0ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:08 +0ms service=tui type=tea.MouseMotionMsg Update received message
+INFO  2025-12-06T14:32:08 +1ms service=bus type=message.updated publishing
+INFO  2025-12-06T14:32:08 +6ms service=session session=ses_50bec3ffdffer9K4Jwg6rKlUn4 type=start part
+INFO  2025-12-06T14:32:08 +4ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:08 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:08 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:08 +0ms service=tui type=cursor.BlinkMsg Update received message
+INFO  2025-12-06T14:32:08 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:08 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:08 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:08 +0ms service=tui type=cursor.BlinkMsg Update received message
+INFO  2025-12-06T14:32:08 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:08 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:08 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:08 +0ms service=tui type=tea.BlurMsg Update received message
+INFO  2025-12-06T14:32:08 +0ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:08 +0ms service=tui type=message.updated Received event
+INFO  2025-12-06T14:32:08 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:08 +0ms service=tui type=pukucode.EventListResponseEventMessageUpdated Update received message
+INFO  2025-12-06T14:32:08 +95ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:08 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:09 +146ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:09 +1ms service=tui type=cursor.BlinkMsg Update received message
+INFO  2025-12-06T14:32:09 +187ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:09 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:09 +339ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:09 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:09 +328ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:09 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:10 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:10 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:10 +336ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:10 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:10 +331ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:10 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:11 +335ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:11 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:11 +283ms service=bus type=session.updated publishing
+INFO  2025-12-06T14:32:11 +2ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:11 +0ms service=tui type=session.updated Received event
+INFO  2025-12-06T14:32:11 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:11 +0ms service=tui type=pukucode.EventListResponseEventSessionUpdated Update received message
+INFO  2025-12-06T14:32:11 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:11 +0ms service=tui timeTakenMs=0 messages.renderView
+INFO  2025-12-06T14:32:11 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:11 +0ms service=tui type=chat.renderCompleteMsg Update received message
+INFO  2025-12-06T14:32:11 +47ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:11 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:11 +331ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:11 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:12 +333ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:12 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:12 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:12 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:12 +332ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:12 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:13 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:13 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:13 +337ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:13 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:13 +328ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:13 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:14 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:14 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:14 +338ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:14 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:14 +7ms service=session session=ses_50bec3ffdffer9K4Jwg6rKlUn4 type=start-step part
+INFO  2025-12-06T14:32:14 +4ms service=bus type=message.part.updated publishing
+INFO  2025-12-06T14:32:14 +6ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:14 +1ms service=tui type=message.part.updated Received event
+INFO  2025-12-06T14:32:14 +2ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:14 +0ms service=tui type=pukucode.EventListResponseEventMessagePartUpdated Update received message
+INFO  2025-12-06T14:32:14 +2ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:14 +0ms service=tui message=msg_af413c96a001AKmKFBJw0ngpSr part=prt_af413e012001XDrknBDOcSQDZU type=step-start message part updated  
+INFO  2025-12-06T14:32:14 +2ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:14 +0ms service=tui messageID=msg_af413c96a001AKmKFBJw0ngpSr messageIndex=-1 totalMessages=1 searching for message to add part       
+INFO  2025-12-06T14:32:14 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:14 +0ms service=tui timeTakenMs=0 messages.renderView
+INFO  2025-12-06T14:32:14 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:14 +0ms service=tui type=chat.renderCompleteMsg Update received message
+INFO  2025-12-06T14:32:14 +32ms service=snapshot initialized
+INFO  2025-12-06T14:32:14 +159ms service=snapshot hash=ecf56729e4af882fedcd7ea1333e9ab99d7e83bd
+ cwd=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode git=C:\Users\Adid\.local\share\pukucode\snapshot\0436d2cd35cc20a92e0a135d596e7f24224c769e tracking
+INFO  2025-12-06T14:32:14 +0ms service=session session=ses_50bec3ffdffer9K4Jwg6rKlUn4 type=text-start part
+INFO  2025-12-06T14:32:14 +0ms service=session session=ses_50bec3ffdffer9K4Jwg6rKlUn4 type=text-delta part
+INFO  2025-12-06T14:32:14 +1ms service=bus type=message.part.updated publishing
+INFO  2025-12-06T14:32:14 +0ms service=session session=ses_50bec3ffdffer9K4Jwg6rKlUn4 type=reasoning-start part
+INFO  2025-12-06T14:32:14 +0ms service=session session=ses_50bec3ffdffer9K4Jwg6rKlUn4 type=reasoning-delta part
+INFO  2025-12-06T14:32:14 +0ms service=bus type=message.part.updated publishing
+INFO  2025-12-06T14:32:14 +1ms service=session session=ses_50bec3ffdffer9K4Jwg6rKlUn4 type=reasoning-delta part
+INFO  2025-12-06T14:32:14 +0ms service=bus type=message.part.updated publishing
+INFO  2025-12-06T14:32:14 +0ms service=session session=ses_50bec3ffdffer9K4Jwg6rKlUn4 type=reasoning-delta part
+INFO  2025-12-06T14:32:14 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:14 +0ms service=tui type=message.part.updated Received event
+INFO  2025-12-06T14:32:14 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:14 +0ms service=tui type=pukucode.EventListResponseEventMessagePartUpdated Update received message
+INFO  2025-12-06T14:32:14 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:14 +1ms service=tui message=msg_af413c96a001AKmKFBJw0ngpSr part=prt_af413e0e3001dX4Xy1V6GCv0O4 type=text message part updated        
+INFO  2025-12-06T14:32:14 +0ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:14 +0ms service=tui messageID=msg_af413c96a001AKmKFBJw0ngpSr messageIndex=-1 totalMessages=1 searching for message to add part       
+INFO  2025-12-06T14:32:14 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:14 +0ms service=tui type=message.part.updated Received event
+INFO  2025-12-06T14:32:14 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:14 +0ms service=tui type=pukucode.EventListResponseEventMessagePartUpdated Update received message
+INFO  2025-12-06T14:32:14 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:14 +0ms service=tui message=msg_af413c96a001AKmKFBJw0ngpSr part=prt_af413e0e4001YVD8oYVxgPPLxX type=reasoning message part updated   
+INFO  2025-12-06T14:32:14 +0ms service=bus type=message.part.updated publishing
+INFO  2025-12-06T14:32:14 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:14 +0ms service=tui messageID=msg_af413c96a001AKmKFBJw0ngpSr messageIndex=-1 totalMessages=1 searching for message to add part       
+INFO  2025-12-06T14:32:14 +0ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:14 +1ms service=tui pending render, skipping
+INFO  2025-12-06T14:32:14 +0ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:14 +0ms service=tui timeTakenMs=0 messages.renderView
+INFO  2025-12-06T14:32:14 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:14 +0ms service=tui type=message.part.updated Received event
+INFO  2025-12-06T14:32:14 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:14 +0ms service=tui type=chat.renderCompleteMsg Update received message
+INFO  2025-12-06T14:32:14 +0ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:14 +1ms service=tui type=pukucode.EventListResponseEventMessagePartUpdated Update received message
+INFO  2025-12-06T14:32:14 +0ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:14 +0ms service=tui message=msg_af413c96a001AKmKFBJw0ngpSr part=prt_af413e0e4001YVD8oYVxgPPLxX type=reasoning message part updated   
+INFO  2025-12-06T14:32:14 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:14 +1ms service=tui messageID=msg_af413c96a001AKmKFBJw0ngpSr messageIndex=-1 totalMessages=1 searching for message to add part       
+INFO  2025-12-06T14:32:14 +0ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:14 +0ms service=tui pending render, skipping
+INFO  2025-12-06T14:32:14 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:14 +0ms service=tui timeTakenMs=0 messages.renderView
+INFO  2025-12-06T14:32:14 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:14 +0ms service=tui type=chat.renderCompleteMsg Update received message
+INFO  2025-12-06T14:32:14 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:14 +0ms service=tui timeTakenMs=0 messages.renderView
+INFO  2025-12-06T14:32:14 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:14 +0ms service=tui type=chat.renderCompleteMsg Update received message
+INFO  2025-12-06T14:32:14 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:14 +0ms service=tui type=message.part.updated Received event
+INFO  2025-12-06T14:32:14 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:14 +0ms service=tui type=pukucode.EventListResponseEventMessagePartUpdated Update received message
+INFO  2025-12-06T14:32:14 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:14 +0ms service=tui message=msg_af413c96a001AKmKFBJw0ngpSr part=prt_af413e0e4001YVD8oYVxgPPLxX type=reasoning message part updated   
+INFO  2025-12-06T14:32:14 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:14 +0ms service=tui messageID=msg_af413c96a001AKmKFBJw0ngpSr messageIndex=-1 totalMessages=1 searching for message to add part       
+INFO  2025-12-06T14:32:14 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:14 +0ms service=tui timeTakenMs=0 messages.renderView
+INFO  2025-12-06T14:32:14 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:14 +0ms service=tui type=chat.renderCompleteMsg Update received message
+INFO  2025-12-06T14:32:14 +85ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:14 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:15 +333ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:15 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:15 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:15 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:15 +277ms service=session session=ses_50bec3ffdffer9K4Jwg6rKlUn4 type=reasoning-end part
+INFO  2025-12-06T14:32:15 +2ms service=bus type=message.part.updated publishing
+INFO  2025-12-06T14:32:15 +0ms service=session session=ses_50bec3ffdffer9K4Jwg6rKlUn4 type=text-end part
+INFO  2025-12-06T14:32:15 +0ms service=bus type=message.part.updated publishing
+INFO  2025-12-06T14:32:15 +1ms service=session session=ses_50bec3ffdffer9K4Jwg6rKlUn4 type=finish-step part
+INFO  2025-12-06T14:32:15 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:15 +1ms service=tui type=message.part.updated Received event
+INFO  2025-12-06T14:32:15 +0ms service=bus type=message.part.updated publishing
+INFO  2025-12-06T14:32:15 +0ms service=bus type=message.updated publishing
+INFO  2025-12-06T14:32:15 +4ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:15 +0ms service=tui type=pukucode.EventListResponseEventMessagePartUpdated Update received message
+INFO  2025-12-06T14:32:15 +2ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:15 +0ms service=tui message=msg_af413c96a001AKmKFBJw0ngpSr part=prt_af413e0e4001YVD8oYVxgPPLxX type=reasoning message part updated   
+INFO  2025-12-06T14:32:15 +2ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:15 +1ms service=tui messageID=msg_af413c96a001AKmKFBJw0ngpSr messageIndex=-1 totalMessages=1 searching for message to add part       
+INFO  2025-12-06T14:32:15 +3ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:15 +0ms service=tui timeTakenMs=0 messages.renderView
+INFO  2025-12-06T14:32:15 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:15 +0ms service=tui type=chat.renderCompleteMsg Update received message
+INFO  2025-12-06T14:32:15 +2ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:15 +0ms service=tui type=message.part.updated Received event
+INFO  2025-12-06T14:32:15 +2ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:15 +0ms service=tui type=pukucode.EventListResponseEventMessagePartUpdated Update received message
+INFO  2025-12-06T14:32:15 +2ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:15 +0ms service=tui message=msg_af413c96a001AKmKFBJw0ngpSr part=prt_af413e0e3001dX4Xy1V6GCv0O4 type=text message part updated        
+INFO  2025-12-06T14:32:15 +2ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:15 +0ms service=tui messageID=msg_af413c96a001AKmKFBJw0ngpSr messageIndex=-1 totalMessages=1 searching for message to add part       
+INFO  2025-12-06T14:32:15 +2ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:15 +0ms service=tui timeTakenMs=0 messages.renderView
+INFO  2025-12-06T14:32:15 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:15 +1ms service=tui type=chat.renderCompleteMsg Update received message
+INFO  2025-12-06T14:32:15 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:15 +0ms service=tui type=message.part.updated Received event
+INFO  2025-12-06T14:32:15 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:15 +0ms service=tui type=pukucode.EventListResponseEventMessagePartUpdated Update received message
+INFO  2025-12-06T14:32:15 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:15 +0ms service=tui message=msg_af413c96a001AKmKFBJw0ngpSr part=prt_af413e5070015w7Q28YjffRtSB type=step-finish message part updated 
+INFO  2025-12-06T14:32:15 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:15 +0ms service=tui messageID=msg_af413c96a001AKmKFBJw0ngpSr messageIndex=-1 totalMessages=1 searching for message to add part       
+INFO  2025-12-06T14:32:15 +5ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:15 +0ms service=tui timeTakenMs=0 messages.renderView
+INFO  2025-12-06T14:32:15 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:15 +1ms service=tui type=chat.renderCompleteMsg Update received message
+INFO  2025-12-06T14:32:15 +0ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:15 +1ms service=tui type=message.updated Received event
+INFO  2025-12-06T14:32:15 +0ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:15 +1ms service=tui type=pukucode.EventListResponseEventMessageUpdated Update received message
+INFO  2025-12-06T14:32:15 +13ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:15 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:15 +1ms service=session session=ses_50bec3ffdffer9K4Jwg6rKlUn4 type=finish part
+INFO  2025-12-06T14:32:15 +0ms service=bus type=message.updated publishing
+INFO  2025-12-06T14:32:15 +2ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:15 +0ms service=tui type=message.updated Received event
+INFO  2025-12-06T14:32:15 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:15 +0ms service=tui type=pukucode.EventListResponseEventMessageUpdated Update received message
+INFO  2025-12-06T14:32:15 +28ms service=bus type=message.updated publishing
+INFO  2025-12-06T14:32:15 +1ms service=session session=ses_50bec3ffdffer9K4Jwg6rKlUn4 sessionID=ses_50bec3ffdffer9K4Jwg6rKlUn4 unlocking
+INFO  2025-12-06T14:32:15 +0ms service=server duration=9554 response
+DEBUG 2025-12-06T14:32:15 +1ms service=server duration=9554 status=200 statusText= response details
+INFO  2025-12-06T14:32:15 +0ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:15 +0ms service=tui type=message.updated Received event
+INFO  2025-12-06T14:32:15 +0ms service=bus type=session.idle publishing
+INFO  2025-12-06T14:32:15 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:15 +0ms service=tui type=pukucode.EventListResponseEventMessageUpdated Update received message
+INFO  2025-12-06T14:32:15 +0ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:15 +0ms service=tui type=session.idle Received event
+INFO  2025-12-06T14:32:15 +1ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory        
+DEBUG 2025-12-06T14:32:15 +0ms service=tui type=pukucode.Event Update received message
+INFO  2025-12-06T14:32:16 +298ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:16 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:16 +335ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:16 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:16 +337ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:16 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:17 +329ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:17 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:17 +333ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:17 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:17 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:17 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:18 +332ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:18 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:18 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:18 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:18 +335ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:18 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:19 +332ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:19 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:19 +339ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:19 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:19 +331ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:19 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:20 +332ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:20 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:20 +333ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:20 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:20 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:20 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:21 +333ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:21 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:21 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:21 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:21 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:21 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:22 +332ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:22 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:22 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:22 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:22 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:22 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:23 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:23 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:23 +331ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:23 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:23 +338ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:23 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:24 +330ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:24 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:24 +336ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:24 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:24 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:24 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:25 +330ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:25 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:25 +332ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:25 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:25 +335ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:25 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:26 +332ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:26 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:26 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:26 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:26 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:26 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:27 +332ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:27 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:27 +335ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:27 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:27 +335ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:27 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:28 +330ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:28 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:28 +335ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:28 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:28 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:28 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:29 +333ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:29 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:29 +335ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:29 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:29 +332ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:29 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:30 +331ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:30 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:30 +333ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:30 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:30 +336ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:30 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:31 +331ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:31 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:31 +333ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:31 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:31 +336ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:31 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:32 +332ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:32 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:32 +333ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:32 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:32 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:32 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:33 +332ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:33 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:33 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:33 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:33 +336ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:33 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:34 +332ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:34 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:34 +337ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:34 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:34 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:34 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:35 +330ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:35 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:35 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:35 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:35 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:35 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:36 +332ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:36 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:36 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:36 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:36 +335ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:36 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:37 +331ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:37 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:37 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:37 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:37 +335ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:37 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:38 +333ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:38 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:38 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:38 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:38 +335ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:38 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:39 +332ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:39 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:39 +338ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:39 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:39 +333ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:39 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:40 +329ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:40 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:40 +333ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:40 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:40 +337ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:40 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:41 +329ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:41 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:41 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:41 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:41 +337ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:41 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:42 +332ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:42 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:42 +333ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:42 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:42 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:42 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:43 +332ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:43 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:43 +335ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:43 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:43 +338ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:43 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:44 +329ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:44 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:44 +338ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:44 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:44 +330ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:44 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:45 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:45 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:45 +332ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:45 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:45 +337ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:45 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:46 +330ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:46 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:46 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:46 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:46 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:46 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:47 +330ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:47 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:47 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:47 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:47 +337ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:47 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:48 +331ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:48 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:48 +333ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:48 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:48 +336ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:48 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:49 +329ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:49 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:49 +338ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:49 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:49 +330ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:49 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:50 +333ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:50 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:50 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:50 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:50 +336ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:50 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:51 +330ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:51 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:51 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:51 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:51 +333ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:51 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:52 +332ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:52 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:52 +333ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:52 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:52 +336ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:52 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:53 +331ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:53 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:53 +333ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:53 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:53 +336ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:53 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:54 +329ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:54 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:54 +339ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:54 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:54 +329ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:54 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:55 +331ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:55 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:55 +333ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:55 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:55 +335ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:55 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:56 +331ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:56 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:56 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:56 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:56 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:56 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:57 +331ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:57 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:57 +335ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:57 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:57 +336ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:57 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:58 +331ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:58 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:58 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:58 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:58 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:58 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:59 +333ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:59 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:32:59 +340ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:32:59 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:00 +330ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:00 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:00 +328ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:00 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:00 +333ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:00 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:00 +335ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:00 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:01 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:01 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:01 +332ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:01 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:02 +335ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:02 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:02 +332ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:02 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:02 +333ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:02 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:03 +336ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:03 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:03 +331ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:03 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:03 +333ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:03 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:04 +336ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:04 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:04 +331ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:04 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:04 +337ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:04 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:05 +335ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:05 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:05 +330ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:05 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:05 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:05 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:06 +336ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:06 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:06 +331ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:06 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:06 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:06 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:07 +335ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:07 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:07 +330ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:07 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:07 +333ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:07 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:08 +333ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:08 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:08 +335ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:08 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:08 +333ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:08 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:09 +335ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:09 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:09 +332ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:09 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:09 +339ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:09 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:10 +329ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:10 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:10 +331ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:10 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:10 +333ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:10 +1ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:11 +337ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:11 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:11 +330ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:11 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:11 +335ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:11 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:12 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:12 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:12 +333ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:12 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:12 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:12 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:13 +336ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:13 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:13 +331ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:13 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:13 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:13 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:14 +335ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:14 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:14 +334ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:14 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:14 +338ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:14 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:15 +331ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:15 +0ms service=tui type=spinner.TickMsg Update received message
+INFO  2025-12-06T14:33:15 +331ms service=project directory=C:\LOCAL DISK 2\projects\poridhi\code\terminal-ai-assistant\packages\pukucode fromDirectory
+DEBUG 2025-12-06T14:33:15 +1ms service=tui type=spinner.TickMsg Update received message

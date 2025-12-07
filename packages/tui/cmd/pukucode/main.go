@@ -163,6 +163,16 @@ func main() {
 		for stream.Next() {
 			evt := stream.Current()
 			slog.Debug("Received event", "type", evt.Type)
+
+			// Debug: Log Properties to see what fields are populated
+			if evt.Type == "message.updated" {
+				slog.Debug("message.updated Properties",
+					"Info", evt.Properties.Info,
+					"Message", evt.Properties.Message,
+					"SessionID", evt.Properties.SessionID,
+					"MessageID", evt.Properties.MessageID)
+			}
+
 			program.Send(evt.AsUnion())
 		}
 		if err := stream.Err(); err != nil {
